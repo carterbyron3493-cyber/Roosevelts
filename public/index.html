@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Roosevelt's — Ask Us Anything</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #1a1208;
+    --surface:   #211809;
+    --card:      #2a1f0f;
+    --border:    #3d2e18;
+    --gold:      #c9922a;
+    --gold-dim:  #7a5a1a;
+    --gold-faint:#2e2208;
+    --cream:     #f0e8d5;
+    --muted:     #9a8a6a;
+    --red:       #8b2020;
+    --green:     #4ade80;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: #0e0a04;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--cream);
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* atmospheric page bg */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 80% 60% at 30% 70%, rgba(201,146,42,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(139,32,32,0.04) 0%, transparent 60%);
+    pointer-events:none; z-index:0;
+  }
+
+  /* ═══════════════════════════════════════
+     FLOATING LAUNCHER BUTTON
+  ═══════════════════════════════════════ */
+  .launcher {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+  }
+
+  /* speech bubble */
+  .speech-bubble {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px 14px 4px 14px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--cream);
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    animation: bubbleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    position: relative;
+  }
+  .speech-bubble strong { color: var(--gold); }
+
+  @keyframes bubbleIn {
+    from { opacity:0; transform: scale(0.8) translateY(8px); }
+    to   { opacity:1; transform: scale(1) translateY(0); }
+  }
+
+  /* FDR avatar button */
+  .fdr-btn {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 2px solid var(--gold-dim);
+    background: var(--card);
+    cursor: pointer;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0.4);
+    animation: fdrFloat 3s ease-in-out infinite, ringPulse 2.5s ease-out infinite;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .fdr-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 30px rgba(0,0,0,0.7), 0 0 0 4px rgba(201,146,42,0.2);
+  }
+
+  @keyframes fdrFloat {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+  @keyframes ringPulse {
+    0%   { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0.4); }
+    70%  { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 12px rgba(201,146,42,0); }
+    100% { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0); }
+  }
+
+  /* FDR SVG cartoon */
+  .fdr-svg {
+    width: 58px;
+    height: 58px;
+  }
+
+  /* ═══════════════════════════════════════
+     CHAT PANEL
+  ═══════════════════════════════════════ */
+  .chat-panel {
+    position: fixed;
+    bottom: 112px;
+    right: 28px;
+    width: 400px;
+    height: 620px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,146,42,0.12);
+    transform-origin: bottom right;
+
+    /* closed state */
+    transform: scale(0.85) translateY(16px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                opacity 0.25s ease;
+  }
+
+  .chat-panel.open {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* header */
+  .chat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .header-avatar {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--gold-dim);
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .header-avatar svg { width: 36px; height: 36px; }
+
+  .header-text { flex:1; }
+  .header-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--cream);
+  }
+  .header-name span { color: var(--gold); }
+  .header-sub {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+  .header-status {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; color: var(--green);
+  }
+  .status-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .close-btn {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); font-size: 20px; line-height: 1;
+    padding: 4px; border-radius: 6px;
+    transition: color 0.2s;
+  }
+  .close-btn:hover { color: var(--cream); }
+
+  /* quick actions */
+  .quick-actions {
+    display: flex; gap: 7px; padding: 10px 14px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto; flex-shrink: 0;
+    scrollbar-width: none;
+  }
+  .quick-actions::-webkit-scrollbar { display:none; }
+
+  .qbtn {
+    white-space: nowrap;
+    background: var(--gold-faint);
+    border: 1px solid var(--gold-dim);
+    color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11.5px;
+    padding: 5px 11px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .qbtn:hover { background: var(--gold-dim); color: var(--cream); }
+
+  /* chat body */
+  .chat-body {
+    flex: 1; overflow-y: auto;
+    padding: 16px 14px;
+    background: var(--bg);
+    display: flex; flex-direction: column; gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  .msg { display:flex; flex-direction:column; max-width:88%; animation: msgIn 0.28s ease; }
+  @keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .msg.bot  { align-self: flex-start; }
+  .msg.user { align-self: flex-end; }
+
+  .msg-row { display:flex; align-items:flex-end; gap:8px; }
+  .msg.bot .msg-row { flex-direction: row; }
+
+  .msg-avatar {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border);
+    overflow: hidden; flex-shrink: 0;
+    display: flex; align-items:center; justify-content:center;
+  }
+  .msg-avatar svg { width:22px; height:22px; }
+
+  .bubble {
+    padding: 10px 14px;
+    font-size: 13.5px; line-height: 1.6; border-radius: 16px;
+  }
+  .msg.bot  .bubble {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px 16px 16px 4px; color: var(--cream);
+  }
+  .msg.user .bubble {
+    background: var(--gold); color: var(--bg);
+    font-weight: 500; border-radius: 16px 16px 4px 16px;
+  }
+  .msg-time { font-size:10px; color:var(--muted); margin-top:3px; padding:0 4px; }
+  .msg.user .msg-time { text-align:right; }
+
+  /* typing */
+  .typing-wrap { align-self:flex-start; display:flex; align-items:flex-end; gap:8px; }
+  .typing {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 16px 16px 16px 4px;
+    padding: 12px 14px; display:flex; gap:4px; align-items:center;
+  }
+  .typing span {
+    width:5px; height:5px; background:var(--gold); border-radius:50%;
+    animation: tdot 1.2s infinite;
+  }
+  .typing span:nth-child(2){animation-delay:.2s}
+  .typing span:nth-child(3){animation-delay:.4s}
+  @keyframes tdot { 0%,80%,100%{opacity:.2;transform:scale(.7)} 40%{opacity:1;transform:scale(1)} }
+
+  /* reservation card */
+  .res-card {
+    background: var(--card); border: 1px solid var(--gold-dim);
+    border-radius: 12px; padding: 14px 16px; margin-top: 8px;
+    max-width: 280px;
+  }
+  .res-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px; color: var(--gold); margin-bottom: 10px;
+  }
+  .res-field { display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
+  .res-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .res-field input, .res-field select {
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--cream); font-family:'DM Sans',sans-serif;
+    font-size: 12px; padding: 7px 9px; border-radius: 8px; outline:none; width:100%;
+  }
+  .res-field input:focus, .res-field select:focus { border-color: var(--gold-dim); }
+  .res-field select option { background: var(--card); }
+  .res-btn {
+    width:100%; background: var(--gold); color: var(--bg);
+    border:none; font-family:'DM Sans',sans-serif; font-weight:500;
+    font-size:12.5px; padding:9px; border-radius:8px; cursor:pointer;
+    transition: opacity .2s; letter-spacing:.04em;
+  }
+  .res-btn:hover { opacity:.88; }
+  .ot-link {
+    display:block; text-align:center; margin-top:7px;
+    font-size:10.5px; color:var(--muted); text-decoration:none;
+  }
+  .ot-link span { color:var(--gold-dim); }
+
+  /* input area */
+  .input-area {
+    padding: 10px 14px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px; align-items: flex-end;
+    flex-shrink: 0;
+  }
+
+  .input-field {
+    flex:1; background: var(--card); border: 1px solid var(--border);
+    color: var(--cream); font-family:'DM Sans',sans-serif;
+    font-size: 13.5px; padding: 9px 13px; border-radius: 20px;
+    outline:none; resize:none; line-height:1.5; max-height:90px;
+    transition: border-color .2s;
+  }
+  .input-field::placeholder { color: var(--muted); }
+  .input-field:focus { border-color: var(--gold-dim); }
+
+  .send-btn {
+    width:38px; height:38px; background:var(--gold); border:none;
+    border-radius:50%; cursor:pointer; display:flex; align-items:center;
+    justify-content:center; flex-shrink:0; color:var(--bg);
+    transition: opacity .2s, transform .15s;
+  }
+  .send-btn:hover { opacity:.88; transform:scale(1.06); }
+  .send-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+
+  .powered-by {
+    text-align:center; font-size:10px; color:var(--muted);
+    padding: 5px 0 8px; background: var(--surface);
+    opacity:0.6; flex-shrink:0;
+  }
+  .powered-by a { color:var(--gold-dim); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<!-- ═══ LAUNCHER ═══ -->
+<div class="launcher" id="launcher">
+  <div class="speech-bubble" id="speechBubble">
+    <strong>Hey there!</strong> Ask me anything 🥃
+  </div>
+  <button class="fdr-btn" onclick="toggleChat()" aria-label="Open Roosevelt's chat">
+    <!-- Animated cartoon FDR SVG -->
+    <svg class="fdr-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+      <!-- background circle -->
+      <circle cx="40" cy="40" r="38" fill="#2a1f0f"/>
+
+      <!-- jacket body -->
+      <ellipse cx="40" cy="68" rx="22" ry="16" fill="#1a2a3a"/>
+      <!-- lapels -->
+      <polygon points="40,52 30,58 34,72" fill="#243444"/>
+      <polygon points="40,52 50,58 46,72" fill="#243444"/>
+      <!-- tie -->
+      <polygon points="40,52 38,56 40,68 42,56" fill="#8b2020"/>
+      <!-- white shirt -->
+      <rect x="37" y="52" width="6" height="6" rx="1" fill="#f0e8d5"/>
+
+      <!-- neck -->
+      <rect x="36" y="44" width="8" height="10" rx="3" fill="#d4956a"/>
+
+      <!-- head -->
+      <ellipse cx="40" cy="36" rx="15" ry="17" fill="#d4956a"/>
+
+      <!-- hair - swept back FDR style -->
+      <path d="M26,28 Q28,16 40,15 Q52,16 54,28 Q50,20 40,19 Q30,20 26,28Z" fill="#3a2a18"/>
+      <!-- side part -->
+      <path d="M28,22 Q32,18 38,19" stroke="#2a1a0a" stroke-width="1" fill="none"/>
+
+      <!-- ears -->
+      <ellipse cx="25.5" cy="36" rx="3.5" ry="4.5" fill="#c4856a"/>
+      <ellipse cx="54.5" cy="36" rx="3.5" ry="4.5" fill="#c4856a"/>
+
+      <!-- FDR signature round glasses -->
+      <circle cx="34" cy="36" r="6.5" fill="none" stroke="#8B7355" stroke-width="1.8"/>
+      <circle cx="46" cy="36" r="6.5" fill="none" stroke="#8B7355" stroke-width="1.8"/>
+      <!-- glass lenses slight tint -->
+      <circle cx="34" cy="36" r="5.8" fill="rgba(201,146,42,0.08)"/>
+      <circle cx="46" cy="36" r="5.8" fill="rgba(201,146,42,0.08)"/>
+      <!-- bridge -->
+      <line x1="40.5" y1="36" x2="39.5" y2="36" stroke="#8B7355" stroke-width="1.8"/>
+      <!-- temples -->
+      <line x1="27.5" y1="35" x2="25" y2="33" stroke="#8B7355" stroke-width="1.5"/>
+      <line x1="52.5" y1="35" x2="55" y2="33" stroke="#8B7355" stroke-width="1.5"/>
+
+      <!-- eyes behind glasses -->
+      <ellipse cx="34" cy="36" rx="3.5" ry="2.5" fill="white"/>
+      <ellipse cx="46" cy="36" rx="3.5" ry="2.5" fill="white"/>
+      <circle cx="35" cy="36.5" r="1.8" fill="#2a1a0a"/>
+      <circle cx="47" cy="36.5" r="1.8" fill="#2a1a0a"/>
+      <circle cx="35.6" cy="35.8" r="0.6" fill="white"/>
+      <circle cx="47.6" cy="35.8" r="0.6" fill="white"/>
+
+      <!-- eyebrows - distinguished -->
+      <path d="M28.5,30 Q34,28.5 39.5,30" stroke="#3a2a18" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M40.5,30 Q46,28.5 51.5,30" stroke="#3a2a18" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+
+      <!-- FDR's prominent chin / jaw -->
+      <path d="M30,44 Q40,52 50,44" stroke="#c4856a" stroke-width="1" fill="none"/>
+
+      <!-- FDR's cigarette holder (iconic!) -->
+      <line x1="48" y1="43" x2="58" y2="38" stroke="#d4c4a0" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="58.5" cy="37.7" r="1.8" fill="#e8d480"/>
+      <!-- smoke wisps -->
+      <path d="M58,36 Q60,33 59,30" stroke="rgba(240,232,213,0.4)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M59,35 Q62,31 61,28" stroke="rgba(240,232,213,0.25)" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+      <!-- smile - FDR's confident grin -->
+      <path d="M34,43 Q40,47.5 46,43" stroke="#a06040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    </svg>
+  </button>
+</div>
+
+<!-- ═══ CHAT PANEL ═══ -->
+<div class="chat-panel" id="chatPanel">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="header-avatar">
+      <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2a1f0f"/>
+        <ellipse cx="40" cy="68" rx="22" ry="16" fill="#1a2a3a"/>
+        <polygon points="40,52 30,58 34,72" fill="#243444"/>
+        <polygon points="40,52 50,58 46,72" fill="#243444"/>
+        <polygon points="40,52 38,56 40,68 42,56" fill="#8b2020"/>
+        <rect x="37" y="52" width="6" height="6" rx="1" fill="#f0e8d5"/>
+        <rect x="36" y="44" width="8" height="10" rx="3" fill="#d4956a"/>
+        <ellipse cx="40" cy="36" rx="15" ry="17" fill="#d4956a"/>
+        <path d="M26,28 Q28,16 40,15 Q52,16 54,28 Q50,20 40,19 Q30,20 26,28Z" fill="#3a2a18"/>
+        <ellipse cx="25.5" cy="36" rx="3.5" ry="4.5" fill="#c4856a"/>
+        <ellipse cx="54.5" cy="36" rx="3.5" ry="4.5" fill="#c4856a"/>
+        <circle cx="34" cy="36" r="6.5" fill="none" stroke="#8B7355" stroke-width="1.8"/>
+        <circle cx="46" cy="36" r="6.5" fill="none" stroke="#8B7355" stroke-width="1.8"/>
+        <circle cx="34" cy="36" r="5.8" fill="rgba(201,146,42,0.08)"/>
+        <circle cx="46" cy="36" r="5.8" fill="rgba(201,146,42,0.08)"/>
+        <line x1="40.5" y1="36" x2="39.5" y2="36" stroke="#8B7355" stroke-width="1.8"/>
+        <ellipse cx="34" cy="36" rx="3.5" ry="2.5" fill="white"/>
+        <ellipse cx="46" cy="36" rx="3.5" ry="2.5" fill="white"/>
+        <circle cx="35" cy="36.5" r="1.8" fill="#2a1a0a"/>
+        <circle cx="47" cy="36.5" r="1.8" fill="#2a1a0a"/>
+        <circle cx="35.6" cy="35.8" r="0.6" fill="white"/>
+        <circle cx="47.6" cy="35.8" r="0.6" fill="white"/>
+        <path d="M28.5,30 Q34,28.5 39.5,30" stroke="#3a2a18" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M40.5,30 Q46,28.5 51.5,30" stroke="#3a2a18" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <line x1="48" y1="43" x2="58" y2="38" stroke="#d4c4a0" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="58.5" cy="37.7" r="1.8" fill="#e8d480"/>
+        <path d="M34,43 Q40,47.5 46,43" stroke="#a06040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="header-text">
+      <div class="header-name">Roosevelt<span>'s</span></div>
+      <div class="header-sub">Cherry Street · Tulsa, OK</div>
+    </div>
+    <div class="header-status">
+      <div class="status-dot"></div>
+      24/7
+    </div>
+    <button class="close-btn" onclick="toggleChat()">✕</button>
+  </div>
+
+  <!-- Quick actions -->
+  <div class="quick-actions">
+    <button class="qbtn" onclick="quickAsk('What are your hours?')">🕐 Hours</button>
+    <button class="qbtn" onclick="quickAsk('I\'d like to make a reservation')">📅 Reserve</button>
+    <button class="qbtn" onclick="quickAsk('What\'s on the dinner menu?')">🍽 Menu</button>
+    <button class="qbtn" onclick="quickAsk('Tell me about your craft beer selection')">🍺 Beer</button>
+    <button class="qbtn" onclick="quickAsk('Do you have gluten-free options?')">🌾 GF</button>
+    <button class="qbtn" onclick="quickAsk('We\'re celebrating a birthday!')">🎂 Birthday</button>
+    <button class="qbtn" onclick="quickAsk('Tell me about brunch')">🥂 Brunch</button>
+  </div>
+
+  <!-- Chat messages -->
+  <div class="chat-body" id="chatBody">
+    <div class="msg bot">
+      <div class="msg-row">
+        <div class="msg-avatar">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="38" fill="#2a1f0f"/>
+            <ellipse cx="40" cy="68" rx="22" ry="16" fill="#1a2a3a"/>
+            <rect x="36" y="44" width="8" height="10" rx="3" fill="#d4956a"/>
+            <ellipse cx="40" cy="36" rx="15" ry="17" fill="#d4956a"/>
+            <path d="M26,28 Q28,16 40,15 Q52,16 54,28 Q50,20 40,19 Q30,20 26,28Z" fill="#3a2a18"/>
+            <circle cx="34" cy="36" r="6" fill="none" stroke="#8B7355" stroke-width="1.8"/>
+            <circle cx="46" cy="36" r="6" fill="none" stroke="#8B7355" stroke-width="1.8"/>
+            <line x1="40.5" y1="36" x2="39.5" y2="36" stroke="#8B7355" stroke-width="1.8"/>
+            <ellipse cx="34" cy="36" rx="3" ry="2.2" fill="white"/>
+            <ellipse cx="46" cy="36" rx="3" ry="2.2" fill="white"/>
+            <circle cx="35" cy="36.5" r="1.5" fill="#2a1a0a"/>
+            <circle cx="47" cy="36.5" r="1.5" fill="#2a1a0a"/>
+            <line x1="48" y1="43" x2="55" y2="39" stroke="#d4c4a0" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="55.5" cy="38.7" r="1.5" fill="#e8d480"/>
+            <path d="M34,43 Q40,47 46,43" stroke="#a06040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="bubble">Welcome to Roosevelt's! 🥃 What can I help you with today?</div>
+      </div>
+      <div class="msg-time">Just now</div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="input-area">
+    <textarea
+      class="input-field"
+      id="inputField"
+      placeholder="Ask about the menu, hours, reservations…"
+      rows="1"
+      onkeydown="handleKey(event)"
+      oninput="autoResize(this)"
+    ></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+  <div class="powered-by">Powered by <a href="https://lobbii.net">Lobbii AI</a></div>
+</div>
+
+<script>
+// ─── CONFIG ────────────────────────────────────────────
+// In production on Render, this points to your own server
+// In standalone mode, it calls the Anthropic API directly
+const API_URL = window.LOBBII_API_URL || '/api/chat';
+const USE_DIRECT_API = false;
+
+const SYSTEM_PROMPT = `You are the friendly, knowledgeable host at Roosevelt's Gastropub on Cherry Street in Tulsa, Oklahoma. Your personality matches the restaurant: warm, a little witty, unpretentious but genuinely enthusiastic about good food, craft beer, and a great time. Think of yourself as FDR — charming, confident, and always in good spirits.
+
+ABOUT ROOSEVELT'S:
+Roosevelt's Gastropub is a locally owned, family-operated pub at 1551 E 15th Street, Tulsa, OK 74120. Cherry Street District. Locally sourced ingredients from Oklahoma farms. In-house bakery supplying bread and baked goods to Roosevelt's and other local restaurants. 80 craft beers on tap. Sommelier-curated wine list. Seasonal cocktails.
+
+HOURS:
+- Sunday: 10am–9pm
+- Monday–Thursday: 11am–10pm
+- Friday: 11am–11pm (bar open till midnight)
+- Saturday: 10am–11pm (bar open till midnight)
+
+PHONE: (918) 591-2888
+ADDRESS: 1551 E 15th Street, Tulsa, OK 74120
+
+RESERVATIONS:
+We take reservations via OpenTable. When a guest wants to book, respond helpfully AND include the exact text [SHOW_RESERVATION_FORM] in your response to trigger the booking form.
+
+LUNCH MENU — SMALL PLATES:
+- Pretzel Rolls & Beer Cheese $11 — three house-made rolls with beer cheese. Vegetarian.
+- Spicy Buffalo Cheese Fries $16 — cheese curds, candied bacon, cilantro, buffalo sauce, blue cheese or ranch. Contains nuts.
+- Artichoke Dip $13 — parmesan and cream cheese, artichoke hearts, baby spinach, warm pita. +candied bacon $3. Contains nuts.
+- Ahi Tuna Nachos $20 — seared ahi tuna, wonton crisps, wasabi aioli, pineapple ponzu, local goat cheese, sesame seeds, green onion. Contains alcohol.
+- Manhattan Pork Belly $18 — orange-cherry braised pork belly, rye manhattan glaze, amarena cherries, orange zest, parsley.
+- Crab Cakes $18 — three crispy jumbo lump crab cakes, house remoulade.
+
+LUNCH — SPECIALTY SALADS:
+- The Hamilton $15 — Creekstone Farms tenderloin, local bacon, hard boiled egg, crispy shallots, cheddar, grape tomatoes, greens, choice of dressing.
+- Southwest Chicken Salad $14 — grilled chicken, jalapeño-black bean relish, red onion, grape tomato, cotija cheese, queso poblano dressing, field greens, tortilla crisps.
+- Smoked Salmon Salad $15 — chilled smoked salmon, local goat cheese, red onion, croutons, arugula, white wine vinaigrette.
+- Classic Caesar $8 — romaine, red onion, parmesan, croutons, crispy garlic, Caesar dressing. +chicken $7.
+- Tomato Bisque $5 cup / $9 bowl.
+
+LUNCH — WRAPS (with fries; sub soup or salad +$2):
+- The Hamilton Wrap $16 — Creekstone Farms tenderloin, bacon, hard boiled egg, crispy shallots, cheddar crumbles, grape tomatoes, greens.
+- Southwest Chicken Wrap $14 — seasoned chicken, black bean corn salsa, red onion, grape tomato, cotija cheese, queso poblano dressing, tortilla crisps.
+- Chili Honey Chicken Wrap $16 — crispy chicken tossed in chili honey, dill pickles, bacon, tomato, honey mustard slaw, chili aioli.
+
+LUNCH — TACOS:
+- Blackened Shrimp Tacos (2) $14 — blackened grilled shrimp, black bean corn salsa, jalapeño, avocado lime slaw, cotija cheese, local corn tortillas, basmati rice.
+- Portobello Mushroom Tacos (2) $11 — marinated portobellos, black bean corn salsa, jalapeño, avocado lime slaw, cotija cheese, green onion, corn tortillas, basmati rice. Vegetarian.
+
+LUNCH — SANDWICHES & BURGERS (with fries):
+- Roosemelt $12 — triple crème brie, havarti, smoked gouda, garlic aioli, house brioche. +chicken $7.
+- Chicken Club $15 — Greer's bacon, white cheddar, red onion, tomato, greens, garlic aioli, sourdough.
+- Chili Honey Chicken Sandwich $17 — crispy fried chicken tossed in chili honey, dill pickles, bacon, tomato, honey mustard slaw, fermented chili aioli, brioche bun.
+- Darkwing Duck $18 — duck confit, crispy shallots, blue cheese crumbles, house jam, dijonnaise, toasted sourdough.
+- The FDR Burger $16 — house patty, Greer's bacon, white cheddar, greens, tomato, onion, dill pickles, garlic aioli, brioche bun.
+- Beer Cheeseburger $17 — house patty, candied bacon, dill pickles, grilled onions, beer cheese, Siekels mustard, brioche bun. Contains nuts.
+- Tenderloin Burger $19 — house patty topped with Creekstone Farms tenderloin, brie, arugula, crispy shallots, red wine aioli, brioche bun.
+- Southwest Bean Burger $14 — house bean patty, mixed greens, tomato, onion, pickle, cheddar, garlic aioli, brioche bun. Vegetarian.
+- Ribeye Revival Sandwich $20 — shaved ribeye, havarti, grilled onions, arugula, horseradish aioli, dijonnaise, hoagie roll.
+
+DINNER — SMALL PLATES & STARTERS:
+- Ahi Tuna Nachos $20 — seared ahi tuna, wonton crisps, wasabi aioli, pineapple ponzu, goat cheese, sesame seeds, green onion. Contains alcohol.
+- Crab Cakes $18 — three crispy jumbo lump crab cakes, house remoulade.
+- Crispy Brussels $11 — chili honey and fermented chili aioli.
+- Spicy Buffalo Cheese Fries $16 — cheese curds, candied bacon, cilantro, buffalo, blue cheese or ranch. Contains nuts.
+- Pretzel Rolls & Beer Cheese $11 — 3 house-made pretzels with beer cheese.
+- Artichoke Dip $13 — parmesan and cream cheese, artichoke hearts, baby spinach, warm pita. +candied bacon $3.
+- Manhattan Pork Belly $18 — orange-cherry braised pork belly, rye manhattan glaze, amarena cherries, orange zest, parsley.
+
+DINNER — SALADS & SOUP:
+- Smoked Salmon $19 — chilled smoked salmon, arugula, goat cheese, red onion, crouton, white wine vinaigrette.
+- Classic Caesar $11 — romaine, house Caesar, crispy garlic, parmesan, crouton. +chicken $7. +salmon $14.
+- Tomato Bisque $5/$9 — creamy tomato soup, crostinis.
+- The Hamilton $19 — Creekstone Farms tenderloin, bacon, cheddar, hard-boiled egg, crispy shallots, grape tomatoes, mixed greens.
+- Southwest Chicken $16 — chicken breast, black bean corn salsa, red onion, cilantro, grape tomato, cotija, queso poblano dressing, greens, tortilla strips.
+
+DINNER — SANDWICHES & BURGERS (with hand-cut fries; GF bun +$2):
+- Roosemelt $12 — triple crème brie, havarti, smoked gouda, garlic aioli on toasted brioche. +chicken $7.
+- Chicken Club $15 — Greer's bacon, white cheddar, red onion, tomato, greens, garlic aioli, sourdough.
+- Darkwing Duck $18 — duck confit, crispy shallots, blue cheese crumbles, house jam, dijonnaise, sourdough.
+- Ribeye Revival $20 — shaved ribeye, havarti, grilled onions, arugula, horseradish aioli, dijonnaise, hoagie.
+- The FDR Burger $16 — Greer's bacon, white cheddar, greens, tomato, onion, pickle, garlic aioli, brioche bun.
+- Beer Cheeseburger $17 — candied bacon, pickle, grilled onions, beer cheese, Siekels mustard, brioche bun. Contains nuts.
+- Tenderloin Burger $19 — Creekstone Farms shaved tenderloin, crispy shallots, brie, arugula, red wine aioli, brioche bun.
+- Southwest Bean Burger $14 — house bean patty, greens, tomato, onion, pickle, cheddar, garlic aioli, brioche bun. Vegetarian.
+- Chili Honey Chicken $17 — crispy chicken tossed in chili honey, dill pickles, bacon, tomato, honey mustard slaw, chili aioli, brioche bun.
+
+DINNER — SPECIALTIES:
+- Atlantic Salmon $28 — grilled salmon filet, cranberry miso glaze, asparagus, butternut squash purée.
+- Winter Primavera $18 — hand cut linguine, roasted red bell pepper, butternut squash, grilled onion, spinach, grape tomato, garlic cream. Vegetarian.
+- Portobello Tacos $14 — marinated portobellos, black bean corn salsa, avocado lime slaw, cotija, jalapeño, green onion, corn tortillas, basmati rice. Vegetarian.
+- Blackened Shrimp Tacos $18 — black bean corn salsa, avocado lime slaw, cotija, jalapeño, corn tortillas, basmati rice.
+- Boneless Fried Chicken $23 — Red Bird Farms thigh and breast, mashed potatoes, seasonal veggies, chile honey, fried rosemary.
+- Pork Chop $28 — two bone-in pork chops, apple bourbon glaze, roasted apples, mashed potatoes, asparagus.
+- Meatloaf $22 — homestyle mash, crispy shallots, mushroom stout gravy, seasonal vegetables.
+- Beef Tenderloin $50 — 8oz beef tenderloin, crispy Brussels, home-style mashed potatoes, herb butter.
+- Tenderloin Stroganoff $38 — beef tenderloin, hand cut linguine, wild mushrooms, broccolini, caramelized onions, veal au jus, crème fraîche, brioche toast.
+
+SIDES: Seasonal Vegetables $5 · Garden Salad $6/$10 · Fries $5 · Broccolini $5 · Mashed potatoes $5 · Asparagus $5 · Butternut Squash Purée $4.
+
+BRUNCH (Sat & Sun from 10am — menu rotates weekly):
+Expect creative egg dishes, French toast, brunch cocktails. Menu changes every week so specific items vary. Fan favorites: Fro-Mo (frozen mimosa, Opera sparkling, blood orange juice) $8 +house vanilla vodka $3. F'Rosé (frozen rosé, raspberry, lemon) $9.
+
+COCKTAILS:
+- Spicy Marguerite $11 — Reposado Tequila, Cointreau, strawberry, habanero, jalapeño, fresh lime.
+- Black Dahlia $10 — Prairie Wolf local gin, blackberry-mint syrup, key lime, carbonated water.
+- Grey and Fashionable $12 — Family Jones Barrel Aged Earl Grey Gin, lemon, honey, lavender bitters.
+- Bourbon n Bubbles $11 — Bourbon, peach, lemon, prosecco.
+- Tulsa Thyme $11 — Garden Club Gin (OK), lemon, local honey syrup, thyme.
+- Rosie $10 — Wheatley Vodka, lemon, rose syrup.
+- I Only Smoke Purple Sometimes $11 — Peloton De La Muerte Mezcal, Ancho Reyes Chili, blueberry, lemon.
+- Irish Goodbye (Espresso Martini) $12 — Double Shot Cold Brew, Rock Town bourbon cream, Averna, Biscotti.
+- Manhattan On Wood $11 — rye whiskey, Spanish vermouth, bitters, barrel aged, always stirred.
+- You Stay Classy Tulsa $12 — Roosevelt's Rittenhouse Rye (100 proof), neat or on the rocks. Exclusive.
+- Elephant in the Room $12 — Gin, Elephant In The Room Amaro, ginger, blueberry, lemon, soda water.
+- Frozen: Fro-Mo $8 · F'Rosé $9 · The Dude Abides (frozen White Russian) $9 · Seasonal adult frozen $9.
+
+BEER: 80 craft beers on tap. Mix of local Oklahoma breweries, national, and international. Ask your server for today's list.
+
+DIETARY INFO:
+- Vegetarian: Portobello Tacos, Southwest Bean Burger, Winter Primavera, Artichoke Dip, Classic Caesar (no chicken), Roosemelt (no chicken).
+- Gluten-free bun available on burgers +$2.
+- Contains nuts: Spicy Buffalo Cheese Fries, Artichoke Dip (with candied bacon), Beer Cheeseburger.
+- Contains alcohol in prep: Ahi Tuna Nachos (ponzu), Manhattan Pork Belly.
+- For detailed allergen questions, call (918) 591-2888.
+
+BIRTHDAYS & CELEBRATIONS:
+We love a good celebration! No specific birthday package is listed publicly, but we're a popular spot for birthday dinners. Call (918) 591-2888 to discuss group size, special arrangements, or anything else we can do to make it special. Reservations highly recommended for weekend celebrations.
+
+ATMOSPHERE & VIBE: Warm, eclectic pub — old-school beer can wall, keg sinks, tap-style patio water faucets. Covered outdoor patio, reportedly pet-friendly. Spectacular holiday decorations with light show. Casual-upscale. Family-friendly. Great for dates, groups, birthdays.
+
+CHEFS: Executive Chef Jed Kable. Pastry Chef Chomi.
+
+BEHAVIOR RULES:
+- Be warm, charming, and a little witty — you're FDR, the host of the finest gastropub in Tulsa.
+- When someone wants a reservation, respond AND include [SHOW_RESERVATION_FORM] to trigger the booking widget.
+- Keep answers focused. Don't dump the whole menu unless asked.
+- If you don't know something, say so and direct to (918) 591-2888.
+- Never make up items or prices not listed above. Brunch menu changes weekly.
+- Make people excited to come in.`;
+
+// ─── STATE ─────────────────────────────────────────────
+const history = [];
+let isOpen = false;
+let isLoading = false;
+let bubbleHidden = false;
+
+// ─── TOGGLE ────────────────────────────────────────────
+function toggleChat() {
+  isOpen = !isOpen;
+  document.getElementById('chatPanel').classList.toggle('open', isOpen);
+  if (isOpen && !bubbleHidden) {
+    document.getElementById('speechBubble').style.display = 'none';
+    bubbleHidden = true;
+  }
+  if (isOpen) setTimeout(() => document.getElementById('inputField').focus(), 350);
+}
+
+// ─── HELPERS ───────────────────────────────────────────
+function getTime() {
+  return new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true});
+}
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 90) + 'px';
+}
+function scrollBottom() {
+  const b = document.getElementById('chatBody');
+  b.scrollTop = b.scrollHeight;
+}
+
+// Mini FDR SVG for message avatars
+function fdrMiniSVG() {
+  return `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="38" fill="#2a1f0f"/>
+    <ellipse cx="40" cy="68" rx="22" ry="16" fill="#1a2a3a"/>
+    <rect x="36" y="44" width="8" height="10" rx="3" fill="#d4956a"/>
+    <ellipse cx="40" cy="36" rx="15" ry="17" fill="#d4956a"/>
+    <path d="M26,28 Q28,16 40,15 Q52,16 54,28 Q50,20 40,19 Q30,20 26,28Z" fill="#3a2a18"/>
+    <circle cx="34" cy="36" r="6" fill="none" stroke="#8B7355" stroke-width="1.8"/>
+    <circle cx="46" cy="36" r="6" fill="none" stroke="#8B7355" stroke-width="1.8"/>
+    <line x1="40.5" y1="36" x2="39.5" y2="36" stroke="#8B7355" stroke-width="1.8"/>
+    <ellipse cx="34" cy="36" rx="3" ry="2.2" fill="white"/>
+    <ellipse cx="46" cy="36" rx="3" ry="2.2" fill="white"/>
+    <circle cx="35" cy="36.5" r="1.5" fill="#2a1a0a"/>
+    <circle cx="47" cy="36.5" r="1.5" fill="#2a1a0a"/>
+    <line x1="48" y1="43" x2="55" y2="39" stroke="#d4c4a0" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="55.5" cy="38.7" r="1.5" fill="#e8d480"/>
+    <path d="M34,43 Q40,47 46,43" stroke="#a06040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function addMessage(role, text) {
+  const body = document.getElementById('chatBody');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+
+  if (role === 'bot') {
+    div.innerHTML = `
+      <div class="msg-row">
+        <div class="msg-avatar">${fdrMiniSVG()}</div>
+        <div class="bubble">${text.replace(/\n/g,'<br>')}</div>
+      </div>
+      <div class="msg-time">${getTime()}</div>`;
+  } else {
+    div.innerHTML = `
+      <div class="bubble">${text.replace(/\n/g,'<br>')}</div>
+      <div class="msg-time">${getTime()}</div>`;
+  }
+
+  body.appendChild(div);
+  scrollBottom();
+}
+
+function addTyping() {
+  const body = document.getElementById('chatBody');
+  const div = document.createElement('div');
+  div.className = 'typing-wrap'; div.id = 'typingWrap';
+  div.innerHTML = `<div class="msg-avatar">${fdrMiniSVG()}</div><div class="typing"><span></span><span></span><span></span></div>`;
+  body.appendChild(div);
+  scrollBottom();
+}
+function removeTyping() {
+  const t = document.getElementById('typingWrap');
+  if (t) t.remove();
+}
+
+function showReservationForm() {
+  const body = document.getElementById('chatBody');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg bot';
+
+  const today = new Date().toISOString().split('T')[0];
+  wrap.innerHTML = `
+    <div class="msg-row">
+      <div class="msg-avatar">${fdrMiniSVG()}</div>
+      <div class="res-card">
+        <div class="res-title">📅 Reserve a Table</div>
+        <div class="res-field"><input type="text" id="resName" placeholder="Your name" /></div>
+        <div class="res-field res-row">
+          <input type="date" id="resDate" min="${today}" />
+          <input type="time" id="resTime" value="19:00" />
+        </div>
+        <div class="res-field">
+          <select id="resParty">
+            <option value="">Party size…</option>
+            ${[1,2,3,4,5,6,7,8].map(n=>`<option value="${n}">${n} ${n===1?'guest':'guests'}</option>`).join('')}
+            <option value="9+">9+ guests</option>
+          </select>
+        </div>
+        <button class="res-btn" onclick="submitReservation()">Check Availability on OpenTable</button>
+        <a class="ot-link" href="https://www.opentable.com/r/roosevelts-gastropub-tulsa" target="_blank">Or book directly on <span>OpenTable →</span></a>
+      </div>
+    </div>
+    <div class="msg-time">${getTime()}</div>`;
+
+  body.appendChild(wrap);
+  scrollBottom();
+}
+
+function submitReservation() {
+  const party = document.getElementById('resParty')?.value;
+  const date  = document.getElementById('resDate')?.value;
+  const time  = document.getElementById('resTime')?.value;
+  const name  = document.getElementById('resName')?.value;
+
+  if (party === '9+' || (party && parseInt(party) >= 6)) {
+    addMessage('bot', 'For parties of 6 or more, give us a call at <strong>(918) 591-2888</strong> and we\'ll make sure we have the right space for your crew! 🥂');
+    return;
+  }
+
+  let url = 'https://www.opentable.com/r/roosevelts-gastropub-tulsa?';
+  const p = new URLSearchParams();
+  if (date) p.set('dateTime', `${date}T${time||'19:00'}`);
+  if (party) p.set('covers', party);
+  url += p.toString();
+  window.open(url, '_blank');
+
+  addMessage('bot', `We've opened OpenTable for you — just finish up there and you're all set${name ? ', ' + name : ''}! See you soon. 🥃`);
+}
+
+// ─── SEND MESSAGE ──────────────────────────────────────
+async function sendMessage(text) {
+  const input = document.getElementById('inputField');
+  const userText = text || input.value.trim();
+  if (!userText || isLoading) return;
+
+  if (!text) { input.value = ''; input.style.height = 'auto'; }
+
+  addMessage('user', userText);
+  history.push({ role: 'user', content: userText });
+
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+  addTyping();
+
+  try {
+    let reply;
+
+    if (USE_DIRECT_API) {
+      // Standalone preview mode — calls Anthropic directly
+      // In production this is replaced by the server proxy
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': window.ANTHROPIC_API_KEY || '',
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-ipc': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1000,
+          system: SYSTEM_PROMPT,
+          messages: history
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message);
+      reply = data.content?.[0]?.text;
+    } else {
+      // Production mode — calls your Render server
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: history })
+      });
+      const data = await res.json();
+      reply = data.reply;
+    }
+
+    if (!reply) throw new Error('Empty response');
+
+    removeTyping();
+    const cleanReply = reply.replace('[SHOW_RESERVATION_FORM]', '').trim();
+    addMessage('bot', cleanReply);
+    history.push({ role: 'assistant', content: reply });
+
+    if (reply.includes('[SHOW_RESERVATION_FORM]')) {
+      setTimeout(showReservationForm, 350);
+    }
+
+  } catch (err) {
+    removeTyping();
+    console.error(err);
+    addMessage('bot', "Give us a ring at <strong>(918) 591-2888</strong> and a real human will sort you out! 🍺");
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+}
+
+function quickAsk(t) { if (!isOpen) toggleChat(); setTimeout(() => sendMessage(t), 400); }
+function handleKey(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+
+// Hide speech bubble after 6 seconds
+setTimeout(() => {
+  const b = document.getElementById('speechBubble');
+  if (b && !isOpen) { b.style.transition='opacity 0.5s'; b.style.opacity='0'; setTimeout(()=>b.style.display='none',500); }
+}, 6000);
+</script>
+</body>
+</html>
