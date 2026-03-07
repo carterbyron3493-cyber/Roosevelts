@@ -125,7 +125,30 @@ DIETARY: Vegetarian options available. GF bun +$2 on burgers. Items with nuts: B
 
 BIRTHDAYS: No specific package listed publicly — call (918) 591-2888 to arrange. Reservations recommended for weekend celebrations.
 
-BEHAVIOR: Be warm, charming, witty like FDR. Include [SHOW_RESERVATION_FORM] when someone wants to book. Keep answers focused. Never make up info. Direct unknowns to (918) 591-2888.`;
+BEHAVIOR:
+- Keep answers short and punchy — 1 to 3 sentences max unless listing menu items.
+- Use **bold** for key info like hours, prices, dish names. Use *italics* for flavor descriptions.
+- After any visit-intent question (hours, menu, parking), end with one short reservation nudge and [SHOW_RESERVATION_FORM].
+- Skip the reservation nudge for pure FAQ (allergens, ingredients). Never push it twice in one conversation.
+- Never make up info. Direct unknowns to (918) 591-2888.`;
+
+// ─── LEAD CAPTURE ENDPOINT ─────────────────────────────
+const leads = []; // in-memory for now — swap for DB/sheet later
+
+app.post('/api/lead', (req, res) => {
+  const { name, phone, date, time, party, ts } = req.body;
+  const lead = { name, phone, date, time, party, ts };
+  leads.push(lead);
+  console.log('📋 New lead:', lead);
+  res.json({ ok: true });
+});
+
+// View leads (protect this in production with a password)
+app.get('/api/leads', (req, res) => {
+  const key = req.query.key;
+  if (key !== process.env.LEADS_KEY) return res.status(401).json({ error: 'unauthorized' });
+  res.json(leads);
+});
 
 // ─── CHAT ENDPOINT ─────────────────────────────────────
 app.post('/api/chat', async (req, res) => {
