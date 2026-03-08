@@ -128,10 +128,11 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
       <!-- ears -->
       <ellipse cx="22" cy="37" rx="4" ry="5.5" fill="#c07050"/>
       <ellipse cx="58" cy="37" rx="4" ry="5.5" fill="#c07050"/>
-      <!-- dark hair, grey at temples -->
-      <path d="M22,22 Q23,3 40,2 Q57,3 58,22 Q53,7 40,7 Q27,7 22,22Z" fill="#2a2420"/>
-      <path d="M22,22 Q18,29 21,39" stroke="#888078" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <path d="M58,22 Q62,29 59,39" stroke="#888078" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <!-- Hair: flat-topped block with side part, drawn on top of face -->
+      <path d="M22,23 L22,4 Q24,1 40,1 Q56,1 58,4 L58,23 Q53,12 40,12 Q27,12 22,23Z" fill="#2a2420"/>
+      <path d="M22,4 L22,23 Q24,17 27,23 L27,5 Q25,2 22,4Z" fill="#8a8278"/>
+      <path d="M58,4 L58,23 Q56,17 53,23 L53,5 Q55,2 58,4Z" fill="#8a8278"/>
+      <line x1="35" y1="1" x2="36" y2="12" stroke="#1a1410" stroke-width="2"/>
       <!-- eyebrows -->
       <path d="M27,25 Q32,22 37,24" stroke="#2a1e14" stroke-width="2.2" fill="none" stroke-linecap="round"/>
       <path d="M43,24 Q48,22 53,25" stroke="#2a1e14" stroke-width="2.2" fill="none" stroke-linecap="round"/>
@@ -180,9 +181,13 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
         <ellipse cx="40" cy="36" rx="18" ry="21" fill="#d4906a"/>
         <ellipse cx="22" cy="37" rx="4" ry="5.5" fill="#c07050"/>
         <ellipse cx="58" cy="37" rx="4" ry="5.5" fill="#c07050"/>
-        <path d="M22,22 Q23,3 40,2 Q57,3 58,22 Q53,7 40,7 Q27,7 22,22Z" fill="#2a2420"/>
-        <path d="M22,22 Q18,29 21,39" stroke="#888078" stroke-width="6" fill="none" stroke-linecap="round"/>
-        <path d="M58,22 Q62,29 59,39" stroke="#888078" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <!-- Hair: flat-topped block with side part, drawn on top of face -->
+        <path d="M22,23 L22,4 Q24,1 40,1 Q56,1 58,4 L58,23 Q53,12 40,12 Q27,12 22,23Z" fill="#2a2420"/>
+        <!-- Grey temples as part of the hair block -->
+        <path d="M22,4 L22,23 Q24,17 27,23 L27,5 Q25,2 22,4Z" fill="#8a8278"/>
+        <path d="M58,4 L58,23 Q56,17 53,23 L53,5 Q55,2 58,4Z" fill="#8a8278"/>
+        <!-- Side part line -->
+        <line x1="35" y1="1" x2="36" y2="12" stroke="#1a1410" stroke-width="2"/>
         <path d="M27,25 Q32,22 37,24" stroke="#2a1e14" stroke-width="2.2" fill="none" stroke-linecap="round"/>
         <path d="M43,24 Q48,22 53,25" stroke="#2a1e14" stroke-width="2.2" fill="none" stroke-linecap="round"/>
         <ellipse cx="32" cy="33" rx="4.5" ry="3.2" fill="#e8d0b8"/>
@@ -234,9 +239,10 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
             <ellipse cx="40" cy="36" rx="18" ry="21" fill="#d4906a"/>
             <ellipse cx="22" cy="37" rx="4" ry="5.5" fill="#c07050"/>
             <ellipse cx="58" cy="37" rx="4" ry="5.5" fill="#c07050"/>
-            <path d="M22,22 Q23,3 40,2 Q57,3 58,22 Q53,7 40,7 Q27,7 22,22Z" fill="#2a2420"/>
-            <path d="M22,22 Q18,29 21,39" stroke="#888078" stroke-width="6" fill="none" stroke-linecap="round"/>
-            <path d="M58,22 Q62,29 59,39" stroke="#888078" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M22,23 L22,4 Q24,1 40,1 Q56,1 58,4 L58,23 Q53,12 40,12 Q27,12 22,23Z" fill="#2a2420"/>
+            <path d="M22,4 L22,23 Q24,17 27,23 L27,5 Q25,2 22,4Z" fill="#8a8278"/>
+            <path d="M58,4 L58,23 Q56,17 53,23 L53,5 Q55,2 58,4Z" fill="#8a8278"/>
+            <line x1="35" y1="1" x2="36" y2="12" stroke="#1a1410" stroke-width="2"/>
             <path d="M27,25 Q32,22 37,24" stroke="#2a1e14" stroke-width="2.2" fill="none" stroke-linecap="round"/>
             <path d="M43,24 Q48,22 53,25" stroke="#2a1e14" stroke-width="2.2" fill="none" stroke-linecap="round"/>
             <ellipse cx="32" cy="33" rx="4.5" ry="3.2" fill="#e8d0b8"/>
@@ -367,9 +373,10 @@ function fdrMiniSVG() {
     <ellipse cx="40" cy="36" rx="18" ry="21" fill="#d4906a"/>
     <ellipse cx="22" cy="37" rx="4" ry="5.5" fill="#c07050"/>
     <ellipse cx="58" cy="37" rx="4" ry="5.5" fill="#c07050"/>
-    <path d="M22,22 Q23,3 40,2 Q57,3 58,22 Q53,7 40,7 Q27,7 22,22Z" fill="#2a2420"/>
-    <path d="M22,22 Q18,29 21,39" stroke="#888078" stroke-width="6" fill="none" stroke-linecap="round"/>
-    <path d="M58,22 Q62,29 59,39" stroke="#888078" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path d="M22,23 L22,4 Q24,1 40,1 Q56,1 58,4 L58,23 Q53,12 40,12 Q27,12 22,23Z" fill="#2a2420"/>
+    <path d="M22,4 L22,23 Q24,17 27,23 L27,5 Q25,2 22,4Z" fill="#8a8278"/>
+    <path d="M58,4 L58,23 Q56,17 53,23 L53,5 Q55,2 58,4Z" fill="#8a8278"/>
+    <line x1="35" y1="1" x2="36" y2="12" stroke="#1a1410" stroke-width="2"/>
     <path d="M27,25 Q32,22 37,24" stroke="#2a1e14" stroke-width="2.2" fill="none" stroke-linecap="round"/>
     <path d="M43,24 Q48,22 53,25" stroke="#2a1e14" stroke-width="2.2" fill="none" stroke-linecap="round"/>
     <ellipse cx="32" cy="33" rx="4.5" ry="3.2" fill="#e8d0b8"/>
