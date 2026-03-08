@@ -290,14 +290,19 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
 </div>
 
 <script>
-const API_URL = window.LOBBII_API_URL || '/api/chat';
+// Read ?client= (or ?slug=) from URL so one deployment serves all demos
+const _urlSlug = new URLSearchParams(window.location.search).get('client')
+              || new URLSearchParams(window.location.search).get('slug')
+              || '';
+const _slugParam = _urlSlug ? `?slug=${encodeURIComponent(_urlSlug)}` : '';
+const API_URL = (window.LOBBII_API_URL || '/api/chat') + _slugParam;
 
 // ─── CONFIG (loaded from server) ──────────────────────────
 let CFG = {};
 
 async function loadConfig() {
   try {
-    const res = await fetch('/api/config');
+    const res = await fetch('/api/config' + _slugParam);
     CFG = await res.json();
 
     // Apply theme CSS variables
@@ -486,7 +491,7 @@ function submitReservation() {
     return;
   }
   if (name || phone) {
-    fetch('/api/lead', {
+    fetch('/api/lead' + _slugParam, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, phone, date, time, party, ts: new Date().toISOString() })
