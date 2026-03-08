@@ -147,6 +147,18 @@ app.post('/api/chat', async (req, res) => {
     });
     const reply = response.content?.[0]?.text || `Give us a call at ${cfg.phone} and we'll help you out!`;
     res.json({ reply });
+
+    // Log inquiry to Sheets (fire-and-forget, don't block response)
+    const lastUserMsg = sanitized.filter(m => m.role === 'user').pop();
+    if (cfg.sheets_url && lastUserMsg) {
+      logToSheets(cfg.sheets_url, {
+        slug,
+        type: 'inquiry',
+        message: lastUserMsg.content,
+        response: reply,
+        ts: new Date().toISOString()
+      }).catch(console.error);
+    }
   } catch (err) {
     console.error('Claude API error:', err.message);
     res.status(500).json({ error: 'API error', reply: `Give us a call at ${cfg?.phone || 'the restaurant'} — a real human will sort you out! 🍺` });
