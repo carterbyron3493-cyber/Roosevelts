@@ -83,6 +83,7 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
 .send-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; }
 .powered-by { text-align:center; font-size:10px; color:var(--muted); padding: 5px 0 8px; background: var(--surface); opacity:0.6; flex-shrink:0; }
 .powered-by a { color:var(--gold-dim); text-decoration:none; }
+.res-pill { display:inline-flex; align-items:center; gap:5px; margin-top:7px; background:var(--gold-faint); border:1px solid var(--gold-dim); color:var(--gold); font-family:'DM Sans',sans-serif; font-size:11px; padding:4px 11px; border-radius:20px; cursor:pointer; transition:all 0.2s; }
 
 /* ═══════════════════════════════════════
    MOBILE (≤ 600px)
@@ -499,7 +500,7 @@ function parseMarkdown(text) {
     .replace(/\*(?!\*)(.+?)\*(?!\*)/g, '<em>$1</em>')
     .replace(/\n/g, '<br>');
 }
-function addMessage(role, text) {
+function addMessage(role, text, showResPill = false) {
   const body = document.getElementById('chatBody');
   const div = document.createElement('div');
   div.className = `msg ${role}`;
@@ -510,6 +511,7 @@ function addMessage(role, text) {
         <div class="msg-avatar">${fdrMiniSVG()}</div>
         <div class="bubble">${parsed}</div>
       </div>
+      ${showResPill ? `<button class="res-pill" onclick="showReservationForm()">📅 Reserve a table</button>` : ''}
       <div class="msg-time">${getTime()}</div>`;
   } else {
     div.innerHTML = `
@@ -629,10 +631,11 @@ async function sendMessage(text) {
     }
     if (!reply) throw new Error('Empty response');
     removeTyping();
+    const hasResForm = reply.includes('[SHOW_RESERVATION_FORM]');
     const cleanReply = reply.replace('[SHOW_RESERVATION_FORM]', '').trim();
-    addMessage('bot', cleanReply);
+    addMessage('bot', cleanReply, !hasResForm);
     history.push({ role: 'assistant', content: reply });
-    if (reply.includes('[SHOW_RESERVATION_FORM]')) {
+    if (hasResForm) {
       setTimeout(showReservationForm, 350);
     }
   } catch (err) {
