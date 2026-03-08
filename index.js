@@ -4,9 +4,16 @@ const path    = require('path');
 const https   = require('https');
 const fs      = require('fs');
 const Anthropic = require('@anthropic-ai/sdk');
+const { createClient } = require('@supabase/supabase-js');
 
 const app    = express();
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+// ─── SUPABASE ─────────────────────────────────────────────
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 app.use(cors());
 app.use(express.json());
@@ -91,25 +98,36 @@ function logToSheets(sheetsUrl, data) {
   });
 }
 
-// ─── LEAD CAPTURE ─────────────────────────────────────────
-const leads = [];
+// ─── SUPABASE HELPERS ─────────────────────────────────────
+async function sbInsert(table, row) {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return;
+  const { error } = await supabase.from(table).insert(row);
+  if (error) console.error(`❌ Supabase insert (${table}):`, error.message);
+  else console.log(`✅ Supabase insert (${table})`);
+}
 
+// ─── LEAD CAPTURE ─────────────────────────────────────────
 app.post('/api/lead', async (req, res) => {
   const slug = req.query.slug || DEFAULT_SLUG;
   const cfg  = getClient(slug);
   const { name, phone, date, time, party, ts } = req.body;
-  const lead = { slug, name, phone, date, time, party, ts, type: 'reservation_lead' };
-  leads.push(lead);
+  const lead = { slug, name, phone, date, time, party, ts: ts || new Date().toISOString() };
   console.log('📋 New lead:', lead);
-  if (cfg?.sheets_url) logToSheets(cfg.sheets_url, lead).catch(console.error);
+  // Write to Supabase (persistent) and Sheets (notification)
+  sbInsert('leads', lead).catch(console.error);
+  if (cfg?.sheets_url) logToSheets(cfg.sheets_url, { ...lead, type: 'reservation_lead' }).catch(console.error);
   res.json({ ok: true });
 });
 
-app.get('/api/leads', (req, res) => {
+app.get('/api/leads', async (req, res) => {
   const key = req.query.key;
   if (key !== process.env.LEADS_KEY) return res.status(401).json({ error: 'unauthorized' });
   const slug = req.query.slug;
-  res.json(slug ? leads.filter(l => l.slug === slug) : leads);
+  let query = supabase.from('leads').select('*').order('ts', { ascending: false });
+  if (slug) query = query.eq('slug', slug);
+  const { data, error } = await query;
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
 });
 
 // ─── INQUIRY LOGGING ──────────────────────────────────────
@@ -118,6 +136,7 @@ app.post('/api/inquiry', async (req, res) => {
   const cfg  = getClient(slug);
   const data = { slug, ...req.body, type: req.body.type || 'inquiry', ts: req.body.ts || new Date().toISOString() };
   console.log('💬 New inquiry:', data);
+  sbInsert('inquiries', { slug: data.slug, message: data.message, response: data.response, ts: data.ts }).catch(console.error);
   if (cfg?.sheets_url) logToSheets(cfg.sheets_url, data).catch(console.error);
   res.json({ ok: true });
 });
@@ -148,16 +167,12 @@ app.post('/api/chat', async (req, res) => {
     const reply = response.content?.[0]?.text || `Give us a call at ${cfg.phone} and we'll help you out!`;
     res.json({ reply });
 
-    // Log inquiry to Sheets (fire-and-forget, don't block response)
+    // Log inquiry to Supabase + Sheets (fire-and-forget)
     const lastUserMsg = sanitized.filter(m => m.role === 'user').pop();
-    if (cfg.sheets_url && lastUserMsg) {
-      logToSheets(cfg.sheets_url, {
-        slug,
-        type: 'inquiry',
-        message: lastUserMsg.content,
-        response: reply,
-        ts: new Date().toISOString()
-      }).catch(console.error);
+    if (lastUserMsg) {
+      const inquiry = { slug, message: lastUserMsg.content, response: reply, ts: new Date().toISOString() };
+      sbInsert('inquiries', inquiry).catch(console.error);
+      if (cfg.sheets_url) logToSheets(cfg.sheets_url, { ...inquiry, type: 'inquiry' }).catch(console.error);
     }
   } catch (err) {
     console.error('Claude API error:', err.message);
