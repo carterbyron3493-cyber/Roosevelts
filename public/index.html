@@ -3,18 +3,18 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Roosevelt's â Ask Us Anything</title>
+<title>Roosevelt's — Ask Us Anything</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #1a1208; --surface: #211809; --card: #2a1f0f; --border: #3d2e18;
-  --gold: #c9922a; --gold-dim: #za5a1a; --gold-faint:#2e2208;
+  --gold: #c9922a; --gold-dim: #7a5a1a; --gold-faint:#2e2208;
   --cream: #f0e8d5; --muted: #9a8a6a; --red: #8b2020; --green: #4ade80;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background: #0e0a04; font-family: 'DM Sans', sans-serif; color: var(--cream); min-height: 100vh; overflow: hidden; position: relative; }
 body::before { content:''; position:fixed; inset:0; background: radial-gradient(ellipse 80% 60% at 30% 70%, rgba(201,146,42,0.05) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 20%, rgba(139,32,32,0.04) 0%, transparent 60%); pointer-events:none; z-index:0; }
-/* âââââââââââââââââââââââââââââââââââââââ FLOATING LAUNCHER BUTTON âââââââââââââââââââââââââââââââââââââââ */
+/* ═══════════════════════════════════════ FLOATING LAUNCHER BUTTON ═══════════════════════════════════════ */
 .launcher { position: fixed; bottom: 28px; right: 28px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
 .speech-bubble { background: var(--card); border: 1px solid var(--border); border-radius: 14px 14px 4px 14px; padding: 10px 14px; font-size: 13px; color: var(--cream); white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.5); animation: bubbleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; position: relative; }
 .speech-bubble strong { color: var(--gold); }
@@ -24,7 +24,7 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
 @keyframes fdrFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @keyframes ringPulse { 0% { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0.4); } 70% { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 12px rgba(201,146,42,0); } 100% { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0); } }
 .fdr-svg { width: 58px; height: 58px; }
-/* âââââââââââââââââââââââââââââââââââââââ CHAT PANEL âââââââââââââââââââââââââââââââââââââââ */
+/* ═══════════════════════════════════════ CHAT PANEL ═══════════════════════════════════════ */
 .chat-panel { position: fixed; bottom: 112px; right: 28px; width: 400px; height: 620px; z-index: 999; display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,146,42,0.12); transform-origin: bottom right; transform: scale(0.85) translateY(16px); opacity: 0; pointer-events: none; transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease; }
 .chat-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
 .chat-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
@@ -41,14 +41,14 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
 .close-btn:hover { color: var(--cream); }
 .quick-actions { display: flex; gap: 7px; padding: 10px 14px; background: var(--surface); border-bottom: 1px solid var(--border); overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
 .quick-actions::-webkit-scrollbar { display:none; }
-.qbtn { white-space: nowrap; background: var(--gold-faint); border: 1px solid var(--gold-dim); color: var(--gold); font-family: 'DM Sans',sans-serif; font-size: 11.5px; padding: 5px 11px; border-radius: 20px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
+.qbtn { white-space: nowrap; background: var(--gold-faint); border: 1px solid var(--gold-dim); color: var(--gold); font-family: 'DM Sans', sans-serif; font-size: 11.5px; padding: 5px 11px; border-radius: 20px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; }
 .qbtn:hover { background: var(--gold-dim); color: var(--cream); }
 .chat-body { flex: 1; overflow-y: auto; padding: 16px 14px; background: var(--bg); display: flex; flex-direction: column; gap: 12px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 .msg { display:flex; flex-direction:column; max-width:88%; animation: msgIn 0.28s ease; }
 @keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 .msg.bot { align-self: flex-start; }
 .msg.user { align-self: flex-end; }
-.msg-row { display:flex; align-items:flex-end;  gap:8px; }
+.msg-row { display:flex; align-items:flex-end; gap:8px; }
 .msg.bot .msg-row { flex-direction: row; }
 .msg-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); overflow: hidden; flex-shrink: 0; display: flex; align-items:center; justify-content:center; }
 .msg-avatar svg { width:22px; height:22px; }
@@ -84,9 +84,9 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
 .powered-by { text-align:center; font-size:10px; color:var(--muted); padding: 5px 0 8px; background: var(--surface); opacity:0.6; flex-shrink:0; }
 .powered-by a { color:var(--gold-dim); text-decoration:none; }
 
-/* âââââââââââââââââââââââââââââââââââââââ
-   MOBILE (â¤ 600px)
-âââââââââââââââââââââââââââââââââââââââ */
+/* ═══════════════════════════════════════
+   MOBILE (≤ 600px)
+═══════════════════════════════════════ */
 @media (max-width: 600px) {
   .chat-panel {
     top: 0; left: 0; right: 0; bottom: 0;
@@ -104,10 +104,10 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
 </head>
 <body>
 
-<!-- âââ LAUNCHER âââ -->
+<!-- ═══ LAUNCHER ═══ -->
 <div class="launcher" id="launcher">
   <div class="speech-bubble" id="speechBubble">
-    <strong>Hey there!</strong> Ask me anything ð¥
+    <strong>Hey there!</strong> Ask me anything 🥃
   </div>
   <button class="fdr-btn" onclick="toggleChat()" aria-label="Open Roosevelt's chat">
     <svg class="fdr-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
@@ -152,7 +152,7 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
   </button>
 </div>
 
-<!-- âââ CHAT PANEL âââ -->
+<!-- ═══ CHAT PANEL ═══ -->
 <div class="chat-panel" id="chatPanel">
   <!-- Header -->
   <div class="chat-header">
@@ -199,23 +199,23 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
     </div>
     <div class="header-text">
       <div class="header-name">Roosevelt<span>'s</span></div>
-      <div class="header-sub">Cherry Street Â· Tulsa, OK</div>
+      <div class="header-sub">Cherry Street · Tulsa, OK</div>
     </div>
     <div class="header-status">
       <div class="status-dot"></div> 24/7
     </div>
-    <button class="close-btn" onclick="toggleChat()">â</button>
+    <button class="close-btn" onclick="toggleChat()">✕</button>
   </div>
 
   <!-- Quick actions -->
   <div class="quick-actions">
-    <button class="qbtn" onclick="quickAsk('What are your hours?')">ð Hours</button>
-    <button class="qbtn" onclick="quickAsk('I\'d like to make a reservation')">ð Reserve</button>
-    <button class="qbtn" onclick="quickAsk('What\'s on the dinner menu?')">ð½ Menu</button>
-    <button class="qbtn" onclick="quickAsk('Tell me about your craft beer selection')">ðº Beer</button>
-    <button class="qbtn" onclick="quickAsk('Do you have gluten-free options?')">ð¾ GF</button>
-    <button class="qbtn" onclick="quickAsk('We\'re celebrating a birthday!')">ð Birthday</button>
-    <button class="qbtn" onclick="quickAsk('Tell me about brunch')">ð¥ Brunch</button>
+    <button class="qbtn" onclick="quickAsk('What are your hours?')">🕐 Hours</button>
+    <button class="qbtn" onclick="quickAsk('I\'d like to make a reservation')">📅 Reserve</button>
+    <button class="qbtn" onclick="quickAsk('What\'s on the dinner menu?')">🍽 Menu</button>
+    <button class="qbtn" onclick="quickAsk('Tell me about your craft beer selection')">🍺 Beer</button>
+    <button class="qbtn" onclick="quickAsk('Do you have gluten-free options?')">🌾 GF</button>
+    <button class="qbtn" onclick="quickAsk('We\'re celebrating a birthday!')">🎂 Birthday</button>
+    <button class="qbtn" onclick="quickAsk('Tell me about brunch')">🥂 Brunch</button>
   </div>
 
   <!-- Chat messages -->
@@ -242,87 +242,162 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
             <ellipse cx="24" cy="34" rx="4" ry="5" fill="#b87450"/>
             <ellipse cx="56" cy="34" rx="4" ry="5" fill="#b87450"/>
             <circle cx="34.5" cy="33" r="6" fill="none" stroke="#8B7040" stroke-width="1.8"/>
-            <circle cx="45.5" cy="33" r="6" fill="none" stroke="#8B7040" stroiK]ÚYHKÏÚ\ÛHÞHÍHÞOHÌÈHKÈ[HØJNLLHÏÚ\ÛHÞH
-KHÞOHÌÈHKÈ[HØJNLLHÏ]HMKÌÈMÌHÎKKÌÈÝÚÙOHÎÌ
-ÝÚÙK]ÚYHK[HÛHÏ[\ÙHÞHÍHÞOHÌÈHËHOHH[HÚ]HÏ[\ÙHÞH
-KHÞOHÌÈHËHOHH[HÚ]HÏÚ\ÛHÞHÍKÞOHÌËHHK[HÌLXLHÏÚ\ÛHÞH
-ÞOHÌËHHK[HÌLXLHÏÚ\ÛHÞHÍKÞOHÌH[HÚ]HÏÚ\ÛHÞH
-ÞOHÌH[HÚ]HÏ]HLKÈLÍKH
-HÝÚÙOHÍLØLÝÚÙK]ÚYH[HÛHÝÚÙK[[XØ\HÝ[Ï]HMKHM
-KH
-LKÈÝÚÙOHÍLØLÝÚÙK]ÚYH[HÛHÝÚÙK[[XØ\HÝ[Ï]HLÎKÈLÍËÍÍÎM
-
+            <circle cx="45.5" cy="33" r="6" fill="none" stroke="#8B7040" stroke-width="1.8"/>
+            <circle cx="34.5" cy="33" r="5.3" fill="rgba(180,210,240,0.12)"/>
+            <circle cx="45.5" cy="33" r="5.3" fill="rgba(180,210,240,0.12)"/>
+            <path d="M40.5,33 Q40,31 39.5,33" stroke="#8B7040" stroke-width="1.8" fill="none"/>
+            <ellipse cx="34.5" cy="33" rx="3.5" ry="2.5" fill="white"/>
+            <ellipse cx="45.5" cy="33" rx="3.5" ry="2.5" fill="white"/>
+            <circle cx="35.2" cy="33.5" r="1.8" fill="#2a1a0a"/>
+            <circle cx="46.2" cy="33.5" r="1.8" fill="#2a1a0a"/>
+            <circle cx="35.8" cy="32.8" r="0.6" fill="white"/>
+            <circle cx="46.8" cy="32.8" r="0.6" fill="white"/>
+            <path d="M29,27 Q34.5,24.5 40,26.5" stroke="#4a3a28" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M41,26.5 Q46.5,24.5 51,27" stroke="#4a3a28" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M39,27 Q37,34 36,38 Q40,40 44,38 Q43,34 41,27" fill="#b87450" stroke="#a86840" stroke-width="0.5"/>
+            <ellipse cx="28" cy="40" rx="5" ry="4" fill="rgba(200,132,90,0.3)"/>
+            <ellipse cx="52" cy="40" rx="5" ry="4" fill="rgba(200,132,90,0.3)"/>
+            <path d="M31,43 Q40,49 49,43" stroke="#8a4030" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <line x1="46" y1="41" x2="61" y2="31" stroke="#d4c090" stroke-width="2" stroke-linecap="round"/>
+            <rect x="59" y="29" width="5" height="3" rx="1.5" fill="#e8d070" transform="rotate(-30 61 31)"/>
+            <path d="M63,28 Q65,24 63,20 Q61,16 63,13" stroke="rgba(240,232,213,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="bubble">Welcome to Roosevelt's! 🥃 What can I help you with today?</div>
+      </div>
+      <div class="msg-time">Just now</div>
+    </div>
+  </div>
 
-ÎMËÍ
-KÈ[HØ
-Í
-LÝÚÙOHØN
-
-ÝÚÙK]ÚYHHÏ[\ÙHÞHÞOHHHOH[HØJLÌLÊHÏ[\ÙHÞHLÞOHHHOH[HØJLÌLÊHÏ]HLÌK
-ÈM
-H
-K
-ÈÝÚÙOHÎMÌÝÚÙK]ÚYH[HÛHÝÚÙK[[XØ\HÝ[Ï[HOH
-LOHHHHLHÌHÝÚÙOHÙ
-ÌLÝÚÙK]ÚYHÝÚÙK[[XØ\HÝ[ÏXÝHNHOHHÚYHHZYÚHÈHKH[HÙN
-Ì[ÙÜOHÝ]JLÌ
-HÌJHÏ]HMËMK
-ËMKM
-ËLÈÝÚÙOHØJÌLËÍJHÝÚÙK]ÚYHKH[HÛHÝÚÙK[[XØ\HÝ[ÏÜÝÏÙ]]Û\ÜÏHXHÙ[ÛÛYHÈÛÜÙ][	ÜÈH<'é`ÈÚ]Ø[H[[ÝHÚ]Ù^OÏÙ]Ù]]Û\ÜÏH\ÙË][YH\ÝÝÏÙ]Ù]Ù]KKH[]KO]Û\ÜÏH[]X\XH^\XHÛ\ÜÏH[]YY[YH[]Y[XÙZÛ\H\ÚÈXÝ]HY[KÝ\Ë\Ù\][Ûø )ÝÜÏHHÛÙ^YÝÛH[RÙ^J][
-HÛ[]H]]Ô\Ú^J\ÊHÝ^\XO]ÛÛ\ÜÏHÙ[XYHÙ[ÛÛXÚÏHÙ[Y\ÜØYÙJ
-HÝÈÚYHMHZYÚHMHY]ÐÞH[HÛHÝÚÙOHÝ\[ÛÛÜÝÚÙK]ÚYHHÝÚÙK[[XØ\HÝ[ÝÚÙK[[ZÚ[HÝ[[HOHLOHHLHLHLÈÛ[OÛYÛÛÚ[ÏHMHLHLÈHÜÛYÛÛÜÝÏØ]ÛÙ]]Û\ÜÏHÝÙ\YXHÝÙ\YHHYHÎËÛØZK]ØZHROØOÙ]Ù]ØÜ\ÛÛÝTWÕTHÚ[ÝËÐRWÐTWÕT	ËØ\KØÚ]	ÎÂÛÛÝTÑWÑTPÕÐTHH[ÙNÂÛÛÝÖTÕSWÔÓTH[ÝH\HHY[KÛÝÛYÙXXHÜÝ]ÛÜÙ][	ÜÈØ\ÝÜXÛÚ\HÝY][[ØKÚÛZÛXK[Ý\\ÛÛ[]HX]Ú\ÈH\Ý]\[Ø\KH]HÚ]K[][[Ý\È]Ù[Z[[H[\ÚX\ÝXÈXÝ]ÛÛÙÛÙÜYY\[HÜX][YK[ÈÙ[Ý\Ù[\È8 %Ú\Z[ËÛÛY[[[Ø^\È[ÛÛÙÜ\]ËPÕUÓÔÑUS	ÔÎÛÜÙ][	ÜÈØ\ÝÜX\ÈHØØ[HÝÛY[Z[K[Ü\]YX]MMLHHM]ÝY][ØKÒÈ
-ÍLÚ\HÝY]\ÝXÝØØ[HÛÝ\ÙY[ÜYY[ÈÛHÚÛZÛXH\\Ë[ZÝ\ÙHZÙ\HÝ\Z[ÈXY[ZÙYÛÛÙÈÈÛÜÙ][	ÜÈ[Ý\ØØ[\Ý]\[ËÜYY\ÈÛ\ÛÛ[Y[Y\XÝ\]YÚ[H\ÝÙX\ÛÛ[ÛØÚÝZ[ËÕTÎHÝ[^NL[x $Î\BH[Û^x $Õ\Ù^NLX[x $ÌLBHY^NLX[x $ÌL\H
-\Ü[[ZYYÚ
-BHØ]\^NL[x $ÌL\H
-\Ü[[ZYYÚ
-BÓN
-LN
-H
-NLKLQTÔÎMMLHHM]ÝY][ØKÒÈ
-ÍLTÑTUSÓÎÙHZÙH\Ù\][ÛÈXHÜ[XKÚ[HÝY\ÝØ[ÈÈÛÚË\ÜÛ[[HS[ÛYHH^XÝ^ÔÒÕ×ÔTÑTUSÓÑÔWH[[Ý\\ÜÛÙHÈYÙÙ\HÛÚÚ[ÈÜKSÒQSH8 %ÓPSUTÎH][ÛÈ	Y\ÚY\ÙH	LH8 %YHÝ\ÙK[XYHÛÈÚ]Y\ÚY\ÙKYÙ]\X[HÜXÞHY[ÈÚY\ÙHY\È	M8 %ÚY\ÙHÝ\ËØ[YYXÛÛÚ[[ËY[ÈØ]XÙKYHÚY\ÙHÜ[ÚÛÛZ[È]ËH\XÚÚÙH\	LÈ8 %\Y\Ø[[ÜX[HÚY\ÙK\XÚÚÙHX\ËXHÜ[XÚØ\H]K
-ØØ[YYXÛÛ	ËÛÛZ[È]ËHZH[HXÚÜÈ	8 %ÙX\YZH[KÛÛÛÜ\ÜËØ\ØXHZ[ÛK[X\HÛKØØ[ÛØ]ÚY\ÙKÙ\Ø[YHÙYYËÜY[Û[ÛÛÛZ[È[ÛÚÛHX[][ÜÈ[H	N8 %Ü[ÙKXÚ\HZ\ÙYÜÈ[KYHX[][Û^K[X\[HÚ\Y\ËÜ[ÙH\Ý\Û^KHÜXØZÙ\È	N8 %YHÜ\ÜH[XÈ[\ÜXØZÙ\ËÝ\ÙH[[Ý[YKSÒ8 %ÔPÒPSHÐSQÎHH[Z[Û	MH8 %ÜYZÜÝÛH\\È[\Ú[ØØ[XÛÛ\Ú[YYÙËÜ\ÜHÚ[ÝËÚY\Ü\HÛX]Ù\ËÜY[ËÚÚXÙHÙ\ÜÚ[ËHÛÝ]Ù\ÝÚXÚÙ[Ø[Y	M8 %Ü[YÚXÚÙ[[\pì[ËXXÚÈX[[\ÚYÛ[ÛÜ\HÛX]ËÛÝZHÚY\ÙK]Y\ÛÈØ[È\ÜÚ[ËY[ÜY[ËÜ[HÜ\ÜËHÛ[ÚÙYØ[[ÛØ[Y	MH8 %Ú[YÛ[ÚÙYØ[[ÛØØ[ÛØ]ÚY\ÙKYÛ[ÛÜÝ]ÛË\YÝ[KÚ]HÚ[H[ZYÜ]KHÛ\ÜÚXÈØY\Ø\	8 %ÛXZ[KYÛ[Û\Y\Ø[ÜÝ]ÛËÜ\ÜHØ\XËØY\Ø\\ÜÚ[Ë
-ØÚXÚÙ[	
-ËHÛX]È\Ü]YH	
-HÝ\È	HÝÛSÒ8 %ÔTÈ
-Ú]Y\ÎÈÝXÛÝ\ÜØ[Y
-ÉNHH[Z[ÛÜ\	M8 %ÜYZÜÝÛH\\È[\Ú[XÛÛ\Ú[YYÙËÜ\ÜHÚ[ÝËÚY\Ü[X\ËÜ\HÛX]Ù\ËÜY[ËHÛÝ]Ù\ÝÚXÚÙ[Ü\	M8 %ÙX\ÛÛYÚXÚÙ[XÚÈX[ÛÜØ[ØKYÛ[ÛÜ\HÛX]ËÛÝZHÚY\ÙK]Y\ÛÈØ[È\ÜÚ[ËÜ[HÜ\ÜËHÚ[HÛ^HÚXÚÙ[Ü\	M8 %Ü\ÜHÚXÚÙ[ÜÜÙY[Ú[HÛ^K[XÚÛ\ËXÛÛÛX]ËÛ^H]\Ý\Û]ËÚ[HZ[ÛKSÒ8 %PÓÔÎHXÚÙ[YÚ[\XÛÜÈ
-H	M8 %XÚÙ[YÜ[YÚ[\XÚÈX[ÛÜØ[ØK[\pì[Ë]ØØYÈ[YHÛ]ËÛÝZHÚY\ÙKØØ[ÛÜÜ[\Ë\ÛX]HXÙKHÜØ[È]\ÚÛÛHXÛÜÈ
-H	LH8 %X\[]YÜØ[ÜËXÚÈX[ÛÜØ[ØK[\pì[Ë]ØØYÈ[YHÛ]ËÛÝZHÚY\ÙKÜY[Û[ÛÛÜÜ[\Ë\ÛX]HXÙKYÙ]\X[SÒ8 %ÐSÒPÒTÈ	TÑTÈ
-Ú]Y\ÊNHÛÜÙ[Y[	L8 %\HÜ°êYHYK]\KÛ[ÚÙYÛÝYKØ\XÈZ[ÛKÝ\ÙH[ØÚK
-ØÚXÚÙ[	
-ËHÚXÚÙ[ÛX	MH8 %ÜY\ÜÈXÛÛÚ]HÚY\YÛ[ÛÛX]ËÜY[ËØ\XÈZ[ÛKÛÝ\ÝYÚHÚ[HÛ^HÚXÚÙ[Ø[ÚXÚ	MÈ8 %Ü\ÜHYYÚXÚÙ[ÜÜÙY[Ú[HÛ^K[XÚÛ\ËXÛÛÛX]ËÛ^H]\Ý\Û]Ë\Y[YÚ[HZ[ÛK[ØÚH[H\ÝÚ[ÈXÚÈ	N8 %XÚÈÛÛ]Ü\ÜHÚ[ÝËYHÚY\ÙHÜ[X\ËÝ\ÙH[KZÛZ\ÙKØ\ÝYÛÝ\ÝYÚHH\Ù\	M8 %Ý\ÙH]KÜY\ÜÈXÛÛÚ]HÚY\ÜY[ËÛX]ËÛ[Û[XÚÛ\ËØ\XÈZ[ÛK[ØÚH[HY\ÚY\ÙX\Ù\	MÈ8 %Ý\ÙH]KØ[YYXÛÛ[XÚÛ\ËÜ[YÛ[ÛËY\ÚY\ÙKÚYZÙ[È]\Ý\[ØÚH[ÛÛZ[È]ËH[\Ú[\Ù\	NH8 %Ý\ÙH]HÜYÚ]ÜYZÜÝÛH\\È[\Ú[YK\YÝ[KÜ\ÜHÚ[ÝËYÚ[HZ[ÛK[ØÚH[HÛÝ]Ù\ÝX[\Ù\	M8 %Ý\ÙHX[]KZ^YÜY[ËÛX]ËÛ[ÛXÚÛKÚY\Ø\XÈZ[ÛK[ØÚH[YÙ]\X[HX^YH]][Ø[ÚXÚ	8 %Ú]YX^YK]\KÜ[YÛ[ÛË\YÝ[KÜÙ\Y\ÚZ[ÛKZÛZ\ÙKØYÚYHÛST8 %ÓPSUTÈ	ÕTTÎHZH[HXÚÜÈ	8 %ÙX\YZH[KÛÛÛÜ\ÜËØ\ØXHZ[ÛK[X\HÛKÛØ]ÚY\ÙKÙ\Ø[YHÙYYËÜY[Û[ÛÛÛZ[È[ÛÚÛHÜXØZÙ\È	N8 %YHÜ\ÜH[XÈ[\ÜXØZÙ\ËÝ\ÙH[[Ý[YKHÜ\ÜH\ÜÙ[È	LH8 %Ú[HÛ^H[\Y[YÚ[HZ[ÛKHÜXÞHY[ÈÚY\ÙHY\È	M8 %ÚY\ÙHÝ\ËØ[YYXÛÛÚ[[ËY[ËYHÚY\ÙHÜ[ÚÛÛZ[È]ËH][ÛÈ	Y\ÚY\ÙH	LH8 %ÈÝ\ÙK[XYH][ÈÚ]Y\ÚY\ÙKH\XÚÚÙH\	LÈ8 %\Y\Ø[[ÜX[HÚY\ÙK\XÚÚÙHX\ËXHÜ[XÚØ\H]K
-ØØ[YYXÛÛ	ËHX[][ÜÈ[H	N8 %Ü[ÙKXÚ\HZ\ÙYÜÈ[KYHX[][Û^K[X\[HÚ\Y\ËÜ[ÙH\Ý\Û^KST8 %ÐSQÈ	ÓÕTHÛ[ÚÙYØ[[Û	NH8 %Ú[YÛ[ÚÙYØ[[Û\YÝ[KÛØ]ÚY\ÙKYÛ[ÛÜÝ]ÛÚ]HÚ[H[ZYÜ]KHÛ\ÜÚXÈØY\Ø\	LH8 %ÛXZ[KÝ\ÙHØY\Ø\Ü\ÜHØ\XË\Y\Ø[ÜÝ]Û
-ØÚXÚÙ[	
-Ë
-ÜØ[[Û	MHÛX]È\Ü]YH	
-KÉH8 %ÜX[^HÛX]ÈÛÝ\ÜÜÝ[\ËHH[Z[Û	NH8 %ÜYZÜÝÛH\\È[\Ú[XÛÛÚY\\XÚ[YYÙËÜ\ÜHÚ[ÝËÜ\HÛX]Ù\ËZ^YÜY[ËHÛÝ]Ù\ÝÚXÚÙ[	M8 %ÚXÚÙ[X\ÝXÚÈX[ÛÜØ[ØKYÛ[ÛÚ[[ËÜ\HÛX]ËÛÝZK]Y\ÛÈØ[È\ÜÚ[ËÜY[ËÜ[HÝ\ËST8 %ÐSÒPÒTÈ	TÑTÈ
-Ú][XÝ]Y\ÎÈÑ[
-ÉNHÛÜÙ[Y[	L8 %\HÜ°êYHYK]\KÛ[ÚÙYÛÝYKØ\XÈZ[ÛHÛØ\ÝY[ØÚK
-ØÚXÚÙ[	
-ËHÚXÚÙ[ÛX	MH8 %ÜY\ÜÈXÛÛÚ]HÚY\YÛ[ÛÛX]ËÜY[ËØ\XÈZ[ÛKÛÝ\ÝYÚH\ÝÚ[ÈXÚÈ	N8 %XÚÈÛÛ]Ü\ÜHÚ[ÝËYHÚY\ÙHÜ[X\ËÝ\ÙH[KZÛZ\ÙKÛÝ\ÝYÚHX^YH]][	8 %Ú]YX^YK]\KÜ[YÛ[ÛË\YÝ[KÜÙ\Y\ÚZ[ÛKZÛZ\ÙKØYÚYKHH\Ù\	M8 %ÜY\ÜÈXÛÛÚ]HÚY\ÜY[ËÛX]ËÛ[ÛXÚÛKØ\XÈZ[ÛK[ØÚH[HY\ÚY\ÙX\Ù\	MÈ8 %Ø[YYXÛÛXÚÛKÜ[YÛ[ÛËY\ÚY\ÙKÚYZÙ[È]\Ý\[ØÚH[ÛÛZ[È]ËH[\Ú[\Ù\	NH8 %ÜYZÜÝÛH\\ÈÚ]Y[\Ú[Ü\ÜHÚ[ÝËYK\YÝ[KYÚ[HZ[ÛK[ØÚH[HÛÝ]Ù\ÝX[\Ù\	M8 %Ý\ÙHX[]KÜY[ËÛX]ËÛ[ÛXÚÛKÚY\Ø\XÈZ[ÛK[ØÚH[YÙ]\X[HÚ[HÛ^HÚXÚÙ[	MÈ8 %Ü\ÜHÚXÚÙ[ÜÜÙY[Ú[HÛ^K[XÚÛ\ËXÛÛÛX]ËÛ^H]\Ý\Û]ËÚ[HZ[ÛK[ØÚH[ST8 %ÔPÒPSQTÎH][XÈØ[[Û	8 %Ü[YØ[[Û[]Ü[\HZ\ÛÈÛ^K\Ü\YÝ\Ë]\]Ü]X\Ú\°êYKHÚ[\[X]\H	N8 %[Ý][ÝZ[KØ\ÝYY[\\]\]Ü]X\ÚÜ[YÛ[ÛÜ[XÚÜ\HÛX]ËØ\XÈÜX[KYÙ]\X[HÜØ[ÈXÛÜÈ	M8 %X\[]YÜØ[ÜËXÚÈX[ÛÜØ[ØK]ØØYÈ[YHÛ]ËÛÝZK[\pì[ËÜY[Û[ÛÛÜÜ[\Ë\ÛX]HXÙKYÙ]\X[HXÚÙ[YÚ[\XÛÜÈ	N8 %XÚÈX[ÛÜØ[ØK]ØØYÈ[YHÛ]ËÛÝZK[\pì[ËÛÜÜ[\Ë\ÛX]HXÙKHÛ[\ÜÈYYÚXÚÙ[	È8 %Y\\\ÈYÚ[X\ÝX\ÚYÝ]Ù\ËÙX\ÛÛ[YÙÚY\ËÚ[HÛ^KYYÜÙ[X\KHÜÈÚÜ	8 %ÛÈÛKZ[ÜÈÚops, apple bourbon glaze, roasted apples, mashed potatoes, asparagus.
-- Meatloaf $22 â homestyle mash, crispy shallots, mushroom stout gravy, seasonal vegetables.
-- Beef Tenderloin $50 â 8oz beef tenderloin, crispy Brussels, home-style mashed potatoes, herb butter.
-- Tenderloin Stroganoff $38 â beef tenderloin, hand cut linguine, wild mushrooms, broccolini, caramelized onions, veal au jus, crÃ¨me fraÃ®che, brioche toast.
+  <!-- Input -->
+  <div class="input-area">
+    <textarea class="input-field" id="inputField"
+      placeholder="Ask about the menu, hours, reservations…"
+      rows="1"
+      onkeydown="handleKey(event)"
+      oninput="autoResize(this)"
+    ></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+  <div class="powered-by">Powered by <a href="https://lobbii.net">Lobbii AI</a></div>
+</div>
 
-SIDES: Seasonal Vegetables $5 Â· Garden Salad $6/$10 Â· Fries $5 Â· Broccolini $5 Â· Mashed potatoes $5 Â· Asparagus $5 Â· Butternut Squash PurÃ©e $4.
+<script>
+const API_URL = window.LOBBII_API_URL || '/api/chat';
+const USE_DIRECT_API = false;
+const SYSTEM_PROMPT = `You are the friendly, knowledgeable host at Roosevelt's Gastropub on Cherry Street in Tulsa, Oklahoma. Your personality matches the restaurant: warm, a little witty, unpretentious but genuinely enthusiastic about good food, craft beer, and a great time. Think of yourself as FDR — charming, confident, and always in good spirits.
 
-BRUNCH (Sat & Sun from 10am â menu rotates weekly):
+ABOUT ROOSEVELT'S:
+Roosevelt's Gastropub is a locally owned, family-operated pub at 1551 E 15th Street, Tulsa, OK 74120. Cherry Street District. Locally sourced ingredients from Oklahoma farms. In-house bakery supplying bread and baked goods to Roosevelt's and other local restaurants. 80 craft beers on tap. Sommelier-curated wine list. Seasonal cocktails.
+
+HOURS:
+- Sunday: 10am–9pm
+- Monday–Thursday: 11am–10pm
+- Friday: 11am–11pm (bar open till midnight)
+- Saturday: 10am–11pm (bar open till midnight)
+
+PHONE: (918) 591-2888
+ADDRESS: 1551 E 15th Street, Tulsa, OK 74120
+
+RESERVATIONS: We take reservations via OpenTable. When a guest wants to book, respond helpfully AND include the exact text [SHOW_RESERVATION_FORM] in your response to trigger the booking form.
+
+LUNCH MENU — SMALL PLATES:
+- Pretzel Rolls & Beer Cheese $11 — three house-made rolls with beer cheese. Vegetarian.
+- Spicy Buffalo Cheese Fries $16 — cheese curds, candied bacon, cilantro, buffalo sauce, blue cheese or ranch. Contains nuts.
+- Artichoke Dip $13 — parmesan and cream cheese, artichoke hearts, baby spinach, warm pita. +candied bacon $3. Contains nuts.
+- Ahi Tuna Nachos $20 — seared ahi tuna, wonton crisps, wasabi aioli, pineapple ponzu, local goat cheese, sesame seeds, green onion. Contains alcohol.
+- Manhattan Pork Belly $18 — orange-cherry braised pork belly, rye manhattan glaze, amarena cherries, orange zest, parsley.
+- Crab Cakes $18 — three crispy jumbo lump crab cakes, house remoulade.
+
+LUNCH — SPECIALTY SALADS:
+- The Hamilton $15 — Creekstone Farms tenderloin, local bacon, hard boiled egg, crispy shallots, cheddar, grape tomatoes, greens, choice of dressing.
+- Southwest Chicken Salad $14 — grilled chicken, jalapeño-black bean relish, red onion, grape tomato, cotija cheese, queso poblano dressing, field greens, tortilla crisps.
+- Smoked Salmon Salad $15 — chilled smoked salmon, local goat cheese, red onion, croutons, arugula, white wine vinaigrette.
+- Classic Caesar $8 — romaine, red onion, parmesan, croutons, crispy garlic, Caesar dressing. +chicken $7.
+- Tomato Bisque $5 cup / $9 bowl.
+
+LUNCH — WRAPS (with fries; sub soup or salad +$2):
+- The Hamilton Wrap $16 — Creekstone Farms tenderloin, bacon, hard boiled egg, crispy shallots, cheddar crumbles, grape tomatoes, greens.
+- Southwest Chicken Wrap $14 — seasoned chicken, black bean corn salsa, red onion, grape tomato, cotija cheese, queso poblano dressing, tortilla crisps.
+- Chili Honey Chicken Wrap $16 — crispy chicken tossed in chili honey, dill pickles, bacon, tomato, honey mustard slaw, chili aioli.
+
+LUNCH — TACOS:
+- Blackened Shrimp Tacos (2) $14 — blackened grilled shrimp, black bean corn salsa, jalapeño, avocado lime slaw, cotija cheese, local corn tortillas, basmati rice.
+- Portobello Mushroom Tacos (2) $11 — marinated portobellos, black bean corn salsa, jalapeño, avocado lime slaw, cotija cheese, green onion, corn tortillas, basmati rice. Vegetarian.
+
+LUNCH — SANDWICHES & BURGERS (with fries):
+- Roosemelt $12 — triple crème brie, havarti, smoked gouda, garlic aioli, house brioche. +chicken $7.
+- Chicken Club $15 — Greer's bacon, white cheddar, red onion, tomato, greens, garlic aioli, sourdough.
+- Chili Honey Chicken Sandwich $17 — crispy fried chicken tossed in chili honey, dill pickles, bacon, tomato, honey mustard slaw, fermented chili aioli, brioche bun.
+- Darkwing Duck $18 — duck confit, crispy shallots, blue cheese crumbles, house jam, dijonnaise, toasted sourdough.
+- The FDR Burger $16 — house patty, Greer's bacon, white cheddar, greens, tomato, onion, dill pickles, garlic aioli, brioche bun.
+- Beer Cheeseburger $17 — house patty, candied bacon, dill pickles, grilled onions, beer cheese, Siekels mustard, brioche bun. Contains nuts.
+- Tenderloin Burger $19 — house patty topped with Creekstone Farms tenderloin, brie, arugula, crispy shallots, red wine aioli, brioche bun.
+- Southwest Bean Burger $14 — house bean patty, mixed greens, tomato, onion, pickle, cheddar, garlic aioli, brioche bun. Vegetarian.
+- Ribeye Revival Sandwich $20 — shaved ribeye, havarti, grilled onions, arugula, horseradish aioli, dijonnaise, hoagie roll.
+
+DINNER — SMALL PLATES & STARTERS:
+- Ahi Tuna Nachos $20 — seared ahi tuna, wonton crisps, wasabi aioli, pineapple ponzu, goat cheese, sesame seeds, green onion. Contains alcohol.
+- Crab Cakes $18 — three crispy jumbo lump crab cakes, house remoulade.
+- Crispy Brussels $11 — chili honey and fermented chili aioli.
+- Spicy Buffalo Cheese Fries $16 — cheese curds, candied bacon, cilantro, buffalo, blue cheese or ranch. Contains nuts.
+- Pretzel Rolls & Beer Cheese $11 — 3 house-made pretzels with beer cheese.
+- Artichoke Dip $13 — parmesan and cream cheese, artichoke hearts, baby spinach, warm pita. +candied bacon $3.
+- Manhattan Pork Belly $18 — orange-cherry braised pork belly, rye manhattan glaze, amarena cherries, orange zest, parsley.
+
+DINNER — SALADS & SOUP:
+- Smoked Salmon $19 — chilled smoked salmon, arugula, goat cheese, red onion, crouton, white wine vinaigrette.
+- Classic Caesar $11 — romaine, house Caesar, crispy garlic, parmesan, crouton. +chicken $7. +salmon $14.
+- Tomato Bisque $5/$9 — creamy tomato soup, crostinis.
+- The Hamilton $19 — Creekstone Farms tenderloin, bacon, cheddar, hard-boiled egg, crispy shallots, grape tomatoes, mixed greens.
+- Southwest Chicken $16 — chicken breast, black bean corn salsa, red onion, cilantro, grape tomato, cotija, queso poblano dressing, greens, tortilla strips.
+
+DINNER — SANDWICHES & BURGERS (with hand-cut fries; GF bun +$2):
+- Roosemelt $12 — triple crème brie, havarti, smoked gouda, garlic aioli on toasted brioche. +chicken $7.
+- Chicken Club $15 — Greer's bacon, white cheddar, red onion, tomato, greens, garlic aioli, sourdough.
+- Darkwing Duck $18 — duck confit, crispy shallots, blue cheese crumbles, house jam, dijonnaise, sourdough.
+- Ribeye Revival $20 — shaved ribeye, havarti, grilled onions, arugula, horseradish aioli, dijonnaise, hoagie.
+- The FDR Burger $16 — Greer's bacon, white cheddar, greens, tomato, onion, pickle, garlic aioli, brioche bun.
+- Beer Cheeseburger $17 — candied bacon, pickle, grilled onions, beer cheese, Siekels mustard, brioche bun. Contains nuts.
+- Tenderloin Burger $19 — Creekstone Farms shaved tenderloin, crispy shallots, brie, arugula, red wine aioli, brioche bun.
+- Southwest Bean Burger $14 — house bean patty, greens, tomato, onion, pickle, cheddar, garlic aioli, brioche bun. Vegetarian.
+- Chili Honey Chicken $17 — crispy chicken tossed in chili honey, dill pickles, bacon, tomato, honey mustard slaw, chili aioli, brioche bun.
+
+DINNER — SPECIALTIES:
+- Atlantic Salmon $28 — grilled salmon filet, cranberry miso glaze, asparagus, butternut squash purée.
+- Winter Primavera $18 — hand cut linguine, roasted red bell pepper, butternut squash, grilled onion, spinach, grape tomato, garlic cream. Vegetarian.
+- Portobello Tacos $14 — marinated portobellos, black bean corn salsa, avocado lime slaw, cotija, jalapeño, green onion, corn tortillas, basmati rice. Vegetarian.
+- Blackened Shrimp Tacos $18 — black bean corn salsa, avocado lime slaw, cotija, jalapeño, corn tortillas, basmati rice.
+- Boneless Fried Chicken $23 — Red Bird Farms thigh and breast, mashed potatoes, seasonal veggies, chile honey, fried rosemary.
+- Pork Chop $28 — two bone-in pork chops, apple bourbon glaze, roasted apples, mashed potatoes, asparagus.
+- Meatloaf $22 — homestyle mash, crispy shallots, mushroom stout gravy, seasonal vegetables.
+- Beef Tenderloin $50 — 8oz beef tenderloin, crispy Brussels, home-style mashed potatoes, herb butter.
+- Tenderloin Stroganoff $38 — beef tenderloin, hand cut linguine, wild mushrooms, broccolini, caramelized onions, veal au jus, crème fraîche, brioche toast.
+
+SIDES: Seasonal Vegetables $5 · Garden Salad $6/$10 · Fries $5 · Broccolini $5 · Mashed potatoes $5 · Asparagus $5 · Butternut Squash Purée $4.
+
+BRUNCH (Sat & Sun from 10am — menu rotates weekly):
 Expect creative egg dishes, French toast, brunch cocktails. Menu changes every week so specific items vary.
-Fan favorites: Fro-Mo (frozen mimosa, Opera sparkling, blood orange juice) $8 +house vanilla vodka $3. F'RosÃ© (frozen rosÃ©, raspberry, lemon) $9.
+Fan favorites: Fro-Mo (frozen mimosa, Opera sparkling, blood orange juice) $8 +house vanilla vodka $3. F'Rosé (frozen rosé, raspberry, lemon) $9.
 
 COCKTAILS:
-- Spicy Marguerite $11 â Reposado Tequila, Cointreau, strawberry, habanero, jalapeÃ±o, fresh lime.
-- Black Dahlia $10 â Prairie Wolf local gin, blackberry-mint syrup, key lime, carbonated water.
-- Grey and Fashionable $12 â Family Jones Barrel Aged Earl Grey Gin, lemon, honey, lavender bitters.
-- Bourbon n Bubbles $11 â Bourbon, peach, lemon, prosecco.
-- Tulsa Thyme $11 â Garden Club Gin (OK), lemon, local honey syrup, thyme.
-- Rosie $10 â Wheatley Vodka, lemon, rose syrup.
-- I Only Smoke Purple Sometimes $11 â Peloton De La Muerte Mezcal, Ancho Reyes Chili, blueberry, lemon.
-- Irish Goodbye (Espresso Martini) $12 â Double Shot Cold Brew, Rock Town bourbon cream, Averna, Biscotti.
-- Manhattan On Wood $11 â rye whiskey, Spanish vermouth, bitters, barrel aged, always stirred.
-- You Stay Classy Tulsa $12 â Roosevelt's Rittenhouse Rye (100 proof), neat or on the rocks. Exclusive.
-- Elephant in the Room $12 â Gin, Elephant In The Room Amaro, ginger, blueberry, lemon, soda water.
-- Frozen: Fro-Mo $8 Â· F'RosÃ© $9 Â· The Dude Abides (frozen White Russian) $9 Â· Seasonal adult frozen $9.
+- Spicy Marguerite $11 — Reposado Tequila, Cointreau, strawberry, habanero, jalapeño, fresh lime.
+- Black Dahlia $10 — Prairie Wolf local gin, blackberry-mint syrup, key lime, carbonated water.
+- Grey and Fashionable $12 — Family Jones Barrel Aged Earl Grey Gin, lemon, honey, lavender bitters.
+- Bourbon n Bubbles $11 — Bourbon, peach, lemon, prosecco.
+- Tulsa Thyme $11 — Garden Club Gin (OK), lemon, local honey syrup, thyme.
+- Rosie $10 — Wheatley Vodka, lemon, rose syrup.
+- I Only Smoke Purple Sometimes $11 — Peloton De La Muerte Mezcal, Ancho Reyes Chili, blueberry, lemon.
+- Irish Goodbye (Espresso Martini) $12 — Double Shot Cold Brew, Rock Town bourbon cream, Averna, Biscotti.
+- Manhattan On Wood $11 — rye whiskey, Spanish vermouth, bitters, barrel aged, always stirred.
+- You Stay Classy Tulsa $12 — Roosevelt's Rittenhouse Rye (100 proof), neat or on the rocks. Exclusive.
+- Elephant in the Room $12 — Gin, Elephant In The Room Amaro, ginger, blueberry, lemon, soda water.
+- Frozen: Fro-Mo $8 · F'Rosé $9 · The Dude Abides (frozen White Russian) $9 · Seasonal adult frozen $9.
 
 BEER: 80 craft beers on tap. Mix of local Oklahoma breweries, national, and international. Ask your server for today's list.
 
@@ -335,25 +410,25 @@ DIETARY INFO:
 
 BIRTHDAYS & CELEBRATIONS: We love a good celebration! No specific birthday package is listed publicly, but we're a popular spot for birthday dinners. Call (918) 591-2888 to discuss group size, special arrangements, or anything else we can do to make it special. Reservations highly recommended for weekend celebrations.
 
-ATMOSPHERE & VIBE: Warm, eclectic pub â old-school beer can wall, keg sinks, tap-style patio water faucets. Covered outdoor patio, reportedly pet-friendly. Spectacular holiday decorations with light show. Casual-upscale. Family-friendly. Great for dates, groups, birthdays.
+ATMOSPHERE & VIBE: Warm, eclectic pub — old-school beer can wall, keg sinks, tap-style patio water faucets. Covered outdoor patio, reportedly pet-friendly. Spectacular holiday decorations with light show. Casual-upscale. Family-friendly. Great for dates, groups, birthdays.
 
 CHEFS: Executive Chef Jed Kable. Pastry Chef Chomi.
 
 BEHAVIOR RULES:
-- Be warm, charming, and a little witty â you're FDR, the host of the finest gastropub in Tulsa.
+- Be warm, charming, and a little witty — you're FDR, the host of the finest gastropub in Tulsa.
 - When someone wants a reservation, respond AND include [SHOW_RESERVATION_FORM] to trigger the booking widget.
 - Keep answers focused. Don't dump the whole menu unless asked.
 - If you don't know something, say so and direct to (918) 591-2888.
 - Never make up items or prices not listed above. Brunch menu changes weekly.
 - Make people excited to come in.`;
 
-// âââ STATE âââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── STATE ───────────────────────────────────────────────
 const history = [];
 let isOpen = false;
 let isLoading = false;
 let bubbleHidden = false;
 
-// âââ TOGGLE ââââââââââââââââââââââââââââââââââââââââââââââ
+// ─── TOGGLE ──────────────────────────────────────────────
 function toggleChat() {
   isOpen = !isOpen;
   document.getElementById('chatPanel').classList.toggle('open', isOpen);
@@ -365,7 +440,7 @@ function toggleChat() {
   if (isOpen) setTimeout(() => document.getElementById('inputField').focus(), 350);
 }
 
-// âââ HELPERS âââââââââââââââââââââââââââââââââââââââââââââ
+// ─── HELPERS ─────────────────────────────────────────────
 function getTime() {
   return new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true});
 }
@@ -466,7 +541,7 @@ function showReservationForm() {
     <div class="msg-row">
       <div class="msg-avatar">${fdrMiniSVG()}</div>
       <div class="res-card">
-        <div class="res-title">ð Reserve a Table</div>
+        <div class="res-title">📅 Reserve a Table</div>
         <div class="res-field res-row">
           <input type="text" id="resName" placeholder="Your name" />
           <input type="tel" id="resPhone" placeholder="Phone number" />
@@ -477,13 +552,13 @@ function showReservationForm() {
         </div>
         <div class="res-field">
           <select id="resParty">
-            <option value="">Party sizeâ¦</option>
+            <option value="">Party size…</option>
             ${[1,2,3,4,5,6,7,8].map(n=>`<option value="${n}">${n} ${n===1?'guest':'guests'}</option>`).join('')}
             <option value="9+">9+ guests</option>
           </select>
         </div>
         <button class="res-btn" onclick="submitReservation()">Check Availability on OpenTable</button>
-        <a class="ot-link" href="https://www.opentable.com/r/roosevelts-gastropub-tulsa" target="_blank">Or book directly on <span>OpenTable â</span></a>
+        <a class="ot-link" href="https://www.opentable.com/r/roosevelts-gastropub-tulsa" target="_blank">Or book directly on <span>OpenTable →</span></a>
       </div>
     </div>
     <div class="msg-time">${getTime()}</div>`;
@@ -497,7 +572,7 @@ function submitReservation() {
   const name  = document.getElementById('resName')?.value;
   const phone = document.getElementById('resPhone')?.value;
   if (party === '9+' || (party && parseInt(party) >= 6)) {
-    addMessage('bot', 'For parties of 6 or more, give us a call at <strong>(918) 591-2888</strong> and we\'ll sort out the right space. ð¥');
+    addMessage('bot', 'For parties of 6 or more, give us a call at <strong>(918) 591-2888</strong> and we\'ll sort out the right space. 🥂');
     return;
   }
   if (name || phone) {
@@ -513,10 +588,10 @@ function submitReservation() {
   if (party) p.set('covers', party);
   url += p.toString();
   window.open(url, '_blank');
-  addMessage('bot', `OpenTable is open â finish up there and you're set${name ? ', ' + name : ''}. See you soon! ð¥`);
+  addMessage('bot', `OpenTable is open — finish up there and you're set${name ? ', ' + name : ''}. See you soon! 🥃`);
 }
 
-// âââ SEND MESSAGE âââââââââââââââââââââââââââââââââââââââââ
+// ─── SEND MESSAGE ─────────────────────────────────────────
 async function sendMessage(text) {
   const input = document.getElementById('inputField');
   const userText = text || input.value.trim();
@@ -563,7 +638,7 @@ async function sendMessage(text) {
   } catch (err) {
     removeTyping();
     console.error(err);
-    addMessage('bot', "Give us a ring at <strong>(918) 591-2888</strong> and a real human will sort you out! ðº");
+    addMessage('bot', "Give us a ring at <strong>(918) 591-2888</strong> and a real human will sort you out! 🍺");
   }
   isLoading = false;
   document.getElementById('sendBtn').disabled = false;
@@ -586,7 +661,7 @@ setTimeout(() => {
   }
 }, 6000);
 
-// âââ KEYBOARD-AWARE HEIGHT (mobile) ââââââââââââââââââââââ
+// ─── KEYBOARD-AWARE HEIGHT (mobile) ──────────────────────
 if (window.visualViewport) {
   const _panel = document.getElementById('chatPanel');
   const _onVPResize = () => {
