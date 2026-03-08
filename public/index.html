@@ -50,8 +50,8 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
 .msg.user { align-self: flex-end; }
 .msg-row { display:flex; align-items:flex-end; gap:8px; }
 .msg.bot .msg-row { flex-direction: row; }
-.msg-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); overflow: hidden; flex-shrink: 0; display: flex; align-items:center; justify-content:center; }
-.msg-avatar svg { width:22px; height:22px; }
+.msg-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); overflow: hidden; flex-shrink: 0; display: flex; align-items:center; justify-content:center; }
+.msg-avatar svg { width:36px; height:36px; }
 .bubble { padding: 13px 16px; font-size: 17px; line-height: 1.6; border-radius: 16px; }
 .msg.bot .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 16px 16px 16px 4px; color: var(--cream); }
 .msg.user .bubble { background: var(--gold); color: var(--bg); font-weight: 500; border-radius: 16px 16px 4px 16px; }
@@ -75,7 +75,7 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
 .ot-link { display:block; text-align:center; margin-top:7px; font-size:10.5px; color:var(--muted); text-decoration:none; }
 .ot-link span { color:var(--gold-dim); }
 .input-area { padding: 10px 14px; background: var(--surface); border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0; }
-.input-field { flex:1; background: var(--card); border: 1px solid var(--border); color: var(--cream); font-family:'DM Sans',sans-serif; font-size: 16.5px; padding: 11px 15px; border-radius: 20px; outline:none; resize:none; line-height:1.5; max-height:90px; transition: border-color .2s; }
+.input-field { flex:1; background: var(--card); border: 1px solid var(--border); color: var(--cream); font-family:'DM Sans',sans-serif; font-size: 15px; padding: 10px 14px; border-radius: 20px; outline:none; resize:none; line-height:1.5; max-height:90px; transition: border-color .2s; }
 .input-field::placeholder { color: var(--muted); }
 .input-field:focus { border-color: var(--gold-dim); }
 .send-btn { width:38px; height:38px; background:var(--gold); border:none; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--bg); transition: opacity .2s, transform .15s; }
@@ -114,37 +114,50 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
     <svg class="fdr-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
       <!-- bg -->
       <circle cx="40" cy="40" r="40" fill="#1c2a3a"/>
-      <!-- suit -->
-      <rect x="6" y="63" width="68" height="28" rx="6" fill="#1a1830"/>
-      <!-- shirt & tie -->
-      <polygon points="30,63 40,73 50,63" fill="white"/>
-      <polygon points="38,63 40,69 42,63 41,58 39,58" fill="#7a1010"/>
-      <!-- head: rounded square -->
-      <rect x="17" y="11" width="46" height="54" rx="12" fill="#c8844a"/>
-      <!-- silver hair block -->
-      <rect x="17" y="11" width="46" height="18" rx="12" fill="#d2d2ca"/>
-      <rect x="17" y="21" width="46" height="8" fill="#d2d2ca"/>
+      <!-- dark suit -->
+      <ellipse cx="40" cy="90" rx="36" ry="28" fill="#2a2010"/>
+      <!-- lapels -->
+      <polygon points="28,64 40,76 52,64 50,62 40,72 30,62" fill="#3a3018"/>
+      <!-- white collar -->
+      <polygon points="33,63 40,71 47,63" fill="#f5f0e8"/>
+      <!-- maroon tie -->
+      <polygon points="38.5,63 40,70 41.5,63 41,58 39,58" fill="#7a1515"/>
+      <!-- neck -->
+      <rect x="36" y="56" width="8" height="9" rx="4" fill="#c87050"/>
+      <!-- face oval -->
+      <ellipse cx="40" cy="37" rx="19" ry="22" fill="#d4906a"/>
       <!-- ears -->
-      <rect x="9" y="30" width="9" height="14" rx="5" fill="#b87040"/>
-      <rect x="62" y="30" width="9" height="14" rx="5" fill="#b87040"/>
-      <!-- eyebrows -->
-      <path d="M22,31 Q30,27 38,30" stroke="#909088" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <path d="M42,30 Q50,27 58,31" stroke="#909088" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-      <!-- glasses: two gold circles -->
-      <circle cx="30" cy="40" r="9" fill="none" stroke="#c9922a" stroke-width="2.5"/>
-      <circle cx="50" cy="40" r="9" fill="none" stroke="#c9922a" stroke-width="2.5"/>
-      <line x1="39" y1="40" x2="41" y2="40" stroke="#c9922a" stroke-width="2"/>
-      <line x1="9" y1="40" x2="21" y2="40" stroke="#c9922a" stroke-width="2"/>
-      <line x1="59" y1="40" x2="71" y2="40" stroke="#c9922a" stroke-width="2"/>
+      <ellipse cx="21" cy="38" rx="4.5" ry="6" fill="#c07050"/>
+      <ellipse cx="59" cy="38" rx="4.5" ry="6" fill="#c07050"/>
+      <!-- grey swept-back hair -->
+      <path d="M21,22 Q22,3 40,2 Q58,3 59,22 Q54,6 40,7 Q26,6 21,22Z" fill="#a0a098"/>
+      <path d="M21,22 Q16,29 20,40" stroke="#a0a098" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M59,22 Q64,29 60,40" stroke="#a0a098" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path d="M40,7 Q37,10 35,15" stroke="#b8b8b0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- thin eyebrows -->
+      <path d="M27,26 Q32,23 37,25" stroke="#706050" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M43,25 Q48,23 53,26" stroke="#706050" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- pince-nez glasses -->
+      <circle cx="32" cy="33" r="6" fill="none" stroke="#c9922a" stroke-width="2"/>
+      <circle cx="48" cy="33" r="6" fill="none" stroke="#c9922a" stroke-width="2"/>
+      <path d="M38,32.5 Q40,31 42,32.5" stroke="#c9922a" stroke-width="1.8" fill="none"/>
+      <line x1="20" y1="33" x2="26" y2="33" stroke="#c9922a" stroke-width="1.5"/>
+      <line x1="54" y1="33" x2="60" y2="33" stroke="#c9922a" stroke-width="1.5"/>
       <!-- eyes -->
-      <circle cx="30" cy="40" r="2.5" fill="#1a1208"/>
-      <circle cx="50" cy="40" r="2.5" fill="#1a1208"/>
-      <!-- smile -->
-      <path d="M30,52 Q40,60 50,52" stroke="#6a2018" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <!-- cigar -->
-      <line x1="48" y1="53" x2="74" y2="44" stroke="#7a5010" stroke-width="5" stroke-linecap="round"/>
-      <circle cx="75" cy="43" r="3" fill="#ff5500" opacity="0.8"/>
-      <circle cx="75" cy="43" r="1.5" fill="#ffaa00"/>
+      <ellipse cx="32" cy="33" rx="3.5" ry="2.5" fill="#e0c0a0"/>
+      <circle cx="32.5" cy="33" r="1.8" fill="#1a1008"/>
+      <circle cx="33.2" cy="32.4" r="0.6" fill="white"/>
+      <ellipse cx="48" cy="33" rx="3.5" ry="2.5" fill="#e0c0a0"/>
+      <circle cx="48.5" cy="33" r="1.8" fill="#1a1008"/>
+      <circle cx="49.2" cy="32.4" r="0.6" fill="white"/>
+      <!-- nose -->
+      <ellipse cx="40" cy="41" rx="3.5" ry="2.5" fill="#c07050" opacity="0.5"/>
+      <path d="M37,43 Q40,46 43,43" stroke="#b06040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- slight jowls (old man) -->
+      <ellipse cx="27" cy="47" rx="5" ry="4" fill="#c87050" opacity="0.25"/>
+      <ellipse cx="53" cy="47" rx="5" ry="4" fill="#c87050" opacity="0.25"/>
+      <!-- confident smile -->
+      <path d="M32,51 Q40,58 48,51" stroke="#8a2a1a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
     </svg>
   </button>
 </div>
@@ -156,27 +169,36 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
     <div class="header-avatar">
       <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
         <circle cx="40" cy="40" r="40" fill="#1c2a3a"/>
-        <rect x="6" y="63" width="68" height="28" rx="6" fill="#1a1830"/>
-        <polygon points="30,63 40,73 50,63" fill="white"/>
-        <polygon points="38,63 40,69 42,63 41,58 39,58" fill="#7a1010"/>
-        <rect x="17" y="11" width="46" height="54" rx="12" fill="#c8844a"/>
-        <rect x="17" y="11" width="46" height="18" rx="12" fill="#d2d2ca"/>
-        <rect x="17" y="21" width="46" height="8" fill="#d2d2ca"/>
-        <rect x="9" y="30" width="9" height="14" rx="5" fill="#b87040"/>
-        <rect x="62" y="30" width="9" height="14" rx="5" fill="#b87040"/>
-        <path d="M22,31 Q30,27 38,30" stroke="#909088" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-        <path d="M42,30 Q50,27 58,31" stroke="#909088" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-        <circle cx="30" cy="40" r="9" fill="none" stroke="#c9922a" stroke-width="2.5"/>
-        <circle cx="50" cy="40" r="9" fill="none" stroke="#c9922a" stroke-width="2.5"/>
-        <line x1="39" y1="40" x2="41" y2="40" stroke="#c9922a" stroke-width="2"/>
-        <line x1="9" y1="40" x2="21" y2="40" stroke="#c9922a" stroke-width="2"/>
-        <line x1="59" y1="40" x2="71" y2="40" stroke="#c9922a" stroke-width="2"/>
-        <circle cx="30" cy="40" r="2.5" fill="#1a1208"/>
-        <circle cx="50" cy="40" r="2.5" fill="#1a1208"/>
-        <path d="M30,52 Q40,60 50,52" stroke="#6a2018" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <line x1="48" y1="53" x2="74" y2="44" stroke="#7a5010" stroke-width="5" stroke-linecap="round"/>
-        <circle cx="75" cy="43" r="3" fill="#ff5500" opacity="0.8"/>
-        <circle cx="75" cy="43" r="1.5" fill="#ffaa00"/>
+        <ellipse cx="40" cy="90" rx="36" ry="28" fill="#2a2010"/>
+        <polygon points="28,64 40,76 52,64 50,62 40,72 30,62" fill="#3a3018"/>
+        <polygon points="33,63 40,71 47,63" fill="#f5f0e8"/>
+        <polygon points="38.5,63 40,70 41.5,63 41,58 39,58" fill="#7a1515"/>
+        <rect x="36" y="56" width="8" height="9" rx="4" fill="#c87050"/>
+        <ellipse cx="40" cy="37" rx="19" ry="22" fill="#d4906a"/>
+        <ellipse cx="21" cy="38" rx="4.5" ry="6" fill="#c07050"/>
+        <ellipse cx="59" cy="38" rx="4.5" ry="6" fill="#c07050"/>
+        <path d="M21,22 Q22,3 40,2 Q58,3 59,22 Q54,6 40,7 Q26,6 21,22Z" fill="#a0a098"/>
+        <path d="M21,22 Q16,29 20,40" stroke="#a0a098" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M59,22 Q64,29 60,40" stroke="#a0a098" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <path d="M40,7 Q37,10 35,15" stroke="#b8b8b0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M27,26 Q32,23 37,25" stroke="#706050" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M43,25 Q48,23 53,26" stroke="#706050" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="32" cy="33" r="6" fill="none" stroke="#c9922a" stroke-width="2"/>
+        <circle cx="48" cy="33" r="6" fill="none" stroke="#c9922a" stroke-width="2"/>
+        <path d="M38,32.5 Q40,31 42,32.5" stroke="#c9922a" stroke-width="1.8" fill="none"/>
+        <line x1="20" y1="33" x2="26" y2="33" stroke="#c9922a" stroke-width="1.5"/>
+        <line x1="54" y1="33" x2="60" y2="33" stroke="#c9922a" stroke-width="1.5"/>
+        <ellipse cx="32" cy="33" rx="3.5" ry="2.5" fill="#e0c0a0"/>
+        <circle cx="32.5" cy="33" r="1.8" fill="#1a1008"/>
+        <circle cx="33.2" cy="32.4" r="0.6" fill="white"/>
+        <ellipse cx="48" cy="33" rx="3.5" ry="2.5" fill="#e0c0a0"/>
+        <circle cx="48.5" cy="33" r="1.8" fill="#1a1008"/>
+        <circle cx="49.2" cy="32.4" r="0.6" fill="white"/>
+        <ellipse cx="40" cy="41" rx="3.5" ry="2.5" fill="#c07050" opacity="0.5"/>
+        <path d="M37,43 Q40,46 43,43" stroke="#b06040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="27" cy="47" rx="5" ry="4" fill="#c87050" opacity="0.25"/>
+        <ellipse cx="53" cy="47" rx="5" ry="4" fill="#c87050" opacity="0.25"/>
+        <path d="M32,51 Q40,58 48,51" stroke="#8a2a1a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
       </svg>
     </div>
     <div class="header-text">
@@ -336,27 +358,36 @@ function scrollBottom() {
 function fdrMiniSVG() {
   return `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
     <circle cx="40" cy="40" r="40" fill="#1c2a3a"/>
-    <rect x="6" y="63" width="68" height="28" rx="6" fill="#1a1830"/>
-    <polygon points="30,63 40,73 50,63" fill="white"/>
-    <polygon points="38,63 40,69 42,63 41,58 39,58" fill="#7a1010"/>
-    <rect x="17" y="11" width="46" height="54" rx="12" fill="#c8844a"/>
-    <rect x="17" y="11" width="46" height="18" rx="12" fill="#d2d2ca"/>
-    <rect x="17" y="21" width="46" height="8" fill="#d2d2ca"/>
-    <rect x="9" y="30" width="9" height="14" rx="5" fill="#b87040"/>
-    <rect x="62" y="30" width="9" height="14" rx="5" fill="#b87040"/>
-    <path d="M22,31 Q30,27 38,30" stroke="#909088" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-    <path d="M42,30 Q50,27 58,31" stroke="#909088" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-    <circle cx="30" cy="40" r="9" fill="none" stroke="#c9922a" stroke-width="2.5"/>
-    <circle cx="50" cy="40" r="9" fill="none" stroke="#c9922a" stroke-width="2.5"/>
-    <line x1="39" y1="40" x2="41" y2="40" stroke="#c9922a" stroke-width="2"/>
-    <line x1="9" y1="40" x2="21" y2="40" stroke="#c9922a" stroke-width="2"/>
-    <line x1="59" y1="40" x2="71" y2="40" stroke="#c9922a" stroke-width="2"/>
-    <circle cx="30" cy="40" r="2.5" fill="#1a1208"/>
-    <circle cx="50" cy="40" r="2.5" fill="#1a1208"/>
-    <path d="M30,52 Q40,60 50,52" stroke="#6a2018" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <line x1="48" y1="53" x2="74" y2="44" stroke="#7a5010" stroke-width="5" stroke-linecap="round"/>
-    <circle cx="75" cy="43" r="3" fill="#ff5500" opacity="0.8"/>
-    <circle cx="75" cy="43" r="1.5" fill="#ffaa00"/>
+    <ellipse cx="40" cy="90" rx="36" ry="28" fill="#2a2010"/>
+    <polygon points="28,64 40,76 52,64 50,62 40,72 30,62" fill="#3a3018"/>
+    <polygon points="33,63 40,71 47,63" fill="#f5f0e8"/>
+    <polygon points="38.5,63 40,70 41.5,63 41,58 39,58" fill="#7a1515"/>
+    <rect x="36" y="56" width="8" height="9" rx="4" fill="#c87050"/>
+    <ellipse cx="40" cy="37" rx="19" ry="22" fill="#d4906a"/>
+    <ellipse cx="21" cy="38" rx="4.5" ry="6" fill="#c07050"/>
+    <ellipse cx="59" cy="38" rx="4.5" ry="6" fill="#c07050"/>
+    <path d="M21,22 Q22,3 40,2 Q58,3 59,22 Q54,6 40,7 Q26,6 21,22Z" fill="#a0a098"/>
+    <path d="M21,22 Q16,29 20,40" stroke="#a0a098" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M59,22 Q64,29 60,40" stroke="#a0a098" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M40,7 Q37,10 35,15" stroke="#b8b8b0" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <path d="M27,26 Q32,23 37,25" stroke="#706050" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <path d="M43,25 Q48,23 53,26" stroke="#706050" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="32" cy="33" r="6" fill="none" stroke="#c9922a" stroke-width="2"/>
+    <circle cx="48" cy="33" r="6" fill="none" stroke="#c9922a" stroke-width="2"/>
+    <path d="M38,32.5 Q40,31 42,32.5" stroke="#c9922a" stroke-width="1.8" fill="none"/>
+    <line x1="20" y1="33" x2="26" y2="33" stroke="#c9922a" stroke-width="1.5"/>
+    <line x1="54" y1="33" x2="60" y2="33" stroke="#c9922a" stroke-width="1.5"/>
+    <ellipse cx="32" cy="33" rx="3.5" ry="2.5" fill="#e0c0a0"/>
+    <circle cx="32.5" cy="33" r="1.8" fill="#1a1008"/>
+    <circle cx="33.2" cy="32.4" r="0.6" fill="white"/>
+    <ellipse cx="48" cy="33" rx="3.5" ry="2.5" fill="#e0c0a0"/>
+    <circle cx="48.5" cy="33" r="1.8" fill="#1a1008"/>
+    <circle cx="49.2" cy="32.4" r="0.6" fill="white"/>
+    <ellipse cx="40" cy="41" rx="3.5" ry="2.5" fill="#c07050" opacity="0.5"/>
+    <path d="M37,43 Q40,46 43,43" stroke="#b06040" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="27" cy="47" rx="5" ry="4" fill="#c87050" opacity="0.25"/>
+    <ellipse cx="53" cy="47" rx="5" ry="4" fill="#c87050" opacity="0.25"/>
+    <path d="M32,51 Q40,58 48,51" stroke="#8a2a1a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
   </svg>`;
 }
 function parseMarkdown(text) {
