@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Roosevelt's — Ask Us Anything</title>
+<title>Loading…</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -199,8 +199,8 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
       </svg>
     </div>
     <div class="header-text">
-      <div class="header-name">Roosevelt<span>'s</span></div>
-      <div class="header-sub">Cherry Street · Tulsa, OK</div>
+      <div class="header-name" id="headerName"></div>
+      <div class="header-sub" id="headerSub"></div>
     </div>
     <div class="header-status">
       <div class="status-dot"></div> 24/7
@@ -208,16 +208,8 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
     <button class="close-btn" onclick="toggleChat()">✕</button>
   </div>
 
-  <!-- Quick actions -->
-  <div class="quick-actions">
-    <button class="qbtn" onclick="quickAsk('What are your hours?')">🕐 Hours</button>
-    <button class="qbtn" onclick="quickAsk('I\'d like to make a reservation')">📅 Reserve</button>
-    <button class="qbtn" onclick="quickAsk('What\'s on the dinner menu?')">🍽 Menu</button>
-    <button class="qbtn" onclick="quickAsk('Tell me about your craft beer selection')">🍺 Beer</button>
-    <button class="qbtn" onclick="quickAsk('Do you have gluten-free options?')">🌾 GF</button>
-    <button class="qbtn" onclick="quickAsk('We\'re celebrating a birthday!')">🎂 Birthday</button>
-    <button class="qbtn" onclick="quickAsk('Tell me about brunch')">🥂 Brunch</button>
-  </div>
+  <!-- Quick actions (populated by loadConfig) -->
+  <div class="quick-actions" id="quickActions"></div>
 
   <!-- Chat messages -->
   <div class="chat-body" id="chatBody">
@@ -264,7 +256,7 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
             <path d="M63,28 Q65,24 63,20 Q61,16 63,13" stroke="rgba(240,232,213,0.35)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
           </svg>
         </div>
-        <div class="bubble">Welcome to Roosevelt's! 🥃 What can I help you with today?</div>
+        <div class="bubble" id="welcomeMsg"></div>
       </div>
       <div class="msg-time">Just now</div>
     </div>
@@ -290,138 +282,41 @@ body::before { content:''; position:fixed; inset:0; background: radial-gradient(
 
 <script>
 const API_URL = window.LOBBII_API_URL || '/api/chat';
-const USE_DIRECT_API = false;
-const SYSTEM_PROMPT = `You are the friendly, knowledgeable host at Roosevelt's Gastropub on Cherry Street in Tulsa, Oklahoma. Your personality matches the restaurant: warm, a little witty, unpretentious but genuinely enthusiastic about good food, craft beer, and a great time. Think of yourself as FDR — charming, confident, and always in good spirits.
 
-ABOUT ROOSEVELT'S:
-Roosevelt's Gastropub is a locally owned, family-operated pub at 1551 E 15th Street, Tulsa, OK 74120. Cherry Street District. Locally sourced ingredients from Oklahoma farms. In-house bakery supplying bread and baked goods to Roosevelt's and other local restaurants. 80 craft beers on tap. Sommelier-curated wine list. Seasonal cocktails.
+// ─── CONFIG (loaded from server) ──────────────────────────
+let CFG = {};
 
-HOURS:
-- Sunday: 10am–9pm
-- Monday–Thursday: 11am–10pm
-- Friday: 11am–11pm (bar open till midnight)
-- Saturday: 10am–11pm (bar open till midnight)
+async function loadConfig() {
+  try {
+    const res = await fetch('/api/config');
+    CFG = await res.json();
 
-PHONE: (918) 591-2888
-ADDRESS: 1551 E 15th Street, Tulsa, OK 74120
+    // Apply theme CSS variables
+    const root = document.documentElement;
+    Object.entries(CFG.theme || {}).forEach(([k, v]) => root.style.setProperty(`--${k}`, v));
 
-RESERVATIONS: We take reservations via OpenTable. When a guest wants to book, respond helpfully AND include the exact text [SHOW_RESERVATION_FORM] in your response to trigger the booking form.
+    // Page title and header
+    document.title = CFG.name + ' — Ask Us Anything';
+    document.getElementById('headerName').innerHTML = CFG.name_html || CFG.name;
+    document.getElementById('headerSub').textContent = CFG.subtitle || '';
 
-LUNCH MENU — SMALL PLATES:
-- Pretzel Rolls & Beer Cheese $11 — three house-made rolls with beer cheese. Vegetarian.
-- Spicy Buffalo Cheese Fries $16 — cheese curds, candied bacon, cilantro, buffalo sauce, blue cheese or ranch. Contains nuts.
-- Artichoke Dip $13 — parmesan and cream cheese, artichoke hearts, baby spinach, warm pita. +candied bacon $3. Contains nuts.
-- Ahi Tuna Nachos $20 — seared ahi tuna, wonton crisps, wasabi aioli, pineapple ponzu, local goat cheese, sesame seeds, green onion. Contains alcohol.
-- Manhattan Pork Belly $18 — orange-cherry braised pork belly, rye manhattan glaze, amarena cherries, orange zest, parsley.
-- Crab Cakes $18 — three crispy jumbo lump crab cakes, house remoulade.
+    // Quick action buttons
+    const qa = document.getElementById('quickActions');
+    qa.innerHTML = (CFG.quick_actions || []).map(a =>
+      `<button class="qbtn" onclick="quickAsk(${JSON.stringify(a.prompt)})">${a.label}</button>`
+    ).join('');
 
-LUNCH — SPECIALTY SALADS:
-- The Hamilton $15 — Creekstone Farms tenderloin, local bacon, hard boiled egg, crispy shallots, cheddar, grape tomatoes, greens, choice of dressing.
-- Southwest Chicken Salad $14 — grilled chicken, jalapeño-black bean relish, red onion, grape tomato, cotija cheese, queso poblano dressing, field greens, tortilla crisps.
-- Smoked Salmon Salad $15 — chilled smoked salmon, local goat cheese, red onion, croutons, arugula, white wine vinaigrette.
-- Classic Caesar $8 — romaine, red onion, parmesan, croutons, crispy garlic, Caesar dressing. +chicken $7.
-- Tomato Bisque $5 cup / $9 bowl.
+    // Welcome message
+    document.getElementById('welcomeMsg').textContent = CFG.welcome || 'How can I help you today?';
+  } catch (e) {
+    console.error('Config load failed:', e);
+    // Fallback so the widget still renders something
+    document.getElementById('welcomeMsg').textContent = 'How can I help you today?';
+  }
+}
 
-LUNCH — WRAPS (with fries; sub soup or salad +$2):
-- The Hamilton Wrap $16 — Creekstone Farms tenderloin, bacon, hard boiled egg, crispy shallots, cheddar crumbles, grape tomatoes, greens.
-- Southwest Chicken Wrap $14 — seasoned chicken, black bean corn salsa, red onion, grape tomato, cotija cheese, queso poblano dressing, tortilla crisps.
-- Chili Honey Chicken Wrap $16 — crispy chicken tossed in chili honey, dill pickles, bacon, tomato, honey mustard slaw, chili aioli.
-
-LUNCH — TACOS:
-- Blackened Shrimp Tacos (2) $14 — blackened grilled shrimp, black bean corn salsa, jalapeño, avocado lime slaw, cotija cheese, local corn tortillas, basmati rice.
-- Portobello Mushroom Tacos (2) $11 — marinated portobellos, black bean corn salsa, jalapeño, avocado lime slaw, cotija cheese, green onion, corn tortillas, basmati rice. Vegetarian.
-
-LUNCH — SANDWICHES & BURGERS (with fries):
-- Roosemelt $12 — triple crème brie, havarti, smoked gouda, garlic aioli, house brioche. +chicken $7.
-- Chicken Club $15 — Greer's bacon, white cheddar, red onion, tomato, greens, garlic aioli, sourdough.
-- Chili Honey Chicken Sandwich $17 — crispy fried chicken tossed in chili honey, dill pickles, bacon, tomato, honey mustard slaw, fermented chili aioli, brioche bun.
-- Darkwing Duck $18 — duck confit, crispy shallots, blue cheese crumbles, house jam, dijonnaise, toasted sourdough.
-- The FDR Burger $16 — house patty, Greer's bacon, white cheddar, greens, tomato, onion, dill pickles, garlic aioli, brioche bun.
-- Beer Cheeseburger $17 — house patty, candied bacon, dill pickles, grilled onions, beer cheese, Siekels mustard, brioche bun. Contains nuts.
-- Tenderloin Burger $19 — house patty topped with Creekstone Farms tenderloin, brie, arugula, crispy shallots, red wine aioli, brioche bun.
-- Southwest Bean Burger $14 — house bean patty, mixed greens, tomato, onion, pickle, cheddar, garlic aioli, brioche bun. Vegetarian.
-- Ribeye Revival Sandwich $20 — shaved ribeye, havarti, grilled onions, arugula, horseradish aioli, dijonnaise, hoagie roll.
-
-DINNER — SMALL PLATES & STARTERS:
-- Ahi Tuna Nachos $20 — seared ahi tuna, wonton crisps, wasabi aioli, pineapple ponzu, goat cheese, sesame seeds, green onion. Contains alcohol.
-- Crab Cakes $18 — three crispy jumbo lump crab cakes, house remoulade.
-- Crispy Brussels $11 — chili honey and fermented chili aioli.
-- Spicy Buffalo Cheese Fries $16 — cheese curds, candied bacon, cilantro, buffalo, blue cheese or ranch. Contains nuts.
-- Pretzel Rolls & Beer Cheese $11 — 3 house-made pretzels with beer cheese.
-- Artichoke Dip $13 — parmesan and cream cheese, artichoke hearts, baby spinach, warm pita. +candied bacon $3.
-- Manhattan Pork Belly $18 — orange-cherry braised pork belly, rye manhattan glaze, amarena cherries, orange zest, parsley.
-
-DINNER — SALADS & SOUP:
-- Smoked Salmon $19 — chilled smoked salmon, arugula, goat cheese, red onion, crouton, white wine vinaigrette.
-- Classic Caesar $11 — romaine, house Caesar, crispy garlic, parmesan, crouton. +chicken $7. +salmon $14.
-- Tomato Bisque $5/$9 — creamy tomato soup, crostinis.
-- The Hamilton $19 — Creekstone Farms tenderloin, bacon, cheddar, hard-boiled egg, crispy shallots, grape tomatoes, mixed greens.
-- Southwest Chicken $16 — chicken breast, black bean corn salsa, red onion, cilantro, grape tomato, cotija, queso poblano dressing, greens, tortilla strips.
-
-DINNER — SANDWICHES & BURGERS (with hand-cut fries; GF bun +$2):
-- Roosemelt $12 — triple crème brie, havarti, smoked gouda, garlic aioli on toasted brioche. +chicken $7.
-- Chicken Club $15 — Greer's bacon, white cheddar, red onion, tomato, greens, garlic aioli, sourdough.
-- Darkwing Duck $18 — duck confit, crispy shallots, blue cheese crumbles, house jam, dijonnaise, sourdough.
-- Ribeye Revival $20 — shaved ribeye, havarti, grilled onions, arugula, horseradish aioli, dijonnaise, hoagie.
-- The FDR Burger $16 — Greer's bacon, white cheddar, greens, tomato, onion, pickle, garlic aioli, brioche bun.
-- Beer Cheeseburger $17 — candied bacon, pickle, grilled onions, beer cheese, Siekels mustard, brioche bun. Contains nuts.
-- Tenderloin Burger $19 — Creekstone Farms shaved tenderloin, crispy shallots, brie, arugula, red wine aioli, brioche bun.
-- Southwest Bean Burger $14 — house bean patty, greens, tomato, onion, pickle, cheddar, garlic aioli, brioche bun. Vegetarian.
-- Chili Honey Chicken $17 — crispy chicken tossed in chili honey, dill pickles, bacon, tomato, honey mustard slaw, chili aioli, brioche bun.
-
-DINNER — SPECIALTIES:
-- Atlantic Salmon $28 — grilled salmon filet, cranberry miso glaze, asparagus, butternut squash purée.
-- Winter Primavera $18 — hand cut linguine, roasted red bell pepper, butternut squash, grilled onion, spinach, grape tomato, garlic cream. Vegetarian.
-- Portobello Tacos $14 — marinated portobellos, black bean corn salsa, avocado lime slaw, cotija, jalapeño, green onion, corn tortillas, basmati rice. Vegetarian.
-- Blackened Shrimp Tacos $18 — black bean corn salsa, avocado lime slaw, cotija, jalapeño, corn tortillas, basmati rice.
-- Boneless Fried Chicken $23 — Red Bird Farms thigh and breast, mashed potatoes, seasonal veggies, chile honey, fried rosemary.
-- Pork Chop $28 — two bone-in pork chops, apple bourbon glaze, roasted apples, mashed potatoes, asparagus.
-- Meatloaf $22 — homestyle mash, crispy shallots, mushroom stout gravy, seasonal vegetables.
-- Beef Tenderloin $50 — 8oz beef tenderloin, crispy Brussels, home-style mashed potatoes, herb butter.
-- Tenderloin Stroganoff $38 — beef tenderloin, hand cut linguine, wild mushrooms, broccolini, caramelized onions, veal au jus, crème fraîche, brioche toast.
-
-SIDES: Seasonal Vegetables $5 · Garden Salad $6/$10 · Fries $5 · Broccolini $5 · Mashed potatoes $5 · Asparagus $5 · Butternut Squash Purée $4.
-
-BRUNCH (Sat & Sun from 10am — menu rotates weekly):
-Expect creative egg dishes, French toast, brunch cocktails. Menu changes every week so specific items vary.
-Fan favorites: Fro-Mo (frozen mimosa, Opera sparkling, blood orange juice) $8 +house vanilla vodka $3. F'Rosé (frozen rosé, raspberry, lemon) $9.
-
-COCKTAILS:
-- Spicy Marguerite $11 — Reposado Tequila, Cointreau, strawberry, habanero, jalapeño, fresh lime.
-- Black Dahlia $10 — Prairie Wolf local gin, blackberry-mint syrup, key lime, carbonated water.
-- Grey and Fashionable $12 — Family Jones Barrel Aged Earl Grey Gin, lemon, honey, lavender bitters.
-- Bourbon n Bubbles $11 — Bourbon, peach, lemon, prosecco.
-- Tulsa Thyme $11 — Garden Club Gin (OK), lemon, local honey syrup, thyme.
-- Rosie $10 — Wheatley Vodka, lemon, rose syrup.
-- I Only Smoke Purple Sometimes $11 — Peloton De La Muerte Mezcal, Ancho Reyes Chili, blueberry, lemon.
-- Irish Goodbye (Espresso Martini) $12 — Double Shot Cold Brew, Rock Town bourbon cream, Averna, Biscotti.
-- Manhattan On Wood $11 — rye whiskey, Spanish vermouth, bitters, barrel aged, always stirred.
-- You Stay Classy Tulsa $12 — Roosevelt's Rittenhouse Rye (100 proof), neat or on the rocks. Exclusive.
-- Elephant in the Room $12 — Gin, Elephant In The Room Amaro, ginger, blueberry, lemon, soda water.
-- Frozen: Fro-Mo $8 · F'Rosé $9 · The Dude Abides (frozen White Russian) $9 · Seasonal adult frozen $9.
-
-BEER: 80 craft beers on tap. Mix of local Oklahoma breweries, national, and international. Ask your server for today's list.
-
-DIETARY INFO:
-- Vegetarian: Portobello Tacos, Southwest Bean Burger, Winter Primavera, Artichoke Dip, Classic Caesar (no chicken), Roosemelt (no chicken).
-- Gluten-free bun available on burgers +$2.
-- Contains nuts: Spicy Buffalo Cheese Fries, Artichoke Dip (with candied bacon), Beer Cheeseburger.
-- Contains alcohol in prep: Ahi Tuna Nachos (ponzu), Manhattan Pork Belly.
-- For detailed allergen questions, call (918) 591-2888.
-
-BIRTHDAYS & CELEBRATIONS: We love a good celebration! No specific birthday package is listed publicly, but we're a popular spot for birthday dinners. Call (918) 591-2888 to discuss group size, special arrangements, or anything else we can do to make it special. Reservations highly recommended for weekend celebrations.
-
-ATMOSPHERE & VIBE: Warm, eclectic pub — old-school beer can wall, keg sinks, tap-style patio water faucets. Covered outdoor patio, reportedly pet-friendly. Spectacular holiday decorations with light show. Casual-upscale. Family-friendly. Great for dates, groups, birthdays.
-
-CHEFS: Executive Chef Jed Kable. Pastry Chef Chomi.
-
-BEHAVIOR RULES:
-- Be warm, charming, and a little witty — you're FDR, the host of the finest gastropub in Tulsa.
-- When someone wants a reservation, respond AND include [SHOW_RESERVATION_FORM] to trigger the booking widget.
-- Keep answers focused. Don't dump the whole menu unless asked.
-- If you don't know something, say so and direct to (918) 591-2888.
-- Never make up items or prices not listed above. Brunch menu changes weekly.
-- Make people excited to come in.`;
+// Load config immediately
+loadConfig();
 
 // ─── STATE ───────────────────────────────────────────────
 const history = [];
@@ -560,11 +455,14 @@ function showReservationForm() {
           </select>
         </div>
         <button class="res-btn" onclick="submitReservation()">Check Availability on OpenTable</button>
-        <a class="ot-link" href="https://www.opentable.com/r/roosevelts-gastropub-tulsa" target="_blank">Or book directly on <span>OpenTable →</span></a>
+        <a class="ot-link" id="otDirectLink" href="#" target="_blank">Or book directly on <span>OpenTable →</span></a>
       </div>
     </div>
     <div class="msg-time">${getTime()}</div>`;
   body.appendChild(wrap);
+  // Set OpenTable direct link from config
+  const otLink = document.getElementById('otDirectLink');
+  if (otLink && CFG.opentable_url) otLink.href = CFG.opentable_url;
   scrollBottom();
 }
 function submitReservation() {
@@ -574,7 +472,7 @@ function submitReservation() {
   const name  = document.getElementById('resName')?.value;
   const phone = document.getElementById('resPhone')?.value;
   if (party === '9+' || (party && parseInt(party) >= 6)) {
-    addMessage('bot', 'For parties of 6 or more, give us a call at <strong>(918) 591-2888</strong> and we\'ll sort out the right space. 🥂');
+    addMessage('bot', `For parties of 6 or more, give us a call at <strong>${CFG.phone || '(918) 591-2888'}</strong> and we'll sort out the right space. 🥂`);
     return;
   }
   if (name || phone) {
@@ -584,7 +482,7 @@ function submitReservation() {
       body: JSON.stringify({ name, phone, date, time, party, ts: new Date().toISOString() })
     }).catch(() => {});
   }
-  let url = 'https://www.opentable.com/r/roosevelts-gastropub-tulsa?';
+  let url = (CFG.opentable_url || 'https://www.opentable.com') + '?';
   const p = new URLSearchParams();
   if (date) p.set('dateTime', `${date}T${time||'19:00'}`);
   if (party) p.set('covers', party);
@@ -605,30 +503,13 @@ async function sendMessage(text) {
   document.getElementById('sendBtn').disabled = true;
   addTyping();
   try {
-    let reply;
-    if (USE_DIRECT_API) {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': window.ANTHROPIC_API_KEY || '',
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-ipc': 'true'
-        },
-        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 1000, system: SYSTEM_PROMPT, messages: history })
-      });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error.message);
-      reply = data.content?.[0]?.text;
-    } else {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history })
-      });
-      const data = await res.json();
-      reply = data.reply;
-    }
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history })
+    });
+    const data = await res.json();
+    const reply = data.reply;
     if (!reply) throw new Error('Empty response');
     removeTyping();
     const hasResForm = reply.includes('[SHOW_RESERVATION_FORM]');
@@ -641,7 +522,7 @@ async function sendMessage(text) {
   } catch (err) {
     removeTyping();
     console.error(err);
-    addMessage('bot', "Give us a ring at <strong>(918) 591-2888</strong> and a real human will sort you out! 🍺");
+    addMessage('bot', `Give us a ring at <strong>${CFG.phone || '(918) 591-2888'}</strong> and a real human will sort you out! 🍺`);
   }
   isLoading = false;
   document.getElementById('sendBtn').disabled = false;
