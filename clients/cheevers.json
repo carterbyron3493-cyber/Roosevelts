@@ -6,6 +6,8 @@
   "phone": "(539) 867-2055",
   "welcome": "Welcome to Cheever's! 🌶️ Upscale Southwestern cuisine in the heart of Cherry Street — how can I help?",
   "opentable_url": "https://www.opentable.com/r/cheevers-cafe-tulsa",
+  "reservation_url": "https://www.opentable.com/r/cheevers-cafe-tulsa",
+  "reservation_label": "Check Availability on OpenTable",
   "theme": {
     "bg": "#0e0806",
     "surface": "#181008",

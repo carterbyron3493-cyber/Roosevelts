@@ -6,6 +6,8 @@
   "phone": "(918) 551-7657",
   "welcome": "Welcome to Misfit Kitchen! 🤘 We don't follow the rules — what can I get you?",
   "opentable_url": "https://www.opentable.com/r/misfit-kitchen-tulsa",
+  "reservation_url": "https://www.opentable.com/r/misfit-kitchen-tulsa",
+  "reservation_label": "Check Availability on OpenTable",
   "theme": {
     "bg": "#080a0c",
     "surface": "#0e1218",

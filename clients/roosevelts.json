@@ -6,6 +6,8 @@
   "phone": "(918) 591-2888",
   "welcome": "Welcome to Roosevelt's! 🥃 What can I help you with today?",
   "opentable_url": "https://www.opentable.com/r/roosevelts-gastropub-tulsa",
+  "reservation_url": "https://www.opentable.com/r/roosevelts-gastropub-tulsa",
+  "reservation_label": "Check Availability on OpenTable",
   "sheets_url": "https://script.google.com/macros/s/AKfycbzinJ3w7yMe8scHdKu5JDCDHBBe2d-zS3o58F8xOQBAJtu0OgeVOyDIVYrmQLeNiU4w/exec",
   "theme": {
     "bg": "#1a1208",

@@ -6,6 +6,8 @@
   "phone": "(918) 550-5610",
   "welcome": "Welcome to Maple Ridge Grocer! ☕ Your neighborhood all-day spot — what can I help you with?",
   "opentable_url": "https://www.opentable.com/r/maple-ridge-grocer-tulsa",
+  "reservation_url": "https://www.opentable.com/r/maple-ridge-grocer-tulsa",
+  "reservation_label": "Check Availability on OpenTable",
   "theme": {
     "bg": "#080e08",
     "surface": "#0e160e",

@@ -6,6 +6,8 @@
   "phone": "(918) 382-7468",
   "welcome": "Welcome to McNellie's! 🍺 Tulsa's best pub — what can I get you?",
   "opentable_url": "https://www.opentable.com/r/james-e-mcnellies-public-house-tulsa",
+  "reservation_url": "https://www.opentable.com/r/james-e-mcnellies-public-house-tulsa",
+  "reservation_label": "Check Availability on OpenTable",
   "theme": {
     "bg": "#070d07",
     "surface": "#0d160d",

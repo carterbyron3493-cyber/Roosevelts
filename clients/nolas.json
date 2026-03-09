@@ -6,6 +6,8 @@
   "phone": "(918) 779-7766",
   "welcome": "Welcome to Nola's! 🎷 Laissez les bons temps rouler — what can I help you with today?",
   "opentable_url": "https://www.opentable.com/r/nolas-creole-and-cocktails-tulsa",
+  "reservation_url": "https://www.opentable.com/r/nolas-creole-and-cocktails-tulsa",
+  "reservation_label": "Check Availability on OpenTable",
   "theme": {
     "bg": "#12090a",
     "surface": "#1a0d10",

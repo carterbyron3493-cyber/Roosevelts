@@ -6,6 +6,8 @@
   "phone": "(918) 948-6761",
   "welcome": "Welcome to The Vault! 🏛️ Classic American cuisine in a landmark setting — how can I help you?",
   "opentable_url": "https://www.opentable.com/r/the-vault-tulsa",
+  "reservation_url": "https://www.opentable.com/r/the-vault-tulsa",
+  "reservation_label": "Check Availability on OpenTable",
   "theme": {
     "bg": "#080a10",
     "surface": "#0e1218",
