@@ -1,540 +1,634 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Loading…</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #1a1208; --surface: #211809; --card: #2a1f0f; --border: #3d2e18;
-  --gold: #c9922a; --gold-dim: #7a5a1a; --gold-faint:#2e2208;
-  --cream: #f0e8d5; --muted: #9a8a6a; --red: #8b2020; --green: #4ade80;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background: #0e0a04; font-family: 'DM Sans', sans-serif; color: var(--cream); min-height: 100vh; overflow: hidden; position: relative; }
-body::before { content:''; position:fixed; inset:0; background: radial-gradient(ellipse 80% 60% at 30% 70%, rgba(201,146,42,0.05) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 20%, rgba(139,32,32,0.04) 0%, transparent 60%); pointer-events:none; z-index:0; }
-/* ═══════════════════════════════════════ FLOATING LAUNCHER BUTTON ═══════════════════════════════════════ */
-.launcher { position: fixed; bottom: 28px; right: 28px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-.speech-bubble { background: var(--card); border: 1px solid var(--border); border-radius: 14px 14px 4px 14px; padding: 10px 14px; font-size: 16px; color: var(--cream); white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.5); animation: bubbleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; position: relative; }
-.speech-bubble strong { color: var(--gold); }
-@keyframes bubbleIn { from { opacity:0; transform: scale(0.8) translateY(8px); } to { opacity:1; transform: scale(1) translateY(0); } }
-.fdr-btn { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--gold-dim); background: var(--card); cursor: pointer; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0.4); animation: fdrFloat 3s ease-in-out infinite, ringPulse 2.5s ease-out infinite; transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; justify-content: center; position: relative; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-.fdr-btn:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(0,0,0,0.7), 0 0 0 4px rgba(201,146,42,0.2); }
-@keyframes fdrFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-@keyframes ringPulse { 0% { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0.4); } 70% { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 12px rgba(201,146,42,0); } 100% { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0); } }
-.fdr-svg { width: 58px; height: 58px; }
-/* ═══════════════════════════════════════ CHAT PANEL ═══════════════════════════════════════ */
-.chat-panel { position: fixed; bottom: 112px; right: 28px; width: 400px; height: min(620px, calc(100vh - 140px)); z-index: 999; display: flex; flex-direction: column; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,146,42,0.12); transform-origin: bottom right; transform: scale(0.85) translateY(16px); opacity: 0; pointer-events: none; transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease; }
-.chat-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
-.chat-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.header-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--card); border: 1px solid var(--gold-dim); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.header-avatar svg { width: 36px; height: 36px; }
-.header-text { flex:1; }
-.header-name { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--cream); }
-.header-name span { color: var(--gold); }
-.header-sub { font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 1px; }
-.header-status { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--green); }
-.status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.close-btn { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 20px; line-height: 1; padding: 4px; border-radius: 6px; transition: color 0.2s; }
-.close-btn:hover { color: var(--cream); }
-.quick-actions { display: flex; gap: 7px; padding: 10px 14px; background: var(--surface); border-bottom: 1px solid var(--border); overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
-.quick-actions::-webkit-scrollbar { display:none; }
-.qbtn { white-space: nowrap; background: var(--gold-faint); border: 1px solid var(--gold-dim); color: var(--gold); font-family: 'DM Sans', sans-serif; font-size: 15px; padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: all 0.2s; flex-shrink: 0; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-.qbtn:hover { background: var(--gold-dim); color: var(--cream); }
-.chat-body { flex: 1; overflow-y: auto; padding: 16px 14px; background: var(--bg); display: flex; flex-direction: column; gap: 12px; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
-.msg { display:flex; flex-direction:column; max-width:88%; animation: msgIn 0.28s ease; }
-@keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-.msg.bot { align-self: flex-start; }
-.msg.user { align-self: flex-end; }
-.msg-row { display:flex; align-items:flex-end; gap:8px; }
-.msg.bot .msg-row { flex-direction: row; }
-.msg-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--card); border: 1px solid var(--border); overflow: hidden; flex-shrink: 0; display: flex; align-items:center; justify-content:center; }
-.msg-avatar svg { width:36px; height:36px; }
-.bubble { padding: 13px 16px; font-size: 17px; line-height: 1.6; border-radius: 16px; }
-.msg.bot .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 16px 16px 16px 4px; color: var(--cream); }
-.msg.user .bubble { background: var(--gold); color: var(--bg); font-weight: 500; border-radius: 16px 16px 4px 16px; }
-.msg-time { font-size:13px; color:var(--muted); margin-top:3px; padding:0 4px; }
-.msg.user .msg-time { text-align:right; }
-.typing-wrap { align-self:flex-start; display:flex; align-items:flex-end; gap:8px; }
-.typing { background: var(--card); border: 1px solid var(--border); border-radius: 16px 16px 16px 4px; padding: 12px 14px; display:flex; gap:4px; align-items:center; }
-.typing span { width:5px; height:5px; background:var(--gold); border-radius:50%; animation: tdot 1.2s infinite; }
-.typing span:nth-child(2){animation-delay:.2s}
-.typing span:nth-child(3){animation-delay:.4s}
-@keyframes tdot { 0%,80%,100%{opacity:.2;transform:scale(.7)} 40%{opacity:1;transform:scale(1)} }
-.res-card { background: var(--card); border: 1px solid var(--gold-dim); border-radius: 12px; padding: 14px 16px; margin-top: 8px; max-width: 280px; }
-.res-title { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--gold); margin-bottom: 10px; }
-.res-field { display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
-.res-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-.res-field input, .res-field select { background: var(--bg); border: 1px solid var(--border); color: var(--cream); font-family:'DM Sans',sans-serif; font-size: 16px; padding: 9px 11px; border-radius: 8px; outline:none; width:100%; }
-.res-field input:focus, .res-field select:focus { border-color: var(--gold-dim); }
-.res-field select option { background: var(--card); }
-.res-btn { width:100%; background: var(--gold); color: var(--bg); border:none; font-family:'DM Sans',sans-serif; font-weight:500; font-size:16px; padding:12px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; border-radius:8px; cursor:pointer; transition: opacity .2s; letter-spacing:.04em; }
-.res-btn:hover { opacity:.88; }
-.res-direct-link { display:block; text-align:center; margin-top:7px; font-size:10.5px; color:var(--muted); text-decoration:none; }
-.res-direct-link span { color:var(--gold-dim); }
-.input-area { padding: 10px 14px; background: var(--surface); border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0; }
-.input-field { flex:1; background: var(--card); border: 1px solid var(--border); color: var(--cream); font-family:'DM Sans',sans-serif; font-size: 15px; padding: 10px 14px; border-radius: 20px; outline:none; resize:none; line-height:1.5; max-height:90px; transition: border-color .2s; }
-.input-field::placeholder { color: var(--muted); }
-.input-field:focus { border-color: var(--gold-dim); }
-.send-btn { width:38px; height:38px; background:var(--gold); border:none; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--bg); transition: opacity .2s, transform .15s; }
-.send-btn:hover { opacity:.88; transform:scale(1.06); }
-.send-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; }
-.powered-by { text-align:center; font-size:10px; color:var(--muted); padding: 5px 0 8px; background: var(--surface); opacity:0.6; flex-shrink:0; }
-.powered-by a { color:var(--gold-dim); text-decoration:none; }
-.res-pill { display:inline-flex; align-items:center; gap:5px; margin-top:7px; background:var(--gold-faint); border:1px solid var(--gold-dim); color:var(--gold); font-family:'DM Sans',sans-serif; font-size:15px; padding:7px 15px; touch-action: manipulation; -webkit-tap-highlight-color: transparent; border-radius:20px; cursor:pointer; transition:all 0.2s; }
-
-/* ═══════════════════════════════════════
-   MOBILE (≤ 600px)
-═══════════════════════════════════════ */
-@media (max-width: 600px) {
-  .chat-panel {
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100%; height: 100%;
-    border-radius: 0;
-    transform-origin: bottom center;
-  }
-  .launcher.hidden-mobile { display: none !important; }
-  .res-card { max-width: 100%; }
-  .input-area {
-    padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
-  }
-}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Loading…</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #1a1208; --surface: #211809; --card: #2a1f0f; --border: #3d2e18;
+      --gold: #c9922a; --gold-dim: #7a5a1a; --gold-faint:#2e2208;
+      --cream: #f0e8d5; --muted: #9a8a6a; --red: #8b2020; --green: #4ade80;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #0e0a04;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--cream);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    body.embed-mode { background: transparent !important; }
+    body.embed-mode::before { display: none; }
+    body::before {
+      content:'';
+      position:fixed; inset:0;
+      background:
+        radial-gradient(ellipse 80% 60% at 30% 70%, rgba(201,146,42,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 20%, rgba(139,32,32,0.04) 0%, transparent 60%);
+      pointer-events:none; z-index:0;
+    }
+    /* ═══ FLOATING LAUNCHER ═══ */
+    .launcher {
+      position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+    }
+    .speech-bubble {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px 14px 4px 14px; padding: 10px 14px;
+      font-size: 16px; color: var(--cream); white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      animation: bubbleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    .speech-bubble strong { color: var(--gold); }
+    @keyframes bubbleIn {
+      from { opacity:0; transform: scale(0.8) translateY(8px); }
+      to   { opacity:1; transform: scale(1) translateY(0); }
+    }
+    .fdr-btn {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid var(--gold-dim); background: var(--card);
+      cursor: pointer; overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0.4);
+      animation: fdrFloat 3s ease-in-out infinite, ringPulse 2.5s ease-out infinite;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .fdr-btn:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(0,0,0,0.7), 0 0 0 4px rgba(201,146,42,0.2); }
+    @keyframes fdrFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-5px)} }
+    @keyframes ringPulse {
+      0%   { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0.4); }
+      70%  { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 12px rgba(201,146,42,0); }
+      100% { box-shadow: 0 4px 24px rgba(0,0,0,0.6), 0 0 0 0 rgba(201,146,42,0); }
+    }
+    .fdr-svg { width: 58px; height: 58px; }
+    /* ═══ CHAT PANEL ═══ */
+    .chat-panel {
+      position: fixed; bottom: 112px; right: 28px;
+      width: 400px; height: min(620px, calc(100vh - 140px));
+      z-index: 999; display: flex; flex-direction: column;
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,146,42,0.12);
+      transform-origin: bottom right;
+      transform: scale(0.85) translateY(16px); opacity: 0; pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
+    }
+    .chat-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
+    .chat-header {
+      display: flex; align-items: center; gap: 12px; padding: 14px 18px;
+      background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .header-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--card); border: 1px solid var(--gold-dim);
+      overflow: hidden; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .header-avatar svg { width: 36px; height: 36px; }
+    .header-text { flex:1; }
+    .header-name { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--cream); }
+    .header-name span { color: var(--gold); }
+    .header-sub { font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-top: 1px; }
+    .header-status { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--green); }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .close-btn { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 20px; line-height: 1; padding: 4px; border-radius: 6px; transition: color 0.2s; }
+    .close-btn:hover { color: var(--cream); }
+    .quick-actions {
+      display: flex; gap: 7px; padding: 10px 14px;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      overflow-x: auto; flex-shrink: 0; scrollbar-width: none;
+    }
+    .quick-actions::-webkit-scrollbar { display:none; }
+    .qbtn {
+      white-space: nowrap; background: var(--gold-faint); border: 1px solid var(--gold-dim);
+      color: var(--gold); font-family: 'DM Sans', sans-serif; font-size: 15px;
+      padding: 8px 15px; border-radius: 20px; cursor: pointer; transition: all 0.2s;
+      flex-shrink: 0; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    }
+    .qbtn:hover { background: var(--gold-dim); color: var(--cream); }
+    .chat-body {
+      flex: 1; overflow-y: auto; padding: 16px 14px;
+      background: var(--bg); display: flex; flex-direction: column; gap: 12px;
+      scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+    }
+    .msg { display:flex; flex-direction:column; max-width:88%; animation: msgIn 0.28s ease; }
+    @keyframes msgIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .msg.bot { align-self: flex-start; }
+    .msg.user { align-self: flex-end; }
+    .msg-row { display:flex; align-items:flex-end; gap:8px; }
+    .msg.bot .msg-row { flex-direction: row; }
+    .msg-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--card); border: 1px solid var(--border);
+      overflow: hidden; flex-shrink: 0;
+      display: flex; align-items:center; justify-content:center;
+    }
+    .msg-avatar svg { width:36px; height:36px; }
+    .bubble { padding: 13px 16px; font-size: 17px; line-height: 1.6; border-radius: 16px; }
+    .msg.bot .bubble { background: var(--card); border: 1px solid var(--border); border-radius: 16px 16px 16px 4px; color: var(--cream); }
+    .msg.user .bubble { background: var(--gold); color: var(--bg); font-weight: 500; border-radius: 16px 16px 4px 16px; }
+    .msg-time { font-size:13px; color:var(--muted); margin-top:3px; padding:0 4px; }
+    .msg.user .msg-time { text-align:right; }
+    .typing-wrap { align-self:flex-start; display:flex; align-items:flex-end; gap:8px; }
+    .typing {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px 16px 16px 4px; padding: 12px 14px;
+      display:flex; gap:4px; align-items:center;
+    }
+    .typing span { width:5px; height:5px; background:var(--gold); border-radius:50%; animation: tdot 1.2s infinite; }
+    .typing span:nth-child(2){animation-delay:.2s} .typing span:nth-child(3){animation-delay:.4s}
+    @keyframes tdot { 0%,80%,100%{opacity:.2;transform:scale(.7)} 40%{opacity:1;transform:scale(1)} }
+    .res-card { background: var(--card); border: 1px solid var(--gold-dim); border-radius: 12px; padding: 14px 16px; margin-top: 8px; max-width: 280px; }
+    .res-title { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--gold); margin-bottom: 10px; }
+    .res-field { display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
+    .res-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+    .res-field input, .res-field select {
+      background: var(--bg); border: 1px solid var(--border); color: var(--cream);
+      font-family:'DM Sans',sans-serif; font-size: 16px; padding: 9px 11px;
+      border-radius: 8px; outline:none; width:100%;
+    }
+    .res-field input:focus, .res-field select:focus { border-color: var(--gold-dim); }
+    .res-field select option { background: var(--card); }
+    .res-btn {
+      width:100%; background: var(--gold); color: var(--bg); border:none;
+      font-family:'DM Sans',sans-serif; font-weight:500; font-size:16px; padding:12px;
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+      border-radius:8px; cursor:pointer; transition: opacity .2s; letter-spacing:.04em;
+    }
+    .res-btn:hover { opacity:.88; }
+    .res-direct-link { display:block; text-align:center; margin-top:7px; font-size:10.5px; color:var(--muted); text-decoration:none; }
+    .res-direct-link span { color:var(--gold-dim); }
+    .input-area {
+      padding: 10px 14px; background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
+    }
+    .input-field {
+      flex:1; background: var(--card); border: 1px solid var(--border); color: var(--cream);
+      font-family:'DM Sans',sans-serif; font-size: 15px; padding: 10px 14px;
+      border-radius: 20px; outline:none; resize:none; line-height:1.5;
+      max-height:90px; transition: border-color .2s;
+    }
+    .input-field::placeholder { color: var(--muted); }
+    .input-field:focus { border-color: var(--gold-dim); }
+    .send-btn {
+      width:38px; height:38px; background:var(--gold); border:none;
+      border-radius:50%; cursor:pointer; display:flex;
+      align-items:center; justify-content:center; flex-shrink:0;
+      color:var(--bg); transition: opacity .2s, transform .15s;
+    }
+    .send-btn:hover { opacity:.88; transform:scale(1.06); }
+    .send-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; }
+    .powered-by {
+      text-align:center; font-size:10px; color:var(--muted);
+      padding: 5px 0 8px; background: var(--surface); opacity:0.6; flex-shrink:0;
+    }
+    .powered-by a { color:var(--gold-dim); text-decoration:none; }
+    .res-pill {
+      display:inline-flex; align-items:center; gap:5px; margin-top:7px;
+      background:var(--gold-faint); border:1px solid var(--gold-dim); color:var(--gold);
+      font-family:'DM Sans',sans-serif; font-size:15px; padding:7px 15px;
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+      border-radius:20px; cursor:pointer; transition:all 0.2s;
+    }
+    /* ═══ MOBILE ═══ */
+    @media (max-width: 600px) {
+      .chat-panel { top:0; left:0; right:0; bottom:0; width:100%; height:100%; border-radius:0; transform-origin: bottom center; }
+      .launcher.hidden-mobile { display: none !important; }
+      .res-card { max-width: 100%; }
+      .input-area { padding-bottom: max(10px, env(safe-area-inset-bottom, 10px)); }
+    }
+  </style>
 </head>
 <body>
-
-<!-- ═══ LAUNCHER ═══ -->
-<div class="launcher" id="launcher">
-  <div class="speech-bubble" id="speechBubble">
-    <strong>Hey there!</strong> Ask me anything 🥃
-  </div>
-  <button class="fdr-btn" onclick="toggleChat()" aria-label="Open chat" id="launcherBtn">
-    <svg class="fdr-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#1a1a2e"/></svg>
-  </button>
-</div>
-
-<!-- ═══ CHAT PANEL ═══ -->
-<div class="chat-panel" id="chatPanel">
-  <!-- Header -->
-  <div class="chat-header">
-    <div class="header-avatar" id="headerAvatar"></div>
-    <div class="header-text">
-      <div class="header-name" id="headerName"></div>
-      <div class="header-sub" id="headerSub"></div>
+  <!-- ═══ LAUNCHER ═══ -->
+  <div class="launcher" id="launcher">
+    <div class="speech-bubble" id="speechBubble">
+      <strong>Hey there!</strong> Ask me anything 🥃
     </div>
-    <div class="header-status">
-      <div class="status-dot"></div> 24/7
-    </div>
-    <button class="close-btn" onclick="toggleChat()">✕</button>
-  </div>
-
-  <!-- Quick actions (populated by loadConfig) -->
-  <div class="quick-actions" id="quickActions"></div>
-
-  <!-- Chat messages -->
-  <div class="chat-body" id="chatBody">
-    <div class="msg bot">
-      <div class="msg-row">
-        <div class="msg-avatar" id="welcomeAvatar"></div>
-        <div class="bubble" id="welcomeMsg"></div>
-      </div>
-      <div class="msg-time">Just now</div>
-    </div>
-  </div>
-
-  <!-- Input -->
-  <div class="input-area">
-    <textarea class="input-field" id="inputField"
-      placeholder="Ask about the menu, hours, reservations…"
-      rows="1"
-      onkeydown="handleKey(event)"
-      oninput="autoResize(this)"
-    ></textarea>
-    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="22" y1="2" x2="11" y2="13"></line>
-        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-      </svg>
+    <button class="fdr-btn" onclick="toggleChat()" aria-label="Open chat" id="launcherBtn">
+      <svg class="fdr-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#1a1a2e"/></svg>
     </button>
   </div>
-  <div class="powered-by">Powered by <a href="https://lobbii.net">Lobbii AI</a></div>
-</div>
 
-<script>
-// Read ?client= (or ?slug=) from URL so one deployment serves all demos
-const _urlSlug = new URLSearchParams(window.location.search).get('client')
-              || new URLSearchParams(window.location.search).get('slug')
-              || '';
-const _slugParam = _urlSlug ? `?slug=${encodeURIComponent(_urlSlug)}` : '';
-const API_URL = (window.LOBBII_API_URL || '/api/chat') + _slugParam;
-
-// ─── CARTOON AVATAR SVGs ──────────────────────────────────
-// Inner SVG content per client slug (viewBox="0 0 80 80")
-// ── CHEF AVATAR BUILDER ───────────────────────────────────────────────────────
-// All restaurants share a cartoon chef base; brand-specific tweaks are passed via opts.
-function _chef(o) {
-  o = o || {};
-  var sk = o.skin      || '#f9d4a0';   // skin tone
-  var hf = o.hatFill   || '#ffffff';   // hat fill
-  var hs = o.hatStroke || '#d8d0c8';   // hat stroke
-  // Default toque: puff + band + optional badge on band
-  var hat = o.hat != null ? o.hat : (
-    "<ellipse cx='40' cy='19' rx='13' ry='11' fill='" + hf + "' stroke='" + hs + "' stroke-width='1'/>" +
-    "<rect x='27' y='27' width='26' height='7' rx='2' fill='" + hf + "' stroke='" + hs + "' stroke-width='1'/>" +
-    (o.hatBadge || '')
-  );
-  return hat +
-    // ── Head ──
-    "<circle cx='40' cy='45' r='15' fill='" + sk + "' stroke='#e0b870' stroke-width='0.8'/>" +
-    // ── Rosy cheeks ──
-    "<circle cx='31.5' cy='48' r='4.5' fill='#f4a0a0' opacity='0.35'/>" +
-    "<circle cx='48.5' cy='48' r='4.5' fill='#f4a0a0' opacity='0.35'/>" +
-    // ── Blinking eyes ──
-    "<ellipse cx='35.5' cy='43.5' rx='2.3' ry='2.3' fill='#2c1a08'><animate attributeName='ry' values='2.3;0.2;2.3;2.3;2.3' dur='5s' repeatCount='indefinite'/></ellipse>" +
-    "<ellipse cx='44.5' cy='43.5' rx='2.3' ry='2.3' fill='#2c1a08'><animate attributeName='ry' values='2.3;0.2;2.3;2.3;2.3' dur='5s' repeatCount='indefinite'/></ellipse>" +
-    // ── Eye shines ──
-    "<circle cx='36.3' cy='42.5' r='0.8' fill='white'/>" +
-    "<circle cx='45.3' cy='42.5' r='0.8' fill='white'/>" +
-    // ── Face extras (e.g. moustache) ──
-    (o.faceExtras || '') +
-    // ── Smile ──
-    "<path d='M35.5 49.5 Q40 53.5 44.5 49.5' stroke='#c07840' stroke-width='1.3' fill='none' stroke-linecap='round'/>" +
-    // ── Neck ──
-    "<rect x='37.5' y='59' width='5' height='4' fill='" + sk + "'/>" +
-    // ── Apron / body ──
-    "<path d='M27 63 Q27 76 40 77 Q53 76 53 63 L49 60 Q40 65 31 60 Z' fill='white' stroke='" + hs + "' stroke-width='0.8'/>" +
-    // ── Apron extras (e.g. shamrock, bow tie) ──
-    (o.apronExtras || '');
-}
-
-const AVATARS = {
-
-  // Roosevelt's Gastropub — default chef
-  'roosevelts': _chef(),
-
-  // Nola's on the Square — default chef
-  'nolas': _chef(),
-
-  // SMOKE Woodfire Grill — flame wisps peeking from hat sides
-  'smoke': _chef({ hat:
-    "<ellipse cx='40' cy='19' rx='13' ry='11' fill='#fff' stroke='#d8d0c8' stroke-width='1'/>" +
-    "<path d='M28 29 Q25 23 28 18 Q27 24 30 21' fill='#ff6a20' opacity='0.85'/>" +
-    "<path d='M52 29 Q55 23 52 18 Q53 24 50 21' fill='#ff6a20' opacity='0.85'/>" +
-    "<rect x='27' y='27' width='26' height='7' rx='2' fill='#fff' stroke='#d8d0c8' stroke-width='1'/>"
-  }),
-
-  // Andolini's Pizzeria — Italian curly moustache, warm olive skin
-  'andolinis': _chef({
-    skin: '#f0c888',
-    faceExtras: "<path d='M35.5 48.5 Q37 46 40 47.5 Q43 46 44.5 48.5' stroke='#2a1208' stroke-width='2.5' fill='none' stroke-linecap='round'/>"
-  }),
-
-  // Maple Ridge Diner — default chef
-  'mapleridge': _chef(),
-
-  // McNellie's Irish Pub — shamrock on apron
-  'mcnellies': _chef({ apronExtras:
-    "<g transform='translate(40,69)'>" +
-      "<circle cx='-3' cy='-2' r='2.8' fill='#2e7d40' opacity='0.85'/>" +
-      "<circle cx='3' cy='-2' r='2.8' fill='#2e7d40' opacity='0.85'/>" +
-      "<circle cx='0' cy='-5.5' r='2.8' fill='#2e7d40' opacity='0.85'/>" +
-      "<rect x='-0.7' y='-2' width='1.4' height='4.5' fill='#2e7d40' opacity='0.85'/>" +
-    "</g>"
-  }),
-
-  // The Vault Restaurant — gold bow tie (upscale touch)
-  'vault': _chef({ apronExtras:
-    "<path d='M35.5 61.5 L40 64.5 L44.5 61.5 L40 58.5 Z' fill='#c9a84c'/>" +
-    "<circle cx='40' cy='61.5' r='1.3' fill='#8a6020'/>"
-  }),
-
-  // Daigoro (Japanese) — hinomaru red circle on hat band
-  'daigoro': _chef({ hatBadge:
-    "<circle cx='40' cy='30.5' r='3.5' fill='#c8202a' opacity='0.9'/>"
-  }),
-
-  // Cheevers Cafe — cowboy hat instead of toque
-  'cheevers': _chef({ hat:
-    "<ellipse cx='40' cy='30.5' rx='20' ry='5' fill='#7a4e28' stroke='#4a2e08' stroke-width='0.8'/>" +
-    "<path d='M29 30.5 Q28 16 40 15 Q52 16 51 30.5' fill='#7a4e28' stroke='#4a2e08' stroke-width='0.8'/>" +
-    "<path d='M31 27 Q40 30 49 27' stroke='#c9a84c' stroke-width='2' fill='none' stroke-linecap='round'/>"
-  }),
-
-  // The Misfit — dark chef hat with pulsing purple accents
-  'misfit': _chef({
-    hatFill: '#1a1a1a', hatStroke: '#444444',
-    hatBadge:
-      "<circle cx='37' cy='20' r='2.2' fill='#8030d0' opacity='0.9'><animate attributeName='opacity' values='0.9;0.3;0.9' dur='2s' repeatCount='indefinite'/></circle>" +
-      "<circle cx='43' cy='20' r='2.2' fill='#8030d0' opacity='0.9'><animate attributeName='opacity' values='0.9;0.3;0.9' dur='2s' repeatCount='indefinite' begin='0.4s'/></circle>"
-  })
-};
-
-function getAvatarInner(slug) {
-  return AVATARS[slug] || AVATARS['roosevelts'];
-}
-function getAvatarSVG(slug) {
-  return `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">${getAvatarInner(slug)}</svg>`;
-}
-function initAvatars() {
-  const slug = _urlSlug || 'roosevelts';
-  const inner = getAvatarInner(slug);
-  const btn = document.getElementById('launcherBtn');
-  if (btn) btn.innerHTML = `<svg class="fdr-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
-  const hdr = document.getElementById('headerAvatar');
-  if (hdr) hdr.innerHTML = `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
-  const welcome = document.getElementById('welcomeAvatar');
-  if (welcome) welcome.innerHTML = getAvatarSVG(slug);
-}
-
-// ─── CONFIG (loaded from server) ──────────────────────────
-let CFG = {};
-
-async function loadConfig() {
-  try {
-    const res = await fetch('/api/config' + _slugParam);
-    CFG = await res.json();
-
-    // Apply theme CSS variables
-    const root = document.documentElement;
-    Object.entries(CFG.theme || {}).forEach(([k, v]) => root.style.setProperty(`--${k}`, v));
-
-    // Page title and header
-    document.title = CFG.name + ' — Ask Us Anything';
-    document.getElementById('headerName').innerHTML = CFG.name_html || CFG.name;
-    document.getElementById('headerSub').textContent = CFG.subtitle || '';
-
-    // Quick action buttons
-    const qa = document.getElementById('quickActions');
-    qa.innerHTML = (CFG.quick_actions || []).map((a, i) =>
-      `<button class="qbtn" data-idx="${i}">${a.label}</button>`
-    ).join('');
-    qa.querySelectorAll('.qbtn').forEach((btn, i) => {
-      const prompt = CFG.quick_actions[i].prompt;
-      btn.addEventListener('click', () => quickAsk(prompt));
-    });
-
-    // Welcome message
-    document.getElementById('welcomeMsg').textContent = CFG.welcome || 'How can I help you today?';
-
-    // Inject correct cartoon avatar for this slug
-    initAvatars();
-  } catch (e) {
-    console.error('Config load failed:', e);
-    document.getElementById('welcomeMsg').textContent = 'How can I help you today?';
-    initAvatars();
-  }
-}
-
-loadConfig();
-
-// ─── STATE ───────────────────────────────────────────────
-const history = [];
-let isOpen = false;
-let isLoading = false;
-let bubbleHidden = false;
-
-// ─── TOGGLE ──────────────────────────────────────────────
-function toggleChat() {
-  isOpen = !isOpen;
-  document.getElementById('chatPanel').classList.toggle('open', isOpen);
-  document.getElementById('launcher').classList.toggle('hidden-mobile', isOpen);
-  if (isOpen && !bubbleHidden) {
-    document.getElementById('speechBubble').style.display = 'none';
-    bubbleHidden = true;
-  }
-  if (isOpen) setTimeout(() => document.getElementById('inputField').focus(), 350);
-}
-
-// ─── HELPERS ─────────────────────────────────────────────
-function getTime() {
-  return new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true});
-}
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 90) + 'px';
-}
-function scrollBottom() {
-  const b = document.getElementById('chatBody');
-  b.scrollTop = b.scrollHeight;
-}
-function parseMarkdown(text) {
-  return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(?!\*)(.+?)\*(?!\*)/g, '<em>$1</em>')
-    .replace(/\n/g, '<br>');
-}
-function addMessage(role, text, showResPill = false) {
-  const body = document.getElementById('chatBody');
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-  const parsed = parseMarkdown(text);
-  if (role === 'bot') {
-    div.innerHTML = `
-      <div class="msg-row">
-        <div class="msg-avatar">${getAvatarSVG(_urlSlug || 'roosevelts')}</div>
-        <div class="bubble">${parsed}</div>
+  <!-- ═══ CHAT PANEL ═══ -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div class="header-avatar" id="headerAvatar"></div>
+      <div class="header-text">
+        <div class="header-name" id="headerName"></div>
+        <div class="header-sub" id="headerSub"></div>
       </div>
-      ${showResPill ? `<button class="res-pill" onclick="showReservationForm()">📅 Reserve a table</button>` : ''}
-      <div class="msg-time">${getTime()}</div>`;
-  } else {
-    div.innerHTML = `
-      <div class="bubble">${parsed}</div>
-      <div class="msg-time">${getTime()}</div>`;
-  }
-  body.appendChild(div);
-  scrollBottom();
-}
-function addTyping() {
-  const body = document.getElementById('chatBody');
-  const div = document.createElement('div');
-  div.className = 'typing-wrap';
-  div.id = 'typingWrap';
-  div.innerHTML = `<div class="msg-avatar">${getAvatarSVG(_urlSlug || 'roosevelts')}</div><div class="typing"><span></span><span></span><span></span></div>`;
-  body.appendChild(div);
-  scrollBottom();
-}
-function removeTyping() {
-  const t = document.getElementById('typingWrap');
-  if (t) t.remove();
-}
-
-// ─── RESERVATION FORM ────────────────────────────────────
-function showReservationForm() {
-  const body = document.getElementById('chatBody');
-  const wrap = document.createElement('div');
-  wrap.className = 'msg bot';
-  const today = new Date().toISOString().split('T')[0];
-  const resUrl   = CFG.reservation_url || CFG.opentable_url || '';
-  const resLabel = CFG.reservation_label || (resUrl ? 'Check Availability' : 'Call to Reserve');
-  const directLinkHtml = resUrl
-    ? `<a class="res-direct-link" href="${resUrl}" target="_blank">Or book directly <span>→</span></a>`
-    : '';
-  wrap.innerHTML = `
-    <div class="msg-row">
-      <div class="msg-avatar">${getAvatarSVG(_urlSlug || 'roosevelts')}</div>
-      <div class="res-card">
-        <div class="res-title">📅 Reserve a Table</div>
-        <div class="res-field res-row">
-          <input type="text" id="resName" placeholder="Your name" />
-          <input type="tel" id="resPhone" placeholder="Phone number" />
+      <div class="header-status"><div class="status-dot"></div> 24/7</div>
+      <button class="close-btn" onclick="toggleChat()">✕</button>
+    </div>
+    <div class="quick-actions" id="quickActions"></div>
+    <div class="chat-body" id="chatBody">
+      <div class="msg bot">
+        <div class="msg-row">
+          <div class="msg-avatar" id="welcomeAvatar"></div>
+          <div class="bubble" id="welcomeMsg"></div>
         </div>
-        <div class="res-field res-row">
-          <input type="date" id="resDate" min="${today}" />
-          <input type="time" id="resTime" value="19:00" />
-        </div>
-        <div class="res-field">
-          <select id="resParty">
-            <option value="">Party size…</option>
-            ${[1,2,3,4,5,6,7,8].map(n=>`<option value="${n}">${n} ${n===1?'guest':'guests'}</option>`).join('')}
-            <option value="9+">9+ guests</option>
-          </select>
-        </div>
-        <button class="res-btn" onclick="submitReservation()">${resLabel}</button>
-        ${directLinkHtml}
+        <div class="msg-time">Just now</div>
       </div>
     </div>
-    <div class="msg-time">${getTime()}</div>`;
-  body.appendChild(wrap);
-  scrollBottom();
-}
+    <div class="input-area">
+      <textarea class="input-field" id="inputField"
+        placeholder="Ask about the menu, hours, reservations…"
+        rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+    <div class="powered-by">Powered by <a href="https://lobbii.net">Lobbii AI</a></div>
+  </div>
 
-function submitReservation() {
-  const party = document.getElementById('resParty')?.value;
-  const date  = document.getElementById('resDate')?.value;
-  const time  = document.getElementById('resTime')?.value;
-  const name  = document.getElementById('resName')?.value;
-  const phone = document.getElementById('resPhone')?.value;
-  if (party === '9+' || (party && parseInt(party) >= 6)) {
-    addMessage('bot', `For parties of 6 or more, give us a call at <strong>${CFG.phone || '(918) 591-2888'}</strong> and we'll sort out the right space. 🥂`);
-    return;
-  }
-  if (name || phone) {
-    fetch('/api/lead' + _slugParam, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, phone, date, time, party, ts: new Date().toISOString() })
-    }).catch(() => {});
-  }
-  const resUrl = CFG.reservation_url || CFG.opentable_url || '';
-  if (resUrl) {
-    window.open(resUrl, '_blank');
-    addMessage('bot', `The booking page is open${name ? ', ' + name : ''}! Finish up there and we'll see you soon. 🥂`);
-  } else {
-    addMessage('bot', `Give us a call at <strong>${CFG.phone || '(918) 591-2888'}</strong> and we'll get you set up! 🥂`);
-  }
-}
+  <script>
+    // ─── EMBED MODE ──────────────────────────────────────────
+    var _params = new URLSearchParams(window.location.search);
+    var _isEmbed = !!_params.get('embed');
+    if (_isEmbed) document.body.classList.add('embed-mode');
 
-// ─── SEND MESSAGE ─────────────────────────────────────────
-async function sendMessage(text) {
-  const input = document.getElementById('inputField');
-  const userText = text || input.value.trim();
-  if (!userText || isLoading) return;
-  if (!text) { input.value = ''; input.style.height = 'auto'; }
-  addMessage('user', userText);
-  history.push({ role: 'user', content: userText });
-  isLoading = true;
-  document.getElementById('sendBtn').disabled = true;
-  addTyping();
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history })
-    });
-    const data = await res.json();
-    const reply = data.reply;
-    if (!reply) throw new Error('Empty response');
-    removeTyping();
-    const hasResForm = reply.includes('[SHOW_RESERVATION_FORM]');
-    const cleanReply = reply.replace('[SHOW_RESERVATION_FORM]', '').trim();
-    addMessage('bot', cleanReply, !hasResForm);
-    history.push({ role: 'assistant', content: reply });
-    if (hasResForm) {
-      setTimeout(showReservationForm, 350);
+    // ─── SLUG ROUTING ────────────────────────────────────────
+    // Redirect bare URL → ?client=roosevelts so every demo has an explicit slug
+    var _urlSlug = _params.get('client') || _params.get('slug') || '';
+    if (!_urlSlug && !_isEmbed) {
+      var _redir = new URL(window.location.href);
+      _redir.searchParams.set('client', 'roosevelts');
+      window.location.replace(_redir.toString());
     }
-  } catch (err) {
-    removeTyping();
-    console.error(err);
-    addMessage('bot', `Give us a ring at <strong>${CFG.phone || '(918) 591-2888'}</strong> and a real human will sort you out! 🍺`);
-  }
-  isLoading = false;
-  document.getElementById('sendBtn').disabled = false;
-}
-function quickAsk(t) {
-  if (!isOpen) toggleChat();
-  setTimeout(() => sendMessage(t), 400);
-}
-function handleKey(e) {
-  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
+    var _slugParam = _urlSlug ? '?slug=' + encodeURIComponent(_urlSlug) : '';
+    var API_URL = (window.LOBBII_API_URL || '/api/chat') + _slugParam;
 
-// Hide speech bubble after 6 seconds
-setTimeout(() => {
-  const b = document.getElementById('speechBubble');
-  if (b && !isOpen) {
-    b.style.transition='opacity 0.5s';
-    b.style.opacity='0';
-    setTimeout(()=>b.style.display='none',500);
-  }
-}, 6000);
+    // ─── AVATAR BUILDER ──────────────────────────────────────
+    // Rendering order: body → head → face → HAT LAST (hat always in front of head)
+    function _chef(o) {
+      o = o || {};
+      var sk = o.skin  || '#f9d4a0';
+      var hf = o.hatFill   || '#ffffff';
+      var hs = o.hatStroke || '#d8d0c8';
 
-// ─── KEYBOARD-AWARE HEIGHT (mobile) ──────────────────────
-if (window.visualViewport) {
-  const _panel = document.getElementById('chatPanel');
-  const _onVPResize = () => {
-    if (window.innerWidth <= 600) {
-      _panel.style.height = window.visualViewport.height + 'px';
-      _panel.style.top    = window.visualViewport.offsetTop + 'px';
-    } else {
-      _panel.style.height = '';
-      _panel.style.top    = '';
+      // Default toque: tall crown + puff top + band + subtle pleats
+      var hat = o.hat != null ? o.hat : (
+        // Crown body (cylinder)
+        "<path d='M28 33 L28 18 Q28 9 40 9 Q52 9 52 18 L52 33 Z' fill='" + hf + "' stroke='" + hs + "' stroke-width='1'/>" +
+        // Puff top (gives that classic chef toque look)
+        "<ellipse cx='40' cy='17' rx='12' ry='9' fill='" + hf + "' stroke='" + hs + "' stroke-width='1'/>" +
+        // Band at base of crown
+        "<rect x='27' y='31' width='26' height='6' rx='1.5' fill='#f2f2f2' stroke='#c4bcb4' stroke-width='1'/>" +
+        // Pleat lines (subtle folds in the crown)
+        "<line x1='33' y1='31' x2='32.5' y2='17' stroke='" + hs + "' stroke-width='0.7' opacity='0.45'/>" +
+        "<line x1='47' y1='31' x2='47.5' y2='17' stroke='" + hs + "' stroke-width='0.7' opacity='0.45'/>" +
+        (o.hatBadge || '')
+      );
+
+      return (
+        // ── Body/apron (back layer, drawn first) ──
+        "<rect x='37.5' y='59' width='5' height='4' fill='" + sk + "'/>" +
+        "<path d='M27 63 Q27 76 40 77 Q53 76 53 63 L49 60 Q40 65 31 60 Z' fill='white' stroke='" + hs + "' stroke-width='0.8'/>" +
+        (o.apronExtras || '') +
+        // ── Head ──
+        "<circle cx='40' cy='45' r='15' fill='" + sk + "' stroke='#e0b870' stroke-width='0.8'/>" +
+        // ── Rosy cheeks ──
+        "<circle cx='31.5' cy='48' r='4.5' fill='#f4a0a0' opacity='0.35'/>" +
+        "<circle cx='48.5' cy='48' r='4.5' fill='#f4a0a0' opacity='0.35'/>" +
+        // ── Blinking eyes ──
+        "<ellipse cx='35.5' cy='43.5' rx='2.3' ry='2.3' fill='#2c1a08'><animate attributeName='ry' values='2.3;0.2;2.3;2.3;2.3' dur='5s' repeatCount='indefinite'/></ellipse>" +
+        "<ellipse cx='44.5' cy='43.5' rx='2.3' ry='2.3' fill='#2c1a08'><animate attributeName='ry' values='2.3;0.2;2.3;2.3;2.3' dur='5s' repeatCount='indefinite'/></ellipse>" +
+        // ── Eye shines ──
+        "<circle cx='36.3' cy='42.5' r='0.8' fill='white'/>" +
+        "<circle cx='45.3' cy='42.5' r='0.8' fill='white'/>" +
+        // ── Face extras (e.g. moustache) ──
+        (o.faceExtras || '') +
+        // ── Smile ──
+        "<path d='M35.5 49.5 Q40 53.5 44.5 49.5' stroke='#c07840' stroke-width='1.3' fill='none' stroke-linecap='round'/>" +
+        // ── Hat LAST — always in front of the head ──
+        hat
+      );
     }
-  };
-  window.visualViewport.addEventListener('resize', _onVPResize);
-  window.visualViewport.addEventListener('scroll', _onVPResize);
-}
-</script>
+
+    // ─── PER-CLIENT AVATARS ──────────────────────────────────
+    var AVATARS = {
+      // Roosevelt's — plain toque
+      'roosevelts': _chef(),
+
+      // Nola's on the Square — plain toque
+      'nolas': _chef(),
+
+      // SMOKE Woodfire Grill — flame wisps on hat sides
+      'smoke': _chef({ hat:
+        "<path d='M28 33 L28 18 Q28 9 40 9 Q52 9 52 18 L52 33 Z' fill='#fff' stroke='#d8d0c8' stroke-width='1'/>" +
+        "<ellipse cx='40' cy='17' rx='12' ry='9' fill='#fff' stroke='#d8d0c8' stroke-width='1'/>" +
+        "<path d='M26 31 Q23 24 26 18 Q25 25 29 22' fill='#ff6a20' opacity='0.8'/>" +
+        "<path d='M54 31 Q57 24 54 18 Q55 25 51 22' fill='#ff6a20' opacity='0.8'/>" +
+        "<rect x='27' y='31' width='26' height='6' rx='1.5' fill='#f2f2f2' stroke='#c4bcb4' stroke-width='1'/>"
+      }),
+
+      // Andolini's Pizzeria — Italian curly moustache, warm olive skin
+      'andolinis': _chef({
+        skin: '#f0c888',
+        faceExtras: "<path d='M35.5 48.5 Q37 46 40 47.5 Q43 46 44.5 48.5' stroke='#2a1208' stroke-width='2.5' fill='none' stroke-linecap='round'/>"
+      }),
+
+      // Maple Ridge Diner — plain toque
+      'mapleridge': _chef(),
+
+      // McNellie's Irish Pub — shamrock on apron
+      'mcnellies': _chef({ apronExtras:
+        "<g transform='translate(40,69)'>" +
+        "<circle cx='-3' cy='-2' r='2.8' fill='#2e7d40' opacity='0.85'/>" +
+        "<circle cx='3' cy='-2' r='2.8' fill='#2e7d40' opacity='0.85'/>" +
+        "<circle cx='0' cy='-5.5' r='2.8' fill='#2e7d40' opacity='0.85'/>" +
+        "<rect x='-0.7' y='-2' width='1.4' height='4.5' fill='#2e7d40' opacity='0.85'/>" +
+        "</g>"
+      }),
+
+      // The Vault — gold bow tie (upscale)
+      'vault': _chef({ apronExtras:
+        "<path d='M35.5 61.5 L40 64.5 L44.5 61.5 L40 58.5 Z' fill='#c9a84c'/>" +
+        "<circle cx='40' cy='61.5' r='1.3' fill='#8a6020'/>"
+      }),
+
+      // Daigoro — hinomaru red circle on hat band
+      'daigoro': _chef({ hatBadge:
+        "<circle cx='40' cy='34' r='3.5' fill='#c8202a' opacity='0.9'/>"
+      }),
+
+      // Cheevers Cafe — cowboy hat
+      'cheevers': _chef({ hat:
+        // Crown
+        "<path d='M27 33 Q26 14 40 12 Q54 14 53 33 Z' fill='#7a4e28' stroke='#4a2e08' stroke-width='0.8'/>" +
+        // Brim
+        "<ellipse cx='40' cy='33' rx='21' ry='5.5' fill='#7a4e28' stroke='#4a2e08' stroke-width='0.8'/>" +
+        // Front brim droop
+        "<path d='M19 33 Q30 39 40 37 Q50 39 61 33' fill='#7a4e28' stroke='#4a2e08' stroke-width='0.7'/>" +
+        // Hat band
+        "<path d='M30 27 Q40 29 50 27' stroke='#c9a84c' stroke-width='2' fill='none' stroke-linecap='round'/>"
+      }),
+
+      // The Misfit — dark hat with pulsing purple accents
+      'misfit': _chef({
+        hatFill: '#1a1a1a', hatStroke: '#444444',
+        hatBadge:
+          "<circle cx='37' cy='20' r='2.2' fill='#8030d0' opacity='0.9'><animate attributeName='opacity' values='0.9;0.3;0.9' dur='2s' repeatCount='indefinite'/></circle>" +
+          "<circle cx='43' cy='20' r='2.2' fill='#8030d0' opacity='0.9'><animate attributeName='opacity' values='0.9;0.3;0.9' dur='2s' repeatCount='indefinite' begin='0.4s'/></circle>"
+      }),
+
+      // Big Whiskey's — cowboy hat
+      'bigwhiskeys': _chef({
+        skin: '#f2cc90',
+        hat: (
+          // Crown
+          "<path d='M27 33 Q26 12 40 10 Q54 12 53 33 Z' fill='#4a2610' stroke='#1e0f05' stroke-width='1'/>" +
+          // Wide brim (flat ellipse)
+          "<ellipse cx='40' cy='33' rx='23' ry='5.5' fill='#4a2610' stroke='#1e0f05' stroke-width='1'/>" +
+          // Front brim drooping (classic cowboy shape)
+          "<path d='M17 33 Q29 41 40 39 Q51 41 63 33' fill='#4a2610' stroke='#1e0f05' stroke-width='0.8'/>" +
+          // Crown centre pinch (dent line)
+          "<line x1='40' y1='10' x2='40' y2='29' stroke='#1e0f05' stroke-width='1.5' opacity='0.25'/>" +
+          // Gold hat band
+          "<rect x='27' y='28' width='26' height='4' rx='1.5' fill='#c9a84c' opacity='0.9'/>"
+        ),
+        faceExtras: (
+          // Subtle stubble
+          "<path d='M33.5 50.5 Q40 54 46.5 50.5' stroke='#a06030' stroke-width='1.1' fill='none' opacity='0.3'/>"
+        )
+      })
+    };
+
+    function getAvatarInner(slug) { return AVATARS[slug] || AVATARS['roosevelts']; }
+    function getAvatarSVG(slug) {
+      return '<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">' + getAvatarInner(slug) + '</svg>';
+    }
+    function initAvatars() {
+      var slug = _urlSlug || 'roosevelts';
+      var inner = getAvatarInner(slug);
+      var btn = document.getElementById('launcherBtn');
+      if (btn) btn.innerHTML = '<svg class="fdr-svg" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+      var hdr = document.getElementById('headerAvatar');
+      if (hdr) hdr.innerHTML = '<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+      var welcome = document.getElementById('welcomeAvatar');
+      if (welcome) welcome.innerHTML = getAvatarSVG(slug);
+    }
+
+    // ─── CONFIG ──────────────────────────────────────────────
+    var CFG = {};
+    async function loadConfig() {
+      try {
+        var res = await fetch('/api/config' + _slugParam);
+        CFG = await res.json();
+        var root = document.documentElement;
+        Object.entries(CFG.theme || {}).forEach(function(kv) { root.style.setProperty('--' + kv[0], kv[1]); });
+        document.title = CFG.name + ' — Ask Us Anything';
+        document.getElementById('headerName').innerHTML = CFG.name_html || CFG.name;
+        document.getElementById('headerSub').textContent = CFG.subtitle || '';
+        var qa = document.getElementById('quickActions');
+        qa.innerHTML = (CFG.quick_actions || []).map(function(a, i) {
+          return '<button class="qbtn" data-idx="' + i + '">' + a.label + '</button>';
+        }).join('');
+        qa.querySelectorAll('.qbtn').forEach(function(btn, i) {
+          var prompt = CFG.quick_actions[i].prompt;
+          btn.addEventListener('click', function() { quickAsk(prompt); });
+        });
+        document.getElementById('welcomeMsg').textContent = CFG.welcome || 'How can I help you today?';
+        initAvatars();
+      } catch (e) {
+        console.error('Config load failed:', e);
+        document.getElementById('welcomeMsg').textContent = 'How can I help you today?';
+        initAvatars();
+      }
+    }
+    loadConfig();
+
+    // ─── STATE ───────────────────────────────────────────────
+    var history = [];
+    var isOpen = false;
+    var isLoading = false;
+    var bubbleHidden = false;
+
+    // ─── TOGGLE ──────────────────────────────────────────────
+    function toggleChat() {
+      isOpen = !isOpen;
+      document.getElementById('chatPanel').classList.toggle('open', isOpen);
+      document.getElementById('launcher').classList.toggle('hidden-mobile', isOpen);
+      if (isOpen && !bubbleHidden) {
+        document.getElementById('speechBubble').style.display = 'none';
+        bubbleHidden = true;
+      }
+      if (isOpen) setTimeout(function() { document.getElementById('inputField').focus(); }, 350);
+      // Notify parent frame (embed mode) to resize iframe
+      if (_isEmbed && window.parent !== window) {
+        window.parent.postMessage(isOpen ? 'lobbii:open' : 'lobbii:close', '*');
+      }
+    }
+
+    // ─── HELPERS ─────────────────────────────────────────────
+    function getTime() { return new Date().toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true}); }
+    function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 90) + 'px'; }
+    function scrollBottom() { var b = document.getElementById('chatBody'); b.scrollTop = b.scrollHeight; }
+    function parseMarkdown(text) {
+      return text
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(?!\*)(.+?)\*(?!\*)/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+    }
+
+    function addMessage(role, text, showResPill) {
+      var body = document.getElementById('chatBody');
+      var div = document.createElement('div');
+      div.className = 'msg ' + role;
+      var parsed = parseMarkdown(text);
+      var slug = _urlSlug || 'roosevelts';
+      if (role === 'bot') {
+        div.innerHTML =
+          '<div class="msg-row">' +
+            '<div class="msg-avatar">' + getAvatarSVG(slug) + '</div>' +
+            '<div class="bubble">' + parsed + '</div>' +
+          '</div>' +
+          (showResPill ? '<button class="res-pill" onclick="showReservationForm()">📅 Reserve a table</button>' : '') +
+          '<div class="msg-time">' + getTime() + '</div>';
+      } else {
+        div.innerHTML =
+          '<div class="bubble">' + parsed + '</div>' +
+          '<div class="msg-time">' + getTime() + '</div>';
+      }
+      body.appendChild(div);
+      scrollBottom();
+    }
+
+    function addTyping() {
+      var body = document.getElementById('chatBody');
+      var div = document.createElement('div');
+      div.className = 'typing-wrap'; div.id = 'typingWrap';
+      div.innerHTML = '<div class="msg-avatar">' + getAvatarSVG(_urlSlug || 'roosevelts') + '</div>' +
+        '<div class="typing"><span></span><span></span><span></span></div>';
+      body.appendChild(div); scrollBottom();
+    }
+    function removeTyping() { var t = document.getElementById('typingWrap'); if (t) t.remove(); }
+
+    // ─── RESERVATION FORM ─────────────────────────────────────
+    function showReservationForm() {
+      var body = document.getElementById('chatBody');
+      var wrap = document.createElement('div');
+      wrap.className = 'msg bot';
+      var today = new Date().toISOString().split('T')[0];
+      var resUrl = CFG.reservation_url || CFG.opentable_url || '';
+      var resLabel = CFG.reservation_label || (resUrl ? 'Check Availability' : 'Call to Reserve');
+      var directLinkHtml = resUrl ? '<a class="res-direct-link" href="' + resUrl + '" target="_blank">Or book directly <span>→</span></a>' : '';
+      wrap.innerHTML =
+        '<div class="msg-row">' +
+          '<div class="msg-avatar">' + getAvatarSVG(_urlSlug || 'roosevelts') + '</div>' +
+          '<div class="res-card">' +
+            '<div class="res-title">📅 Reserve a Table</div>' +
+            '<div class="res-field res-row">' +
+              '<input type="text" id="resName" placeholder="Your name" />' +
+              '<input type="tel" id="resPhone" placeholder="Phone number" />' +
+            '</div>' +
+            '<div class="res-field res-row">' +
+              '<input type="date" id="resDate" min="' + today + '" />' +
+              '<input type="time" id="resTime" value="19:00" />' +
+            '</div>' +
+            '<div class="res-field">' +
+              '<select id="resParty"><option value="">Party size…</option>' +
+              [1,2,3,4,5,6,7,8].map(function(n) { return '<option value="' + n + '">' + n + ' ' + (n===1?'guest':'guests') + '</option>'; }).join('') +
+              '<option value="9+">9+ guests</option></select>' +
+            '</div>' +
+            '<button class="res-btn" onclick="submitReservation()">' + resLabel + '</button>' +
+            directLinkHtml +
+          '</div>' +
+        '</div>' +
+        '<div class="msg-time">' + getTime() + '</div>';
+      body.appendChild(wrap); scrollBottom();
+    }
+
+    function submitReservation() {
+      var party = document.getElementById('resParty') && document.getElementById('resParty').value;
+      var date  = document.getElementById('resDate')  && document.getElementById('resDate').value;
+      var time  = document.getElementById('resTime')  && document.getElementById('resTime').value;
+      var name  = document.getElementById('resName')  && document.getElementById('resName').value;
+      var phone = document.getElementById('resPhone') && document.getElementById('resPhone').value;
+      if (party === '9+' || (party && parseInt(party) >= 6)) {
+        addMessage('bot', 'For parties of 6 or more, give us a call at <strong>' + (CFG.phone || '(918) 591-2888') + '</strong> and we\'ll sort out the right space. 🥂');
+        return;
+      }
+      if (name || phone) {
+        fetch('/api/lead' + _slugParam, {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ name: name, phone: phone, date: date, time: time, party: party, ts: new Date().toISOString() })
+        }).catch(function() {});
+      }
+      var resUrl = CFG.reservation_url || CFG.opentable_url || '';
+      if (resUrl) {
+        window.open(resUrl, '_blank');
+        addMessage('bot', 'The booking page is open' + (name ? ', ' + name : '') + '! Finish up there and we\'ll see you soon. 🥂');
+      } else {
+        addMessage('bot', 'Give us a call at <strong>' + (CFG.phone || '(918) 576-6996') + '</strong> and we\'ll get you set up! 🥂');
+      }
+    }
+
+    // ─── SEND MESSAGE ─────────────────────────────────────────
+    async function sendMessage(text) {
+      var input = document.getElementById('inputField');
+      var userText = text || input.value.trim();
+      if (!userText || isLoading) return;
+      if (!text) { input.value = ''; input.style.height = 'auto'; }
+      addMessage('user', userText);
+      history.push({ role: 'user', content: userText });
+      isLoading = true;
+      document.getElementById('sendBtn').disabled = true;
+      addTyping();
+      try {
+        var res = await fetch(API_URL, {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ messages: history })
+        });
+        var data = await res.json();
+        var reply = data.reply;
+        if (!reply) throw new Error('Empty response');
+        removeTyping();
+        var hasResForm = reply.includes('[SHOW_RESERVATION_FORM]');
+        var cleanReply = reply.replace('[SHOW_RESERVATION_FORM]', '').trim();
+        addMessage('bot', cleanReply, !hasResForm);
+        history.push({ role: 'assistant', content: reply });
+        if (hasResForm) setTimeout(showReservationForm, 350);
+      } catch (err) {
+        removeTyping();
+        console.error(err);
+        addMessage('bot', 'Give us a ring at <strong>' + (CFG.phone || '(918) 591-2888') + '</strong> and a real human will sort you out! 🍺');
+      }
+      isLoading = false;
+      document.getElementById('sendBtn').disabled = false;
+    }
+
+    function quickAsk(t) { if (!isOpen) toggleChat(); setTimeout(function() { sendMessage(t); }, 400); }
+    function handleKey(e) { if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+
+    // Hide speech bubble after 6 seconds
+    setTimeout(function() {
+      var b = document.getElementById('speechBubble');
+      if (b && !isOpen) { b.style.transition='opacity 0.5s'; b.style.opacity='0'; setTimeout(function(){b.style.display='none';},500); }
+    }, 6000);
+
+    // ─── KEYBOARD-AWARE HEIGHT (mobile) ──────────────────────
+    if (window.visualViewport) {
+      var _panel = document.getElementById('chatPanel');
+      var _onVPResize = function() {
+        if (window.innerWidth <= 600) {
+          _panel.style.height = window.visualViewport.height + 'px';
+          _panel.style.top = window.visualViewport.offsetTop + 'px';
+        } else { _panel.style.height = ''; _panel.style.top = ''; }
+      };
+      window.visualViewport.addEventListener('resize', _onVPResize);
+      window.visualViewport.addEventListener('scroll', _onVPResize);
+    }
+  </script>
 </body>
 </html>
