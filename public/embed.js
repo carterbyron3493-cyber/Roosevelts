@@ -14,13 +14,14 @@
   f.src = 'https://demo.lobbii.net/?client=' + encodeURIComponent(slug) + '&embed=1';
   f.setAttribute('frameborder', '0');
   f.setAttribute('allow', 'clipboard-write');
-  // Start narrow (just the launcher button area), expand when chat opens
+  // Closed: wide enough for speech bubble (~250px) + launcher (100px) + margin
+  // Open: 500px gives 72px left margin for panel (400px) + right offset (28px) + shadow room
   f.style.cssText = [
     'position:fixed',
     'bottom:0',
     'right:0',
-    'width:120px',
-    'height:140px',
+    'width:340px',
+    'height:180px',
     'border:none',
     'z-index:2147483647',
     'background:transparent',
@@ -39,11 +40,11 @@
     var el = document.getElementById('__lobbii__');
     if (!el) return;
     if (e.data === 'lobbii:open') {
-      el.style.setProperty('width', '440px', 'important');
+      el.style.setProperty('width', '500px', 'important');
       el.style.setProperty('height', '100vh', 'important');
     } else if (e.data === 'lobbii:close') {
-      el.style.setProperty('width', '120px', 'important');
-      el.style.setProperty('height', '140px', 'important');
+      el.style.setProperty('width', '340px', 'important');
+      el.style.setProperty('height', '180px', 'important');
     }
   });
 })();
