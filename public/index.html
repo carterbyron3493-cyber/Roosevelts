@@ -210,8 +210,9 @@
     .demo-overlay {
       position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: min(520px, calc(100vw - 140px));
-      z-index: 10; text-align: center; pointer-events: none; padding: 24px;
+      width: min(580px, calc(100vw - 140px));
+      z-index: 10; text-align: center; pointer-events: auto; padding: 24px;
+      max-height: calc(100vh - 60px); overflow-y: auto;
     }
     body.embed-mode .demo-overlay { display: none !important; }
     .demo-badge {
@@ -236,9 +237,43 @@
     .demo-pill {
       background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
       color: #ffffff; font-size: 13px; padding: 5px 13px; border-radius: 20px;
+      cursor: pointer; position: relative;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .demo-pill strong { color: #ffffff; font-weight: 500; }
-    .demo-cta { font-size: 13px; color: rgba(255,255,255,0.5); }
+    .demo-pill:hover, .demo-pill.active {
+      background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3);
+    }
+    .demo-pill-gold {
+      background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.35);
+    }
+    .demo-pill-gold:hover, .demo-pill-gold.active {
+      background: rgba(201,168,76,0.22); border-color: rgba(201,168,76,0.6);
+    }
+    .demo-pill-muted {
+      background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.09);
+    }
+    .pill-dropdown {
+      display: none; position: absolute; top: calc(100% + 7px); left: 50%;
+      transform: translateX(-50%);
+      background: rgba(20,15,5,0.97); border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 10px; padding: 10px 13px; width: 210px;
+      font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.55;
+      text-align: left; z-index: 20; pointer-events: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.6); white-space: normal;
+    }
+    .pill-dropdown::before {
+      content: ''; position: absolute; top: -5px; left: 50%;
+      width: 8px; height: 8px; background: rgba(20,15,5,0.97);
+      border-left: 1px solid rgba(255,255,255,0.18);
+      border-top: 1px solid rgba(255,255,255,0.18);
+      transform: translateX(-50%) rotate(45deg);
+    }
+    .demo-pill.active .pill-dropdown { display: block; }
+    .demo-section-label {
+      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin: 14px 0 8px; text-align: left;
+    }
+    .demo-cta { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 6px; }
     .demo-arrow { display: inline-block; color: #ffffff; animation: arrowPulse 1.6s ease-in-out infinite; }
     @keyframes arrowPulse { 0%,100%{transform:translateX(0)} 50%{transform:translateX(6px)} }
     .demo-arrow-mob { display: none; }
@@ -270,20 +305,36 @@
 
   <!-- ═══ DEMO OVERLAY (hidden in embed mode) ═══ -->
   <div class="demo-overlay" id="demoOverlay">
-    <div class="demo-badge">Live Demo</div>
-    <h1 class="demo-headline">An AI host for<br>your restaurant.</h1>
-    <p class="demo-sub">Everything you see is built for this restaurant — and every part of it can be tailored for yours.</p>
+    <div class="demo-badge">Live Demo — Lobbii AI</div>
+    <h1 class="demo-headline">Your restaurant's<br>full guest lifecycle,<br>on autopilot.</h1>
+    <p class="demo-sub">From first question to loyal regular — every interaction captured, every opportunity followed up. Built for this restaurant. Everything customizable for yours.</p>
+    <div class="demo-section-label">What's in this demo</div>
     <div class="demo-pills">
-      <span class="demo-pill">🎨 <strong>Colors &amp; theme</strong></span>
-      <span class="demo-pill">🤖 <strong>Avatar character</strong></span>
-      <span class="demo-pill">🕐 <strong>Hours &amp; location</strong></span>
-      <span class="demo-pill">🍽️ <strong>Menu &amp; specials</strong></span>
-      <span class="demo-pill">💬 <strong>Welcome message</strong></span>
-      <span class="demo-pill">⚡ <strong>Quick-reply buttons</strong></span>
-      <span class="demo-pill">📅 <strong>Reservation flow</strong></span>
-      <span class="demo-pill">🧠 <strong>AI tone &amp; personality</strong></span>
-      <span class="demo-pill">📋 <strong>Custom FAQs</strong></span>
-      <span class="demo-pill">🔗 <strong>One-line embed install</strong></span>
+      <span class="demo-pill" onclick="togglePill(this)">Custom theme<div class="pill-dropdown">Colors, fonts, and mood matched to your restaurant — guests feel right at home from the first message.</div></span>
+      <span class="demo-pill" onclick="togglePill(this)">Custom avatar<div class="pill-dropdown">A unique AI character that fits your brand — not a generic bot. Name it, style it, make it yours.</div></span>
+      <span class="demo-pill" onclick="togglePill(this)">Full menu &amp; specials<div class="pill-dropdown">The bot knows your full menu, seasonal specials, and can answer questions like "what's good for two sharing?" in seconds.</div></span>
+      <span class="demo-pill" onclick="togglePill(this)">Reservation capture<div class="pill-dropdown">Guests can request a table directly in the chat. Name, party size, date, time — captured automatically and synced with OpenTable or Resy.</div></span>
+      <span class="demo-pill" onclick="togglePill(this)">24/7 guest Q&amp;A<div class="pill-dropdown">Hours, parking, dietary options, dress code — answered instantly, even at 2am when no one's picking up the phone.</div></span>
+      <span class="demo-pill" onclick="togglePill(this)">Smart quick-replies<div class="pill-dropdown">Contextual suggestion buttons surface at just the right moment, guiding guests toward reservations, specials, and more.</div></span>
+      <span class="demo-pill" onclick="togglePill(this)">AI tone &amp; personality<div class="pill-dropdown">Fine dining formality or neighborhood-bar warmth — the AI's voice is tuned to match exactly how your team talks to guests.</div></span>
+      <span class="demo-pill" onclick="togglePill(this)">One-line embed<div class="pill-dropdown">A single script tag is all it takes. Drops into any website in under two minutes — no developer needed.</div></span>
+    </div>
+    <div class="demo-section-label">Included in Professional &amp; Premium</div>
+    <div class="demo-pills">
+      <span class="demo-pill demo-pill-gold" onclick="togglePill(this)">SMS marketing<div class="pill-dropdown">Send broadcast texts to your guest list — promos, slow-night specials, event announcements. Delivered to people who actually want to hear from you.</div></span>
+      <span class="demo-pill demo-pill-gold" onclick="togglePill(this)">Review follow-up<div class="pill-dropdown">After a visit, the bot follows up automatically and guides happy guests toward leaving a Google or Yelp review — without you lifting a finger.</div></span>
+      <span class="demo-pill demo-pill-gold" onclick="togglePill(this)">Lead capture &amp; logging<div class="pill-dropdown">Every reservation request and inquiry is logged to a dashboard and your preferred sheet — no lead falls through the cracks.</div></span>
+      <span class="demo-pill demo-pill-gold" onclick="togglePill(this)">Analytics dashboard<div class="pill-dropdown">See what guests are asking, when they're engaging, and where they drop off — so you can keep improving the experience.</div></span>
+    </div>
+    <div class="demo-section-label">Also available upon request</div>
+    <div class="demo-pills">
+      <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Instagram &amp; Facebook DMs<div class="pill-dropdown">Auto-reply to DMs on Instagram and Facebook — so every inquiry gets answered, even at midnight.</div></span>
+      <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Email campaigns<div class="pill-dropdown">Automated follow-up email sequences triggered by guest activity — confirmations, upsells, win-backs.</div></span>
+      <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Loyalty &amp; rewards<div class="pill-dropdown">A points or perk system tied to reservations and visits, fully managed through the bot.</div></span>
+      <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Event &amp; private dining<div class="pill-dropdown">Dedicated booking flows for private rooms, events, and large parties — captured and logged automatically.</div></span>
+      <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Online ordering<div class="pill-dropdown">Connect your existing online ordering system so the bot can guide guests straight to checkout.</div></span>
+      <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Waitlist &amp; table alerts<div class="pill-dropdown">Text guests when their table is ready — no pager needed, no manual follow-up.</div></span>
+      <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Geofencing<div class="pill-dropdown">Trigger promos or messages when guests are physically near your location — drive walk-in traffic on slow nights.</div></span>
     </div>
     <p class="demo-cta">Try the bot in the corner &nbsp;<span class="demo-arrow demo-arrow-desk">→</span><span class="demo-arrow demo-arrow-mob">↘</span></p>
   </div>
@@ -776,6 +827,19 @@
       if (b && !isOpen) { b.style.transition='opacity 0.5s'; b.style.opacity='0'; setTimeout(function(){b.style.display='none';},500); }
     }, 6000);
 
+    // ─── PILL DROPDOWNS ───────────────────────────────────────
+    function togglePill(el) {
+      var isActive = el.classList.contains('active');
+      document.querySelectorAll('.demo-pill.active').forEach(function(p) {
+        if (p !== el) p.classList.remove('active');
+      });
+      el.classList.toggle('active', !isActive);
+    }
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.demo-pill')) {
+        document.querySelectorAll('.demo-pill.active').forEach(function(p) { p.classList.remove('active'); });
+      }
+    });
     // ─── KEYBOARD-AWARE HEIGHT (mobile) ──────────────────────
     if (window.visualViewport) {
       var _panel = document.getElementById('chatPanel');
