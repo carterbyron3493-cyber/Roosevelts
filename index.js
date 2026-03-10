@@ -109,8 +109,8 @@ async function sbInsert(table, row) {
 app.post('/api/lead', async (req, res) => {
   const slug = req.query.slug || DEFAULT_SLUG;
   const cfg  = getClient(slug);
-  const { name, phone, date, time, party, ts } = req.body;
-  const lead = { slug, name, phone, date, time, party, ts: ts || new Date().toISOString() };
+  const { name, phone, date, time, party, sms_opt_in, ts } = req.body;
+  const lead = { slug, name, phone, date, time, party, sms_opt_in: sms_opt_in === true, ts: ts || new Date().toISOString() };
   console.log('📋 New lead:', lead);
   // Write to Supabase (persistent) and Sheets (notification)
   sbInsert('leads', lead).catch(console.error);

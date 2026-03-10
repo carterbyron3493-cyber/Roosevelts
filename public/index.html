@@ -163,6 +163,9 @@
     .res-btn:hover { opacity:.88; }
     .res-direct-link { display:block; text-align:center; margin-top:7px; font-size:10.5px; color:var(--muted); text-decoration:none; }
     .res-direct-link span { color:var(--gold-dim); }
+    .res-sms-opt { display:flex; align-items:flex-start; gap:8px; margin: 8px 0 10px; cursor:pointer; }
+    .res-sms-opt input[type=checkbox] { margin-top:2px; accent-color:var(--gold); width:15px; height:15px; flex-shrink:0; cursor:pointer; }
+    .res-sms-opt span { font-size:11.5px; color:var(--muted); line-height:1.45; }
     .input-area {
       padding: 10px 14px; background: var(--surface);
       border-top: 1px solid var(--border);
@@ -688,6 +691,10 @@
               [1,2,3,4,5,6,7,8].map(function(n) { return '<option value="' + n + '">' + n + ' ' + (n===1?'guest':'guests') + '</option>'; }).join('') +
               '<option value="9+">9+ guests</option></select>' +
             '</div>' +
+            '<label class="res-sms-opt">' +
+              '<input type="checkbox" id="resSmsOpt" />' +
+              '<span>Text me updates &amp; specials from ' + (CFG.name || 'us') + '. Standard rates may apply.</span>' +
+            '</label>' +
             '<button class="res-btn" onclick="submitReservation()">' + resLabel + '</button>' +
             directLinkHtml +
           '</div>' +
@@ -700,8 +707,10 @@
       var party = document.getElementById('resParty') && document.getElementById('resParty').value;
       var date  = document.getElementById('resDate')  && document.getElementById('resDate').value;
       var time  = document.getElementById('resTime')  && document.getElementById('resTime').value;
-      var name  = document.getElementById('resName')  && document.getElementById('resName').value;
-      var phone = document.getElementById('resPhone') && document.getElementById('resPhone').value;
+      var name     = document.getElementById('resName')   && document.getElementById('resName').value;
+      var phone    = document.getElementById('resPhone')  && document.getElementById('resPhone').value;
+      var smsOptEl = document.getElementById('resSmsOpt');
+      var sms_opt_in = smsOptEl ? smsOptEl.checked : false;
       if (party === '9+' || (party && parseInt(party) >= 6)) {
         addMessage('bot', 'For parties of 6 or more, give us a call at <strong>' + (CFG.phone || '(918) 591-2888') + '</strong> and we\'ll sort out the right space. 🥂');
         return;
@@ -709,7 +718,7 @@
       if (name || phone) {
         fetch('/api/lead' + _slugParam, {
           method: 'POST', headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ name: name, phone: phone, date: date, time: time, party: party, ts: new Date().toISOString() })
+          body: JSON.stringify({ name: name, phone: phone, date: date, time: time, party: party, sms_opt_in: sms_opt_in, ts: new Date().toISOString() })
         }).catch(function() {});
       }
       var resUrl = CFG.reservation_url || CFG.opentable_url || '';
