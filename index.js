@@ -180,6 +180,30 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// ─── HEALTH CHECK ─────────────────────────────────────────
+app.get('/api/health', async (req, res) => {
+  const status = {
+    ok: false,
+    apiKey: !!process.env.ANTHROPIC_API_KEY,
+    supabase: !!supabase,
+    clients: Object.keys(CLIENTS),
+    model: 'claude-haiku-4-5-20251001',
+  };
+  try {
+    const ping = await client.messages.create({
+      model: status.model,
+      max_tokens: 8,
+      messages: [{ role: 'user', content: 'hi' }]
+    });
+    status.ok = true;
+    status.modelOk = true;
+  } catch (err) {
+    status.modelOk = false;
+    status.error = err.message;
+  }
+  res.status(status.ok ? 200 : 503).json(status);
+});
+
 // ─── FALLBACK ─────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));

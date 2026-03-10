@@ -213,30 +213,30 @@
     body.embed-mode .demo-overlay { display: none !important; }
     .demo-badge {
       display: inline-block;
-      background: rgba(201,146,42,0.1); border: 1px solid rgba(201,146,42,0.3);
-      color: var(--gold); font-size: 10px; font-weight: 500;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+      color: #ffffff; font-size: 10px; font-weight: 500;
       letter-spacing: 0.2em; padding: 4px 14px; border-radius: 20px;
       margin-bottom: 20px; text-transform: uppercase;
     }
     .demo-headline {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(24px, 4vw, 40px); color: var(--cream);
+      font-size: clamp(24px, 4vw, 40px); color: #ffffff;
       line-height: 1.2; margin-bottom: 12px;
     }
     .demo-sub {
-      font-size: 14px; color: var(--muted);
+      font-size: 14px; color: rgba(255,255,255,0.6);
       margin: 0 auto 24px; line-height: 1.65; max-width: 400px;
     }
     .demo-pills {
       display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 24px;
     }
     .demo-pill {
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09);
-      color: var(--cream); font-size: 13px; padding: 5px 13px; border-radius: 20px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
+      color: #ffffff; font-size: 13px; padding: 5px 13px; border-radius: 20px;
     }
-    .demo-pill strong { color: var(--gold); font-weight: 400; }
-    .demo-cta { font-size: 13px; color: var(--muted); opacity: 0.7; }
-    .demo-arrow { display: inline-block; color: var(--gold); animation: arrowPulse 1.6s ease-in-out infinite; }
+    .demo-pill strong { color: #ffffff; font-weight: 500; }
+    .demo-cta { font-size: 13px; color: rgba(255,255,255,0.5); }
+    .demo-arrow { display: inline-block; color: #ffffff; animation: arrowPulse 1.6s ease-in-out infinite; }
     @keyframes arrowPulse { 0%,100%{transform:translateX(0)} 50%{transform:translateX(6px)} }
     .demo-arrow-mob { display: none; }
     @media (max-width: 600px) {
@@ -748,8 +748,11 @@
         if (hasResForm) setTimeout(showReservationForm, 350);
       } catch (err) {
         removeTyping();
-        console.error(err);
-        addMessage('bot', 'Give us a ring at <strong>' + (CFG.phone || '(918) 591-2888') + '</strong> and a real human will sort you out! 🍺');
+        console.error('Chat error:', err);
+        var phone = CFG.phone || '';
+        addMessage('bot', phone
+          ? 'Sorry, something went wrong on my end. Give us a ring at <strong>' + phone + '</strong> and a real human will help! 🙏'
+          : 'Sorry, something went wrong on my end — please try again in a moment. 🙏');
       }
       isLoading = false;
       document.getElementById('sendBtn').disabled = false;
