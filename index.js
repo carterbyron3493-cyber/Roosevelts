@@ -10,10 +10,9 @@ const app    = express();
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // ─── SUPABASE ─────────────────────────────────────────────
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY
-);
+const supabase = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY)
+  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
+  : null;
 
 app.use(cors());
 app.use(express.json());
@@ -100,7 +99,7 @@ function logToSheets(sheetsUrl, data) {
 
 // ─── SUPABASE HELPERS ─────────────────────────────────────
 async function sbInsert(table, row) {
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return;
+  if (!supabase) return;
   const { error } = await supabase.from(table).insert(row);
   if (error) console.error(`❌ Supabase insert (${table}):`, error.message);
   else console.log(`✅ Supabase insert (${table})`);
@@ -122,6 +121,7 @@ app.post('/api/lead', async (req, res) => {
 app.get('/api/leads', async (req, res) => {
   const key = req.query.key;
   if (key !== process.env.LEADS_KEY) return res.status(401).json({ error: 'unauthorized' });
+  if (!supabase) return res.status(503).json({ error: 'database not configured' });
   const slug = req.query.slug;
   let query = supabase.from('leads').select('*').order('ts', { ascending: false });
   if (slug) query = query.eq('slug', slug);
