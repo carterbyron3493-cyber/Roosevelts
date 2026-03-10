@@ -238,7 +238,29 @@
     .demo-cta { font-size: 13px; color: var(--muted); opacity: 0.7; }
     .demo-arrow { display: inline-block; color: var(--gold); animation: arrowPulse 1.6s ease-in-out infinite; }
     @keyframes arrowPulse { 0%,100%{transform:translateX(0)} 50%{transform:translateX(6px)} }
-    @media (max-width: 600px) { .demo-overlay { display: none !important; } }
+    .demo-arrow-mob { display: none; }
+    @media (max-width: 600px) {
+      .demo-arrow-desk { display: none; }
+      .demo-arrow-mob { display: inline-block; }
+    }
+    .demo-overlay.chat-open { display: none !important; }
+    @media (max-width: 600px) {
+      .demo-overlay {
+        top: 16px; left: 50%;
+        transform: translateX(-50%);
+        width: calc(100vw - 32px);
+        max-height: calc(100dvh - 140px);
+        overflow-y: auto;
+        padding: 16px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .demo-badge { margin-bottom: 10px; }
+      .demo-headline { font-size: clamp(18px, 5vw, 24px); margin-bottom: 8px; }
+      .demo-sub { font-size: 12px; margin-bottom: 14px; }
+      .demo-pills { gap: 5px; margin-bottom: 14px; }
+      .demo-pill { font-size: 11px; padding: 4px 10px; }
+      .demo-cta { font-size: 12px; }
+    }
   </style>
 </head>
 <body>
@@ -260,7 +282,7 @@
       <span class="demo-pill">📋 <strong>Custom FAQs</strong></span>
       <span class="demo-pill">🔗 <strong>One-line embed install</strong></span>
     </div>
-    <p class="demo-cta">Try the bot in the corner &nbsp;<span class="demo-arrow">→</span></p>
+    <p class="demo-cta">Try the bot in the corner &nbsp;<span class="demo-arrow demo-arrow-desk">→</span><span class="demo-arrow demo-arrow-mob">↘</span></p>
   </div>
 
   <!-- ═══ LAUNCHER ═══ -->
@@ -582,6 +604,8 @@
       isOpen = !isOpen;
       document.getElementById('chatPanel').classList.toggle('open', isOpen);
       document.getElementById('launcher').classList.toggle('hidden-mobile', isOpen);
+      var _overlay = document.getElementById('demoOverlay');
+      if (_overlay) _overlay.classList.toggle('chat-open', isOpen);
       if (isOpen && !bubbleHidden) {
         document.getElementById('speechBubble').style.display = 'none';
         bubbleHidden = true;
