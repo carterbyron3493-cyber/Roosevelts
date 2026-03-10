@@ -16,7 +16,9 @@ const supabase = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY)
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// index:false stops express.static from auto-serving index.html at /
+// so our catch-all route can decide which page to show
+app.use(express.static(path.join(__dirname, 'public'), { index: false }));
 
 // ─── LOAD CLIENT CONFIGS ──────────────────────────────────
 // Each client gets a JSON file in /clients. Add a new restaurant
