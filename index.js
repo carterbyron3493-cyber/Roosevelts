@@ -205,7 +205,12 @@ app.get('/api/health', async (req, res) => {
 });
 
 // ─── FALLBACK ─────────────────────────────────────────────
+// No ?client= param → show demo booking landing page
+// ?client=<slug>    → load the chatbot demo
 app.get('*', (req, res) => {
+  if (!req.query.client) {
+    return res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+  }
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

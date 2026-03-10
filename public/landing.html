@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book a Demo — Lobbii</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black:  #0a0a0a;
+      --cream:  #f5f2ec;
+      --gold:   #c9a84c;
+      --gold-dim: rgba(201,168,76,0.14);
+      --gold-border: rgba(201,168,76,0.28);
+      --muted:  rgba(245,242,236,0.5);
+      --border: rgba(255,255,255,0.07);
+      --surface: #111010;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--cream);
+      font-family: 'Instrument Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .wordmark {
+      font-family: 'Instrument Serif', serif;
+      font-size: 24px;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      color: var(--cream);
+    }
+    .wordmark em { color: var(--gold); font-style: italic; }
+
+    /* ── HERO SPLIT ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      gap: 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 88px 48px 80px;
+      align-items: start;
+    }
+
+    /* left copy */
+    .hero-left {}
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 22px;
+    }
+    .hero-left h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(36px, 4.5vw, 56px);
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 22px;
+    }
+    .hero-left h1 em { color: var(--gold); font-style: italic; }
+    .hero-sub {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 420px;
+      margin-bottom: 36px;
+    }
+
+    /* value bullets */
+    .bullets { display: flex; flex-direction: column; gap: 14px; }
+    .bullet  { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; line-height: 1.55; color: var(--cream); }
+    .bullet-check {
+      color: var(--gold);
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── FORM CARD ── */
+    .form-card {
+      border: 1px solid var(--gold-border);
+      background: var(--surface);
+      padding: 36px 32px 32px;
+    }
+    .form-card h2 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+    .form-card p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 26px;
+      line-height: 1.55;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+    .form-group input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--cream);
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-group input:focus { border-color: var(--gold-border); }
+    .form-group input::placeholder { color: rgba(245,242,236,0.25); }
+    .btn-book {
+      width: 100%;
+      background: var(--gold);
+      color: var(--black);
+      border: none;
+      font-family: 'Instrument Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 16px 24px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .btn-book:hover { background: #dfc06a; }
+
+    /* confirmation */
+    .form-confirm {
+      display: none;
+      text-align: center;
+      padding: 32px 0;
+    }
+    .confirm-check {
+      font-size: 36px;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .form-confirm h3 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    .form-confirm p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ── SOCIAL PROOF STRIP ── */
+    .proof-strip {
+      border-top: 1px solid var(--border);
+      padding: 52px 48px;
+      text-align: center;
+    }
+    .proof-strip p {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .proof-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .proof-logo {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      width: 140px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: rgba(245,242,236,0.3);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--cream); }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; gap: 48px; padding: 60px 24px 60px; }
+      .proof-strip { padding: 40px 24px; }
+      nav { padding: 20px 24px; }
+      footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="https://lobbii.net" class="wordmark">Lobb<em>ii</em></a>
+  </nav>
+
+  <div class="hero">
+
+    <!-- LEFT: copy + bullets -->
+    <div class="hero-left">
+      <p class="eyebrow">Free 15-Minute Demo</p>
+      <h1>See it live.<br>Book a <em>demo.</em></h1>
+      <p class="hero-sub">We'll show you a live AI chatbot running on a real restaurant, walk you through the SMS broadcast dashboard, and show exactly how Lobbii captures reservation leads automatically — all in 15 minutes.</p>
+
+      <div class="bullets">
+        <div class="bullet">
+          <span class="bullet-check">✦</span>
+          <span><strong>Live AI demo on your actual website</strong> — we'll build a preview bot for your restaurant before the call.</span>
+        </div>
+        <div class="bullet">
+          <span class="bullet-check">✦</span>
+          <span><strong>See the SMS broadcast tool in action</strong> — watch how opted-in contacts get added and how campaigns go out in one tap.</span>
+        </div>
+        <div class="bullet">
+          <span class="bullet-check">✦</span>
+          <span><strong>No commitment, just 15 minutes</strong> — no pitch deck, no pressure. If it's not a fit, we'll tell you.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: booking form -->
+    <div class="form-card">
+      <h2>Request your demo</h2>
+      <p>Fill this out and we'll reach out within 24 hours to confirm your time.</p>
+
+      <form id="demoForm" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+          <label>Your name</label>
+          <input type="text" name="name" placeholder="Jane Smith" required>
+        </div>
+        <div class="form-group">
+          <label>Restaurant name</label>
+          <input type="text" name="restaurant" placeholder="The Ember Room" required>
+        </div>
+        <div class="form-group">
+          <label>Phone number</label>
+          <input type="tel" name="phone" placeholder="(918) 555-0100" required>
+        </div>
+        <div class="form-group">
+          <label>Email address</label>
+          <input type="email" name="email" placeholder="jane@emberroom.com" required>
+        </div>
+        <button type="submit" class="btn-book">Book My Demo →</button>
+      </form>
+
+      <div class="form-confirm" id="formConfirm">
+        <div class="confirm-check">✦</div>
+        <h3>You're on the list.</h3>
+        <p>We'll reach out within 24 hours to confirm your time. In the meantime, take a look at a live demo at <a href="https://demo.lobbii.net/?client=roosevelts" style="color:var(--gold)">demo.lobbii.net</a>.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PROOF STRIP -->
+  <div class="proof-strip">
+    <p>Already demoing with Tulsa's best</p>
+    <div class="proof-logos">
+      <div class="proof-logo">Roosevelt's</div>
+      <div class="proof-logo">Nola's</div>
+      <div class="proof-logo">SMOKE</div>
+      <div class="proof-logo">Andolini's</div>
+    </div>
+  </div>
+
+  <footer>
+    <span>© 2026 Lobbii</span>
+    <span><a href="mailto:hello@lobbii.net">hello@lobbii.net</a> &nbsp;·&nbsp; <a href="https://lobbii.net">lobbii.net</a></span>
+  </footer>
+
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      document.getElementById('demoForm').style.display = 'none';
+      document.getElementById('formConfirm').style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
