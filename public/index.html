@@ -594,7 +594,7 @@
     loadConfig();
 
     // ─── STATE ───────────────────────────────────────────────
-    var history = [];
+    var chatHistory = [];
     var isOpen = false;
     var isLoading = false;
     var bubbleHidden = false;
@@ -728,14 +728,14 @@
       if (!userText || isLoading) return;
       if (!text) { input.value = ''; input.style.height = 'auto'; }
       addMessage('user', userText);
-      history.push({ role: 'user', content: userText });
+      chatHistory.push({ role: 'user', content: userText });
       isLoading = true;
       document.getElementById('sendBtn').disabled = true;
       addTyping();
       try {
         var res = await fetch(API_URL, {
           method: 'POST', headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ messages: history })
+          body: JSON.stringify({ messages: chatHistory })
         });
         var data = await res.json();
         var reply = data.reply;
@@ -744,7 +744,7 @@
         var hasResForm = reply.includes('[SHOW_RESERVATION_FORM]');
         var cleanReply = reply.replace('[SHOW_RESERVATION_FORM]', '').trim();
         addMessage('bot', cleanReply, !hasResForm);
-        history.push({ role: 'assistant', content: reply });
+        chatHistory.push({ role: 'assistant', content: reply });
         if (hasResForm) setTimeout(showReservationForm, 350);
       } catch (err) {
         removeTyping();
