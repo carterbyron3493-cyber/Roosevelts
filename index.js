@@ -218,12 +218,12 @@ app.get('/api/health', async (req, res) => {
 });
 
 // ─── FALLBACK ─────────────────────────────────────────────
-// demo.lobbii.net, no ?client  → demo booking / signup page (landing.html)
+// demo.lobbii.net, no ?client  → redirect to landing page on lobbii.net/demo (Netlify)
 // demo.lobbii.net, ?client=X   → live chatbot demo (index.html)
 // (lobbii.net is a separate Netlify site — not handled here)
 app.get('*', (req, res) => {
   if (!req.query.client) {
-    return res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+    return res.redirect(302, 'https://lobbii.net/demo');
   }
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
