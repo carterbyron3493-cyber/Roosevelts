@@ -14,6 +14,7 @@ const supabase = (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY)
   ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY)
   : null;
 
+app.set('trust proxy', 1); // Trust Render's reverse proxy so req.hostname works correctly
 app.use(cors());
 app.use(express.json());
 // index:false stops express.static from auto-serving index.html at /
@@ -217,8 +218,12 @@ app.get('/outreach', (req, res) => {
 //   demo.lobbii.net, no ?client  → demo booking / signup page (landing.html)
 //   demo.lobbii.net, ?client=X   → live chatbot demo (index.html)
 app.get('*', (req, res) => {
-  const host = req.hostname || '';
+  // Use X-Forwarded-Host (set by Render's proxy) or fall back to Host header
+  const rawHost = req.get('x-forwarded-host') || req.get('host') || req.hostname || '';
+  const host = rawHost.split(':')[0].toLowerCase().trim();
   const isMainSite = host === 'lobbii.net' || host === 'www.lobbii.net';
+
+  console.log(`[routing] host="${host}" client="${req.query.client || ''}" isMain=${isMainSite}`);
 
   if (isMainSite) {
     return res.sendFile(path.join(__dirname, 'public', 'home.html'));
