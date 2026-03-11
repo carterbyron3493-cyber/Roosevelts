@@ -1,0 +1,6 @@
+/api/config   /.netlify/functions/config   200
+/api/chat     /.netlify/functions/chat     200
+/api/lead     /.netlify/functions/lead     200
+/api/leads    /.netlify/functions/leads    200
+/api/health   /.netlify/functions/health   200
+/*            /index.html                  200

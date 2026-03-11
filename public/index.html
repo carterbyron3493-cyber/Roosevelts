@@ -430,12 +430,10 @@
     if (_isEmbed) document.body.classList.add('embed-mode');
 
     // ─── SLUG ROUTING ────────────────────────────────────────
-    // Redirect bare URL → ?client=roosevelts so every demo has an explicit slug
+    // No client slug → show the demo signup/landing page
     var _urlSlug = _params.get('client') || _params.get('slug') || '';
     if (!_urlSlug && !_isEmbed) {
-      var _redir = new URL(window.location.href);
-      _redir.searchParams.set('client', 'roosevelts');
-      window.location.replace(_redir.toString());
+      window.location.replace('/landing.html');
     }
     var _slugParam = _urlSlug ? '?slug=' + encodeURIComponent(_urlSlug) : '';
     var API_URL = (window.LOBBII_API_URL || '/api/chat') + _slugParam;
