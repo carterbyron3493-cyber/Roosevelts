@@ -114,8 +114,19 @@ app.post('/api/lead', async (req, res) => {
   const { name, phone, date, time, party, sms_opt_in, ts } = req.body;
   const lead = { slug, name, phone, date, time, party, sms_opt_in: sms_opt_in === true, ts: ts || new Date().toISOString() };
   console.log('📋 New lead:', lead);
-  // Write to Supabase (persistent) and Sheets (notification)
-  sbInsert('leads', lead).catch(console.error);
+
+  if (!supabase) {
+    console.error('❌ Supabase not configured — lead NOT saved. Set SUPABASE_URL and SUPABASE_SERVICE_KEY in Render env vars.');
+    return res.json({ ok: false, error: 'database not configured' });
+  }
+
+  const { error } = await supabase.from('leads').insert(lead);
+  if (error) {
+    console.error('❌ Supabase lead insert failed:', error.message);
+    return res.json({ ok: false, error: error.message });
+  }
+
+  console.log('✅ Lead saved to Supabase');
   if (cfg?.sheets_url) logToSheets(cfg.sheets_url, { ...lead, type: 'reservation_lead' }).catch(console.error);
   res.json({ ok: true });
 });

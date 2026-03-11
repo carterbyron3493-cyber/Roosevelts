@@ -809,7 +809,9 @@
       fetch('/api/lead' + _slugParam, {
         method: 'POST', headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ name: name, phone: phone, date: date, time: time, party: party, sms_opt_in: sms_opt_in, ts: new Date().toISOString() })
-      }).catch(function() {});
+      }).then(function(r) { return r.json(); }).then(function(d) {
+        if (!d.ok) console.error('Lead save failed:', d.error);
+      }).catch(function(e) { console.error('Lead fetch error:', e); });
       var resUrl = CFG.reservation_url || CFG.opentable_url || '';
       if (resUrl) {
         window.open(resUrl, '_blank');
