@@ -805,12 +805,11 @@
         addMessage('bot', 'For parties of 6 or more, give us a call at <strong>' + (CFG.phone || '(918) 591-2888') + '</strong> and we\'ll sort out the right space. 🥂');
         return;
       }
-      if (name || phone) {
-        fetch('/api/lead' + _slugParam, {
-          method: 'POST', headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ name: name, phone: phone, date: date, time: time, party: party, sms_opt_in: sms_opt_in, ts: new Date().toISOString() })
-        }).catch(function() {});
-      }
+      // Always log the reservation attempt so every submission appears in the dashboard
+      fetch('/api/lead' + _slugParam, {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ name: name, phone: phone, date: date, time: time, party: party, sms_opt_in: sms_opt_in, ts: new Date().toISOString() })
+      }).catch(function() {});
       var resUrl = CFG.reservation_url || CFG.opentable_url || '';
       if (resUrl) {
         window.open(resUrl, '_blank');

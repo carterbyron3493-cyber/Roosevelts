@@ -5,9 +5,9 @@
   "subtitle": "Downtown \u00b7 Tulsa, OK",
   "phone": "(918) 948-6761",
   "welcome": "Welcome to The Vault! \ud83c\udfdb\ufe0f Classic American cuisine in a landmark setting \u2014 how can I help you?",
-  "opentable_url": "https://www.opentable.com/r/the-vault-tulsa",
-  "reservation_url": "https://www.opentable.com/r/the-vault-tulsa",
-  "reservation_label": "Check Availability on OpenTable",
+  "opentable_url": "https://www.yelp.com/reservations/the-vault-tulsa",
+  "reservation_url": "https://www.yelp.com/reservations/the-vault-tulsa",
+  "reservation_label": "Reserve on Yelp",
   "theme": {
     "bg": "#080a10",
     "surface": "#0e1218",

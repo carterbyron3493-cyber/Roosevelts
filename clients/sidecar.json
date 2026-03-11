@@ -5,9 +5,9 @@
   "subtitle": "Cherry Street \u00b7 Tulsa, OK",
   "phone": "(918) 551-6699",
   "welcome": "Welcome to Sidecar! \ud83c\udf7a Craft beers, fine wines, and 360-degree views on Cherry Street \u2014 what'll it be?",
-  "opentable_url": "https://www.exploretock.com/sidecar-barley-wine-bar",
-  "reservation_url": "https://www.exploretock.com/sidecar-barley-wine-bar",
-  "reservation_label": "Reserve on Tock",
+  "opentable_url": "",
+  "reservation_url": "",
+  "reservation_label": "Call to Reserve",
   "theme": {
     "bg": "#0a0a0a",
     "surface": "#141210",

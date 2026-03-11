@@ -5,9 +5,9 @@
   "subtitle": "Cherry Street \u00b7 Tulsa, OK",
   "phone": "(918) 582-3456",
   "welcome": "Welcome to Sapori! \ud83c\uddee\ud83c\uddf9 Authentic Italian and Mediterranean cuisine on Cherry Street \u2014 how can I help?",
-  "opentable_url": "https://www.opentable.com/r/sapori-tulsa",
-  "reservation_url": "https://www.opentable.com/r/sapori-tulsa",
-  "reservation_label": "Check Availability on OpenTable",
+  "opentable_url": "https://www.yelp.com/reservations/sapori-tulsa",
+  "reservation_url": "https://www.yelp.com/reservations/sapori-tulsa",
+  "reservation_label": "Reserve on Yelp",
   "theme": {
     "bg": "#0f0a05",
     "surface": "#1a1208",
