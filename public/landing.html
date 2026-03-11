@@ -255,7 +255,7 @@
       <h2>Request your demo</h2>
       <p>Fill this out and we'll reach out within 24 hours to confirm your time.</p>
 
-      <form id="demoForm" onsubmit="handleSubmit(event)">
+      <form id="demoForm" action="https://formspree.io/f/meerabkw" method="POST" onsubmit="handleSubmit(event)">
         <div class="form-group">
           <label>Your name</label>
           <input type="text" name="name" placeholder="Jane Smith" required>
@@ -295,12 +295,11 @@
       var btn = e.target.querySelector('button[type=submit]');
       btn.disabled = true;
       btn.textContent = 'Sending…';
-      var data = Object.fromEntries(new FormData(e.target));
       try {
-        await fetch('/api/demo-request', {
+        await fetch(e.target.action, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: new FormData(e.target),
+          headers: { 'Accept': 'application/json' }
         });
       } catch(_) {}
       document.getElementById('demoForm').style.display = 'none';
