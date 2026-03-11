@@ -206,10 +206,24 @@ app.get('/api/health', async (req, res) => {
   res.status(status.ok ? 200 : 503).json(status);
 });
 
+// ─── OUTREACH TRACKER ─────────────────────────────────────
+app.get('/outreach', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'outreach.html'));
+});
+
 // ─── FALLBACK ─────────────────────────────────────────────
-// No ?client= param → show demo booking landing page
-// ?client=<slug>    → load the chatbot demo
+// Routing by hostname:
+//   lobbii.net / www.lobbii.net  → general product landing page (home.html)
+//   demo.lobbii.net, no ?client  → demo booking / signup page (landing.html)
+//   demo.lobbii.net, ?client=X   → live chatbot demo (index.html)
 app.get('*', (req, res) => {
+  const host = req.hostname || '';
+  const isMainSite = host === 'lobbii.net' || host === 'www.lobbii.net';
+
+  if (isMainSite) {
+    return res.sendFile(path.join(__dirname, 'public', 'home.html'));
+  }
+
   if (!req.query.client) {
     return res.sendFile(path.join(__dirname, 'public', 'landing.html'));
   }

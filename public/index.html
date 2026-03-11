@@ -285,24 +285,27 @@
       color: rgba(255,255,255,0.55); margin: 14px 0 8px; text-align: left;
     }
     .demo-cta { font-size: 17px; color: rgba(255,255,255,0.7); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; }
-    .swirly-arrow { display: inline-block; }
-    .swirly-arrow svg { overflow: visible; }
+    .demo-arrow-mob { display: none; }
+    /* Desktop: fixed-position SVG arrow drawn from overlay toward launcher */
+    #demoArrowDesk {
+      position: fixed; pointer-events: none; z-index: 9999;
+      display: block; overflow: visible;
+    }
+    #demoArrowDesk path { stroke-dasharray: 200; stroke-dashoffset: 200; animation: arrowDraw 2.4s ease-in-out infinite; }
+    #demoArrowDesk .arrow-head { animation: arrowHead 2.4s ease-in-out infinite; }
     @keyframes arrowDraw {
-      0%   { stroke-dashoffset: 120; opacity: 0; }
-      20%  { opacity: 1; }
-      80%  { stroke-dashoffset: 0; opacity: 1; }
+      0%   { stroke-dashoffset: 200; opacity: 0; }
+      15%  { opacity: 1; }
+      75%  { stroke-dashoffset: 0; opacity: 1; }
       100% { stroke-dashoffset: 0; opacity: 0; }
     }
     @keyframes arrowHead {
-      0%,70% { opacity: 0; }
-      85%,90% { opacity: 1; }
+      0%,65% { opacity: 0; }
+      82%,92% { opacity: 1; }
       100%    { opacity: 0; }
     }
-    .swirly-path { stroke-dasharray: 120; stroke-dashoffset: 120; animation: arrowDraw 2.2s ease-in-out infinite; }
-    .swirly-head { animation: arrowHead 2.2s ease-in-out infinite; }
-    .demo-arrow-mob { display: none; }
     @media (max-width: 600px) {
-      .demo-arrow-desk { display: none; }
+      #demoArrowDesk { display: none; }
       .demo-arrow-mob { display: inline-block; }
     }
     .demo-overlay.chat-open { display: none !important; }
@@ -362,20 +365,18 @@
     </div>
     <p class="demo-cta">
       Try the bot in the corner
-      <span class="swirly-arrow demo-arrow-desk">
-        <svg width="54" height="36" viewBox="0 0 54 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Curving arrow sweeping right then down toward the corner button -->
-          <path class="swirly-path" d="M 2 4 C 10 2, 28 2, 38 10 C 46 17, 48 26, 44 32" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round" fill="none"/>
-          <!-- Arrowhead -->
-          <g class="swirly-head">
-            <line x1="44" y1="32" x2="38" y2="29" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
-            <line x1="44" y1="32" x2="47" y2="26" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
-          </g>
-        </svg>
-      </span>
       <span class="demo-arrow-mob" style="font-size:20px; opacity:0.7;">↘</span>
     </p>
   </div>
+
+  <!-- Desktop arrow: dynamically positioned by JS toward the launcher button -->
+  <svg id="demoArrowDesk" width="0" height="0" xmlns="http://www.w3.org/2000/svg">
+    <path id="demoArrowPath" d="" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <g class="arrow-head" id="demoArrowHead">
+      <line id="demoArrowH1" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" stroke-linecap="round"/>
+      <line id="demoArrowH2" stroke="rgba(255,255,255,0.75)" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+  </svg>
 
   <!-- ═══ LAUNCHER ═══ -->
   <div class="launcher" id="launcher">
@@ -864,6 +865,78 @@
       var b = document.getElementById('speechBubble');
       if (b && !isOpen) { b.style.transition='opacity 0.5s'; b.style.opacity='0'; setTimeout(function(){b.style.display='none';},500); }
     }, 6000);
+
+    // ─── DESKTOP ARROW (points from overlay toward launcher) ────
+    function drawDemoArrow() {
+      if (window.innerWidth <= 600) return;
+      var overlay  = document.getElementById('demoOverlay');
+      var launcher = document.getElementById('launcher');
+      var svg      = document.getElementById('demoArrowDesk');
+      var pathEl   = document.getElementById('demoArrowPath');
+      var h1       = document.getElementById('demoArrowH1');
+      var h2       = document.getElementById('demoArrowH2');
+      if (!overlay || !launcher || !svg || !pathEl) return;
+      if (overlay.style.display === 'none') { svg.style.display = 'none'; return; }
+
+      var oRect = overlay.getBoundingClientRect();
+      var lRect = launcher.getBoundingClientRect();
+
+      // Start: bottom-right of overlay, slightly inset
+      var x0 = oRect.right - 12;
+      var y0 = oRect.bottom - 10;
+      // End: center of launcher button
+      var x1 = lRect.left + lRect.width / 2;
+      var y1 = lRect.top  + lRect.height / 2;
+
+      // Control point: arc outward (offset perpendicular to the line)
+      var mx = (x0 + x1) / 2 + (y1 - y0) * 0.25;
+      var my = (y0 + y1) / 2 - (x1 - x0) * 0.15;
+
+      // Position the SVG to span the bounding box with padding
+      var minX = Math.min(x0, x1, mx) - 20;
+      var minY = Math.min(y0, y1, my) - 20;
+      var maxX = Math.max(x0, x1, mx) + 20;
+      var maxY = Math.max(y0, y1, my) + 20;
+      svg.style.left = minX + 'px';
+      svg.style.top  = minY + 'px';
+      svg.setAttribute('width',  maxX - minX);
+      svg.setAttribute('height', maxY - minY);
+      svg.style.display = 'block';
+
+      // Translate coords relative to SVG origin
+      var ox = x0 - minX, oy = y0 - minY;
+      var ex = x1 - minX, ey = y1 - minY;
+      var cx = mx - minX, cy = my - minY;
+      pathEl.setAttribute('d', 'M '+ox+' '+oy+' Q '+cx+' '+cy+' '+ex+' '+ey);
+
+      // Update dasharray to match path length
+      try {
+        var len = pathEl.getTotalLength();
+        pathEl.style.strokeDasharray = len;
+        pathEl.style.strokeDashoffset = len;
+      } catch(e) {}
+
+      // Arrowhead: tangent at end of quadratic bezier
+      var tx = ex - (2*(1-1)*(cx-ox) + 2*1*(ex-cx));
+      var ty = ey - (2*(1-1)*(cy-oy) + 2*1*(ey-cy));
+      var tangentX = ex - cx;
+      var tangentY = ey - cy;
+      var tn = Math.sqrt(tangentX*tangentX + tangentY*tangentY) || 1;
+      tangentX /= tn; tangentY /= tn;
+      var perpX = -tangentY, perpY = tangentX;
+      var headLen = 10;
+      var bx1 = ex - tangentX*headLen + perpX*headLen*0.4;
+      var by1 = ey - tangentY*headLen + perpY*headLen*0.4;
+      var bx2 = ex - tangentX*headLen - perpX*headLen*0.4;
+      var by2 = ey - tangentY*headLen - perpY*headLen*0.4;
+      h1.setAttribute('x1', ex); h1.setAttribute('y1', ey);
+      h1.setAttribute('x2', bx1); h1.setAttribute('y2', by1);
+      h2.setAttribute('x1', ex); h2.setAttribute('y1', ey);
+      h2.setAttribute('x2', bx2); h2.setAttribute('y2', by2);
+    }
+    // Draw on load and after fonts/layout settle
+    window.addEventListener('load', function() { setTimeout(drawDemoArrow, 200); });
+    window.addEventListener('resize', drawDemoArrow);
 
     // ─── KEYBOARD-AWARE HEIGHT (mobile) ──────────────────────
     if (window.visualViewport) {

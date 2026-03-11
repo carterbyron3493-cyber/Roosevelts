@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Outreach Tracker — Lobbii</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black:  #0a0a0a;
+      --cream:  #f5f2ec;
+      --gold:   #c9a84c;
+      --gold-dim: rgba(201,168,76,0.14);
+      --gold-border: rgba(201,168,76,0.28);
+      --muted:  rgba(245,242,236,0.45);
+      --border: rgba(255,255,255,0.07);
+      --surface: #111010;
+      --surface2: #161515;
+      --green: #4caf76;
+      --green-dim: rgba(76,175,118,0.12);
+      --green-border: rgba(76,175,118,0.3);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--black);
+      color: var(--cream);
+      font-family: 'Instrument Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ── LOGIN ── */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .login-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 44px 40px;
+      width: 100%; max-width: 380px;
+      text-align: center;
+    }
+    .login-logo {
+      font-family: 'Instrument Serif', serif;
+      font-size: 28px; color: var(--cream); margin-bottom: 6px;
+    }
+    .login-logo em { color: var(--gold); font-style: italic; }
+    .login-sub { font-size: 13px; color: var(--muted); margin-bottom: 32px; }
+    .login-box label { display: block; font-size: 12px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; text-align: left; }
+    .login-box input[type=password] {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px; padding: 11px 14px;
+      color: var(--cream); font-size: 15px; font-family: inherit;
+      outline: none; transition: border-color 0.2s;
+      margin-bottom: 14px;
+    }
+    .login-box input[type=password]:focus { border-color: var(--gold-border); }
+    .login-btn {
+      width: 100%; background: var(--gold); color: #0a0a0a;
+      border: none; border-radius: 8px; padding: 12px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      font-family: inherit; transition: opacity 0.2s;
+    }
+    .login-btn:hover { opacity: 0.88; }
+    .login-error { font-size: 13px; color: #e07070; margin-top: 10px; display: none; }
+
+    /* ── MAIN APP ── */
+    #app { display: none; }
+    header {
+      padding: 20px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(10,10,10,0.95); backdrop-filter: blur(12px);
+    }
+    .header-left h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px; letter-spacing: -0.3px;
+    }
+    .header-left h1 em { color: var(--gold); font-style: italic; }
+    .header-left p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .header-stats {
+      display: flex; gap: 24px; align-items: center;
+    }
+    .stat { text-align: right; }
+    .stat-num { font-family: 'Instrument Serif', serif; font-size: 24px; color: var(--gold); }
+    .stat-label { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ── FILTERS ── */
+    .filters {
+      padding: 16px 32px;
+      display: flex; gap: 10px; align-items: center;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--muted); font-size: 13px; font-family: inherit;
+      padding: 6px 14px; border-radius: 20px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--gold-border); color: var(--gold); background: var(--gold-dim); }
+    .filter-label { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-right: 4px; }
+
+    /* ── TABLE ── */
+    .table-wrap { padding: 24px 32px; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); font-weight: 500; text-align: left;
+      padding: 0 16px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    thead th:first-child { padding-left: 0; }
+    tbody tr {
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+    tbody td {
+      padding: 16px;
+      font-size: 14px; vertical-align: middle;
+    }
+    tbody td:first-child { padding-left: 0; }
+
+    .client-info { display: flex; flex-direction: column; gap: 2px; }
+    .client-name { font-weight: 500; font-size: 15px; }
+    .client-phone { font-size: 12px; color: var(--muted); }
+
+    .live-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--green-dim); border: 1px solid var(--green-border);
+      color: var(--green); font-size: 12px; font-weight: 500;
+      padding: 4px 10px; border-radius: 20px; white-space: nowrap;
+    }
+    .live-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green); flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* Checkbox cells */
+    .check-cell { text-align: center; }
+    .outreach-check {
+      width: 18px; height: 18px;
+      accent-color: var(--gold); cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .demo-link {
+      color: var(--gold); font-size: 12px; text-decoration: none;
+      opacity: 0.7; transition: opacity 0.2s;
+    }
+    .demo-link:hover { opacity: 1; }
+
+    .notes-input {
+      background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--cream); font-size: 13px; font-family: inherit;
+      width: 140px; padding: 4px 0; outline: none;
+      transition: border-color 0.2s;
+    }
+    .notes-input:focus { border-bottom-color: var(--gold-border); }
+    .notes-input::placeholder { color: rgba(245,242,236,0.2); }
+
+    .save-indicator {
+      font-size: 11px; color: var(--green); opacity: 0;
+      transition: opacity 0.3s; margin-left: 8px;
+    }
+    .save-indicator.show { opacity: 1; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 700px) {
+      header { padding: 16px 16px; flex-direction: column; align-items: flex-start; gap: 12px; }
+      .table-wrap { padding: 16px; overflow-x: auto; }
+      .filters { padding: 12px 16px; }
+      .notes-input { width: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── LOGIN ── -->
+  <div id="loginScreen">
+    <div class="login-box">
+      <div class="login-logo">Lobbi<em>i</em></div>
+      <div class="login-sub">Outreach Tracker</div>
+      <label for="pwdInput">Password</label>
+      <input type="password" id="pwdInput" placeholder="Enter password" autocomplete="current-password"/>
+      <button class="login-btn" onclick="tryLogin()">Continue</button>
+      <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+    </div>
+  </div>
+
+  <!-- ── APP ── -->
+  <div id="app">
+
+    <header>
+      <div class="header-left">
+        <h1>Lobbi<em>i</em> — Outreach Tracker</h1>
+        <p id="lastSaved">Changes saved automatically</p>
+      </div>
+      <div class="header-stats">
+        <div class="stat">
+          <div class="stat-num" id="statContacted">—</div>
+          <div class="stat-label">Contacted</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" id="statTotal">—</div>
+          <div class="stat-label">Total bots live</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="filters">
+      <span class="filter-label">Filter:</span>
+      <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+      <button class="filter-btn" onclick="setFilter('not_contacted', this)">Not yet contacted</button>
+      <button class="filter-btn" onclick="setFilter('in_person', this)">Spoke in person</button>
+      <button class="filter-btn" onclick="setFilter('card', this)">Left card</button>
+      <button class="filter-btn" onclick="setFilter('mailer', this)">Sent mailer</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Restaurant</th>
+            <th>Bot Status</th>
+            <th class="check-cell">Spoke in person</th>
+            <th class="check-cell">Left card</th>
+            <th class="check-cell">Sent mailer</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="clientTable"></tbody>
+      </table>
+    </div>
+
+  </div><!-- /app -->
+
+  <script>
+    const PASS = 'cumbrevida25';
+    const STORE_KEY = 'lobbii_outreach_v1';
+
+    // ── CLIENT LIST ──────────────────────────────────────────────────────────
+    const CLIENTS = [
+      { slug: 'andolinis',   name: "Andolini's Pizzeria",       phone: '(918) 505-4850' },
+      { slug: 'avajune',     name: 'Ava June',                   phone: '(918) 576-8270' },
+      { slug: 'bigwhiskeys', name: "Big Whiskey's",              phone: '(918) 712-2232' },
+      { slug: 'cheevers',    name: "Cheever's Cafe",             phone: '(539) 867-2055' },
+      { slug: 'chimis',      name: "Chimi's",                    phone: '(918) 587-4411' },
+      { slug: 'cowcabbage',  name: 'Cow & Cabbage',              phone: '(918) 600-1860' },
+      { slug: 'daigoro',     name: 'Daigoro',                    phone: '(918) 221-0610' },
+      { slug: 'hemingway',   name: 'The Hemingway',              phone: '(918) 248-0185' },
+      { slug: 'kilkennys',   name: "Kilkenny's Irish Pub",       phone: '(918) 582-8282' },
+      { slug: 'lofi',        name: 'LoFi Pizza & Wine',          phone: '(918) 728-5300' },
+      { slug: 'mapleridge',  name: 'Maple Ridge Grocer',         phone: '(918) 550-5610' },
+      { slug: 'mcnellies',   name: "McNellie's Public House",    phone: '(918) 382-7468' },
+      { slug: 'micocina',    name: 'Mi Cocina',                  phone: '(918) 599-8009' },
+      { slug: 'misfit',      name: 'Misfit Kitchen',             phone: '(918) 551-7657' },
+      { slug: 'nolas',       name: "Nola's Creole & Cocktails",  phone: '(918) 576-8377' },
+      { slug: 'prossimo',    name: 'Prossimo',                   phone: '(918) 271-5096' },
+      { slug: 'roosevelts',  name: "Roosevelt's",                phone: '(918) 591-2888' },
+      { slug: 'sapori',      name: 'Sapori di Napoli',           phone: '(918) 582-3456' },
+      { slug: 'sidecar',     name: 'Sidecar Barley & Wine',      phone: '(918) 551-6699' },
+      { slug: 'smoke',       name: 'SMOKE. Woodfire Grill',      phone: '(918) 949-4440' },
+      { slug: 'vault',       name: 'The Vault Restaurant',       phone: '(918) 948-6761' },
+    ];
+
+    // ── STATE ────────────────────────────────────────────────────────────────
+    let data = {};
+    let currentFilter = 'all';
+    let saveTimer = null;
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (raw) data = JSON.parse(raw);
+      } catch(e) { data = {}; }
+    }
+
+    function saveData() {
+      localStorage.setItem(STORE_KEY, JSON.stringify(data));
+      const el = document.getElementById('lastSaved');
+      const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      el.textContent = 'Saved at ' + now;
+    }
+
+    function getRecord(slug) {
+      if (!data[slug]) data[slug] = { in_person: false, card: false, mailer: false, notes: '' };
+      return data[slug];
+    }
+
+    // ── LOGIN ────────────────────────────────────────────────────────────────
+    function tryLogin() {
+      const val = document.getElementById('pwdInput').value;
+      if (val === PASS) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        loadData();
+        renderTable();
+        updateStats();
+      } else {
+        document.getElementById('loginError').style.display = 'block';
+        document.getElementById('pwdInput').value = '';
+        document.getElementById('pwdInput').focus();
+      }
+    }
+    document.getElementById('pwdInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') tryLogin();
+    });
+
+    // ── RENDER ───────────────────────────────────────────────────────────────
+    function setFilter(f, btn) {
+      currentFilter = f;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderTable();
+    }
+
+    function matchesFilter(slug) {
+      const r = getRecord(slug);
+      if (currentFilter === 'all') return true;
+      if (currentFilter === 'not_contacted') return !r.in_person && !r.card && !r.mailer;
+      if (currentFilter === 'in_person') return r.in_person;
+      if (currentFilter === 'card') return r.card;
+      if (currentFilter === 'mailer') return r.mailer;
+      return true;
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('clientTable');
+      tbody.innerHTML = '';
+      CLIENTS.forEach(function(c) {
+        if (!matchesFilter(c.slug)) return;
+        const r = getRecord(c.slug);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <div class="client-info">
+              <span class="client-name">${c.name}</span>
+              <span class="client-phone">${c.phone}</span>
+            </div>
+          </td>
+          <td><span class="live-badge"><span class="live-dot"></span> Bot live</span></td>
+          <td class="check-cell">
+            <input type="checkbox" class="outreach-check" id="inp_${c.slug}"
+              ${r.in_person ? 'checked' : ''}
+              onchange="toggle('${c.slug}', 'in_person', this.checked)"/>
+          </td>
+          <td class="check-cell">
+            <input type="checkbox" class="outreach-check"
+              ${r.card ? 'checked' : ''}
+              onchange="toggle('${c.slug}', 'card', this.checked)"/>
+          </td>
+          <td class="check-cell">
+            <input type="checkbox" class="outreach-check"
+              ${r.mailer ? 'checked' : ''}
+              onchange="toggle('${c.slug}', 'mailer', this.checked)"/>
+          </td>
+          <td>
+            <input type="text" class="notes-input" placeholder="Add note…"
+              value="${(r.notes || '').replace(/"/g,'&quot;')}"
+              onchange="updateNotes('${c.slug}', this.value)"
+              oninput="scheduleSave()"/>
+          </td>
+          <td>
+            <a href="https://demo.lobbii.net/?client=${c.slug}" target="_blank" class="demo-link">View bot →</a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function toggle(slug, field, val) {
+      getRecord(slug)[field] = val;
+      scheduleSave();
+      updateStats();
+    }
+
+    function updateNotes(slug, val) {
+      getRecord(slug).notes = val;
+      scheduleSave();
+    }
+
+    function scheduleSave() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveData, 600);
+    }
+
+    function updateStats() {
+      const total = CLIENTS.length;
+      let contacted = 0;
+      CLIENTS.forEach(function(c) {
+        const r = getRecord(c.slug);
+        if (r.in_person || r.card || r.mailer) contacted++;
+      });
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statContacted').textContent = contacted;
+    }
+  </script>
+</body>
+</html>
