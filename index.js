@@ -206,6 +206,42 @@ app.get('/api/health', async (req, res) => {
   res.status(status.ok ? 200 : 503).json(status);
 });
 
+// ─── DEMO BOOKING FORM ────────────────────────────────────
+app.post('/api/demo-request', express.json(), async (req, res) => {
+  const { name, restaurant, phone, email } = req.body || {};
+  if (!name || !email) return res.status(400).json({ error: 'Missing fields' });
+
+  const RESEND_KEY = process.env.RESEND_API_KEY;
+  if (!RESEND_KEY) {
+    // No email API key configured — just log and return success so the page still works
+    console.log('[DEMO REQUEST]', { name, restaurant, phone, email });
+    return res.json({ ok: true });
+  }
+
+  try {
+    const emailRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${RESEND_KEY}` },
+      body: JSON.stringify({
+        from: 'Lobbii Demo Form <noreply@lobbii.net>',
+        to: ['hello@lobbii.net'],
+        subject: `New Demo Request — ${restaurant || name}`,
+        html: `<h2>New Demo Request</h2>
+<p><strong>Name:</strong> ${name}</p>
+<p><strong>Restaurant:</strong> ${restaurant || '—'}</p>
+<p><strong>Phone:</strong> ${phone || '—'}</p>
+<p><strong>Email:</strong> ${email}</p>`
+      })
+    });
+    const data = await emailRes.json();
+    if (!emailRes.ok) throw new Error(JSON.stringify(data));
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('[DEMO REQUEST email error]', err.message);
+    res.status(500).json({ error: 'Email failed' });
+  }
+});
+
 // ─── FALLBACK ─────────────────────────────────────────────
 // No ?client= param → show demo booking landing page
 // ?client=<slug>    → load the chatbot demo
