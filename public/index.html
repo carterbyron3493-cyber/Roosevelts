@@ -213,7 +213,9 @@
       width: min(580px, calc(100vw - 140px));
       z-index: 10; text-align: center; pointer-events: auto; padding: 24px;
       max-height: calc(100vh - 60px); overflow-y: auto;
+      scrollbar-width: none;
     }
+    .demo-overlay::-webkit-scrollbar { display: none; }
     body.embed-mode .demo-overlay { display: none !important; }
     .demo-badge {
       display: inline-block;
@@ -244,10 +246,11 @@
       background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3);
     }
     .demo-pill-gold {
-      background: rgba(201,168,76,0.12); border-color: rgba(201,168,76,0.35);
+      background: rgba(201,168,76,0.18); border-color: rgba(201,168,76,0.5);
+      color: #c9a84c;
     }
     .demo-pill-gold:hover, .demo-pill-gold.active {
-      background: rgba(201,168,76,0.22); border-color: rgba(201,168,76,0.6);
+      background: rgba(201,168,76,0.28); border-color: rgba(201,168,76,0.75);
     }
     .demo-pill-muted {
       background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.09);
@@ -271,7 +274,7 @@
     .demo-pill.active .pill-dropdown { display: block; }
     .demo-section-label {
       font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(255,255,255,0.3); margin: 14px 0 8px; text-align: left;
+      color: rgba(255,255,255,0.55); margin: 14px 0 8px; text-align: left;
     }
     .demo-cta { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 6px; }
     .demo-arrow { display: inline-block; color: #ffffff; animation: arrowPulse 1.6s ease-in-out infinite; }
@@ -325,13 +328,13 @@
       <span class="demo-pill demo-pill-gold" onclick="togglePill(this)">Review follow-up<div class="pill-dropdown">After a visit, the bot follows up automatically and guides happy guests toward leaving a Google or Yelp review — without you lifting a finger.</div></span>
       <span class="demo-pill demo-pill-gold" onclick="togglePill(this)">Lead capture &amp; logging<div class="pill-dropdown">Every reservation request and inquiry is logged to a dashboard and your preferred sheet — no lead falls through the cracks.</div></span>
       <span class="demo-pill demo-pill-gold" onclick="togglePill(this)">Analytics dashboard<div class="pill-dropdown">See what guests are asking, when they're engaging, and where they drop off — so you can keep improving the experience.</div></span>
+      <span class="demo-pill demo-pill-gold" onclick="togglePill(this)">Event &amp; private dining<div class="pill-dropdown">Dedicated booking flows for private rooms, events, and large parties — captured and logged automatically.</div></span>
     </div>
     <div class="demo-section-label">Also available upon request</div>
     <div class="demo-pills">
       <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Instagram &amp; Facebook DMs<div class="pill-dropdown">Auto-reply to DMs on Instagram and Facebook — so every inquiry gets answered, even at midnight.</div></span>
       <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Email campaigns<div class="pill-dropdown">Automated follow-up email sequences triggered by guest activity — confirmations, upsells, win-backs.</div></span>
       <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Loyalty &amp; rewards<div class="pill-dropdown">A points or perk system tied to reservations and visits, fully managed through the bot.</div></span>
-      <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Event &amp; private dining<div class="pill-dropdown">Dedicated booking flows for private rooms, events, and large parties — captured and logged automatically.</div></span>
       <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Online ordering<div class="pill-dropdown">Connect your existing online ordering system so the bot can guide guests straight to checkout.</div></span>
       <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Waitlist &amp; table alerts<div class="pill-dropdown">Text guests when their table is ready — no pager needed, no manual follow-up.</div></span>
       <span class="demo-pill demo-pill-muted" onclick="togglePill(this)">Geofencing<div class="pill-dropdown">Trigger promos or messages when guests are physically near your location — drive walk-in traffic on slow nights.</div></span>
