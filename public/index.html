@@ -241,48 +241,32 @@
       font-size: 14px; color: rgba(255,255,255,0.6);
       margin: 0 auto 24px; line-height: 1.65; max-width: 400px;
     }
-    .demo-pills {
-      display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-bottom: 24px;
+    .stat-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px;
     }
-    .demo-pill {
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14);
-      color: #ffffff; font-size: 13px; padding: 5px 13px; border-radius: 20px;
-      cursor: pointer; position: relative;
-      transition: background 0.15s, border-color 0.15s;
+    .stat-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px; padding: 16px 14px; text-align: left;
     }
-    .demo-pill:hover {
-      background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3);
+    .stat-card-gold {
+      background: rgba(201,168,76,0.1); border-color: rgba(201,168,76,0.35);
     }
-    .demo-pill-gold {
-      background: rgba(201,168,76,0.18); border-color: rgba(201,168,76,0.5);
-      color: #c9a84c;
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 38px); color: #c9a84c;
+      line-height: 1; letter-spacing: -1px; margin-bottom: 6px;
     }
-    .demo-pill-gold:hover {
-      background: rgba(201,168,76,0.28); border-color: rgba(201,168,76,0.75);
+    .stat-card-gold .stat-num { color: #e8d5a3; }
+    .stat-label {
+      font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.45; margin-bottom: 6px;
     }
-    .demo-pill-muted {
-      background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.09);
+    .stat-source {
+      font-size: 10px; color: rgba(255,255,255,0.3); letter-spacing: 0.05em;
     }
-    .pill-dropdown {
-      display: none; position: absolute; top: calc(100% + 7px); left: 50%;
-      transform: translateX(-50%);
-      background: rgba(20,15,5,0.97); border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 10px; padding: 10px 13px; width: 210px;
-      font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.55;
-      text-align: left; z-index: 20; pointer-events: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.6); white-space: normal;
-    }
-    .pill-dropdown::before {
-      content: ''; position: absolute; top: -5px; left: 50%;
-      width: 8px; height: 8px; background: rgba(20,15,5,0.97);
-      border-left: 1px solid rgba(255,255,255,0.18);
-      border-top: 1px solid rgba(255,255,255,0.18);
-      transform: translateX(-50%) rotate(45deg);
-    }
-    .demo-pill:hover .pill-dropdown { display: block; }
-    .demo-section-label {
-      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(255,255,255,0.55); margin: 14px 0 8px; text-align: left;
+    .demo-disclaimer {
+      font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.5;
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;
+      margin-top: 4px;
     }
     .demo-cta { font-size: 17px; color: rgba(255,255,255,0.7); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; }
     .swirly-arrow { display: inline-block; }
@@ -319,9 +303,9 @@
       .demo-badge { margin-bottom: 10px; }
       .demo-headline { font-size: clamp(18px, 5vw, 24px); margin-bottom: 8px; }
       .demo-sub { font-size: 12px; margin-bottom: 14px; }
-      .demo-pills { gap: 5px; margin-bottom: 14px; }
-      .demo-pill { font-size: 11px; padding: 4px 10px; }
-      .demo-cta { font-size: 12px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+      .stat-num { font-size: 26px; }
+      .stat-label { font-size: 11px; }
     }
   </style>
 </head>
@@ -332,34 +316,29 @@
     <div class="demo-badge"><span class="live-dot"></span>Live Demo — Lobbii AI</div>
     <h1 class="demo-headline">Your restaurant's<br>full guest lifecycle,<br>on autopilot.</h1>
     <p class="demo-sub">From first question to loyal regular — every interaction captured, every opportunity followed up. Built for this restaurant. Everything customizable for yours.</p>
-    <div class="demo-section-label">What's in this demo</div>
-    <div class="demo-pills">
-      <span class="demo-pill">Custom theme<div class="pill-dropdown">Colors, fonts, and mood matched to your restaurant — guests feel right at home from the first message.</div></span>
-      <span class="demo-pill">Custom avatar<div class="pill-dropdown">A unique AI character that fits your brand — not a generic bot. Name it, style it, make it yours.</div></span>
-      <span class="demo-pill">Full menu &amp; specials<div class="pill-dropdown">The bot knows your full menu, seasonal specials, and can answer questions like "what's good for two sharing?" in seconds.</div></span>
-      <span class="demo-pill">Reservation capture<div class="pill-dropdown">Guests can request a table directly in the chat. Name, party size, date, time — captured automatically and synced with OpenTable or Resy.</div></span>
-      <span class="demo-pill">24/7 guest Q&amp;A<div class="pill-dropdown">Hours, parking, dietary options, dress code — answered instantly, even at 2am when no one's picking up the phone.</div></span>
-      <span class="demo-pill">Smart quick-replies<div class="pill-dropdown">Contextual suggestion buttons surface at just the right moment, guiding guests toward reservations, specials, and more.</div></span>
-      <span class="demo-pill">AI tone &amp; personality<div class="pill-dropdown">Fine dining formality or neighborhood-bar warmth — the AI's voice is tuned to match exactly how your team talks to guests.</div></span>
-      <span class="demo-pill">One-line embed<div class="pill-dropdown">A single script tag is all it takes. Drops into any website in under two minutes — no developer needed.</div></span>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num">43%</div>
+        <div class="stat-label">of restaurant calls go completely unanswered</div>
+        <div class="stat-source">Harris Poll · 2025</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">69%</div>
+        <div class="stat-label">of guests won't visit a restaurant that doesn't respond</div>
+        <div class="stat-source">Hostie Consumer Survey · 2025</div>
+      </div>
+      <div class="stat-card stat-card-gold">
+        <div class="stat-num">60%</div>
+        <div class="stat-label">of callers never try again after one missed call</div>
+        <div class="stat-source">Harris Poll · 2025</div>
+      </div>
+      <div class="stat-card stat-card-gold">
+        <div class="stat-num">30–40%</div>
+        <div class="stat-label">avg. reduction in customer service costs with AI</div>
+        <div class="stat-source">SevenRooms Industry Report</div>
+      </div>
     </div>
-    <div class="demo-section-label">Included in Professional &amp; Premium</div>
-    <div class="demo-pills">
-      <span class="demo-pill demo-pill-gold">SMS marketing<div class="pill-dropdown">Send broadcast texts to your guest list — promos, slow-night specials, event announcements. Delivered to people who actually want to hear from you.</div></span>
-      <span class="demo-pill demo-pill-gold">Review follow-up<div class="pill-dropdown">After a visit, the bot follows up automatically and guides happy guests toward leaving a Google or Yelp review — without you lifting a finger.</div></span>
-      <span class="demo-pill demo-pill-gold">Lead capture &amp; logging<div class="pill-dropdown">Every reservation request and inquiry is logged to a dashboard and your preferred sheet — no lead falls through the cracks.</div></span>
-      <span class="demo-pill demo-pill-gold">Analytics dashboard<div class="pill-dropdown">See what guests are asking, when they're engaging, and where they drop off — so you can keep improving the experience.</div></span>
-      <span class="demo-pill demo-pill-gold">Event &amp; private dining<div class="pill-dropdown">Dedicated booking flows for private rooms, events, and large parties — captured and logged automatically.</div></span>
-    </div>
-    <div class="demo-section-label">Also available upon request</div>
-    <div class="demo-pills">
-      <span class="demo-pill demo-pill-muted">Instagram &amp; Facebook DMs<div class="pill-dropdown">Auto-reply to DMs on Instagram and Facebook — so every inquiry gets answered, even at midnight.</div></span>
-      <span class="demo-pill demo-pill-muted">Email campaigns<div class="pill-dropdown">Automated follow-up email sequences triggered by guest activity — confirmations, upsells, win-backs.</div></span>
-      <span class="demo-pill demo-pill-muted">Loyalty &amp; rewards<div class="pill-dropdown">A points or perk system tied to reservations and visits, fully managed through the bot.</div></span>
-      <span class="demo-pill demo-pill-muted">Online ordering<div class="pill-dropdown">Connect your existing online ordering system so the bot can guide guests straight to checkout.</div></span>
-      <span class="demo-pill demo-pill-muted">Waitlist &amp; table alerts<div class="pill-dropdown">Text guests when their table is ready — no pager needed, no manual follow-up.</div></span>
-      <span class="demo-pill demo-pill-muted">Geofencing<div class="pill-dropdown">Trigger promos or messages when guests are physically near your location — drive walk-in traffic on slow nights.</div></span>
-    </div>
+    <p class="demo-disclaimer">Everything you see — name, colors, personality, menu — is built custom for each restaurant.</p>
   </div>
 
   <!-- ═══ LAUNCHER ═══ -->
