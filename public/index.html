@@ -268,6 +268,23 @@
       border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;
       margin-top: 4px;
     }
+    .stat-card-roi {
+      grid-column: 1 / -1;
+      background: rgba(74,222,128,0.07); border-color: rgba(74,222,128,0.28);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .stat-roi-num {
+      font-family: 'Playfair Display', serif; font-size: clamp(26px, 4.5vw, 34px);
+      color: #4ade80; line-height: 1; letter-spacing: -1px; flex-shrink: 0;
+    }
+    .stat-roi-desc { display: flex; flex-direction: column; gap: 4px; }
+    .demo-cta-link {
+      display: block; text-align: center; margin-top: 14px; padding: 14px 20px;
+      background: #c9a84c; color: #0a0a0a; text-decoration: none;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; border-radius: 6px; transition: background 0.2s;
+    }
+    .demo-cta-link:hover { background: #e8c870; }
     .demo-cta { font-size: 17px; color: rgba(255,255,255,0.7); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 500; }
     .swirly-arrow { display: inline-block; }
     .swirly-arrow svg { overflow: visible; }
@@ -337,8 +354,16 @@
         <div class="stat-label">avg. reduction in customer service costs with AI</div>
         <div class="stat-source">SevenRooms Industry Report</div>
       </div>
+      <div class="stat-card stat-card-roi">
+        <div class="stat-roi-num">$29,200</div>
+        <div class="stat-roi-desc">
+          <div class="stat-label">recovered per year from just <strong>1 missed table a night</strong></div>
+          <div class="stat-source">Avg. $80 table check × 365 nights</div>
+        </div>
+      </div>
     </div>
     <p class="demo-disclaimer">Everything you see — name, colors, personality, menu — is built custom for each restaurant.</p>
+    <a href="https://lobbii.net/demo" class="demo-cta-link" target="_blank">Get This For Your Restaurant →</a>
   </div>
 
   <!-- ═══ LAUNCHER ═══ -->
@@ -567,6 +592,104 @@
           "<ellipse cx='29' cy='8' rx='26' ry='4.5' fill='#4a2610' stroke='#1e0f05' stroke-width='0.8'/>" +
           "<path d='M 3 8 Q 16 14 29 12 Q 42 14 55 8' fill='#4a2610' stroke='#1e0f05' stroke-width='0.7'/>" +
           "<rect x='13' y='4.5' width='32' height='4' rx='1.5' fill='#c9a84c' opacity='0.9'/>"
+      }), vb: '0 0 58 66' },
+
+      // Oren — olive-green tie, fresh herb sprig tucked in lapel
+      'oren': { i: _concierge({
+        tieColor: '#6aaa58',
+        jacket: '#18200f',
+        faceExtras:
+          "<line x1='22' y1='47' x2='22' y2='53' stroke='#6aaa58' stroke-width='1.2' stroke-linecap='round'/>" +
+          "<ellipse cx='20' cy='46.5' rx='2' ry='1.2' fill='#6aaa58' opacity='0.85'/>" +
+          "<ellipse cx='23.5' cy='45.5' rx='1.5' ry='1' fill='#8eca7a' opacity='0.75'/>"
+      }), vb: '0 0 58 66' },
+
+      // R Bar & Grill — warm amber/wheat tie, hop cone pin
+      'rbar': { i: _concierge({
+        tieColor: '#c8922e',
+        hat:
+          "<circle cx='38' cy='52' r='2.5' fill='#c8922e' opacity='0.85'/>" +
+          "<circle cx='38' cy='52' r='1.2' fill='#f5e0a0' opacity='0.7'/>"
+      }), vb: '0 0 58 66' },
+
+      // Brookside Diner — classic red diner tie, retro star name badge
+      'brooksidediner': { i: _concierge({
+        tieColor: '#c83030',
+        faceExtras:
+          "<rect x='19' y='48' width='10' height='6' rx='1.5' fill='#c83030' opacity='0.9'/>" +
+          "<text x='24' y='53' text-anchor='middle' font-size='3.5' fill='white' font-family='sans-serif'>DINER</text>"
+      }), vb: '0 0 58 66' },
+
+      // Mondo's — Italian curly mustache, red tie, olive skin
+      'mondos': { i: _concierge({
+        skin: '#c89060',
+        tieColor: '#c82020',
+        faceExtras:
+          "<path d='M 22 36.5 Q 24 34 29 35.5 Q 34 34 36 36.5' fill='none' stroke='#3a1810' stroke-width='2.8' stroke-linecap='round'/>" +
+          "<path d='M 22 36.5 Q 19.5 36 18.5 38 Q 19 39.5 21 39' fill='none' stroke='#3a1810' stroke-width='2' stroke-linecap='round'/>" +
+          "<path d='M 36 36.5 Q 38.5 36 39.5 38 Q 39 39.5 37 39' fill='none' stroke='#3a1810' stroke-width='2' stroke-linecap='round'/>"
+      }), vb: '0 0 58 66' },
+
+      // Bin 35 Bistro — deep navy tie, small gold French fleur on lapel
+      'bin35': { i: _concierge({
+        tieColor: '#2a4a8a',
+        jacket: '#080e18',
+        faceExtras:
+          "<path d='M 21 49 Q 23 46 25 49 Q 23 52 21 49 Z' fill='#c9a84c' opacity='0.9'/>" +
+          "<line x1='23' y1='49' x2='23' y2='53' stroke='#c9a84c' stroke-width='1' opacity='0.7'/>"
+      }), vb: '0 0 58 66' },
+
+      // Malfi Enoteca — ocean-blue tie, small Italian flag pin
+      'malfi': { i: _concierge({
+        tieColor: '#3a8ab0',
+        jacket: '#0a1828',
+        hat:
+          "<rect x='19' y='48.5' width='3' height='5' rx='0.5' fill='#009246'/>" +
+          "<rect x='22' y='48.5' width='3' height='5' rx='0' fill='#f0f0f0'/>" +
+          "<rect x='25' y='48.5' width='3' height='5' rx='0.5' fill='#ce2b37'/>"
+      }), vb: '0 0 58 66' },
+
+      // Brookside by Day — sunny yellow tie, small sun on lapel
+      'brooksidebyday': { i: _concierge({
+        tieColor: '#e8b830',
+        jacket: '#1a1808',
+        hat:
+          "<circle cx='22' cy='50' r='3' fill='#e8b830' opacity='0.9'/>" +
+          "<line x1='22' y1='45.5' x2='22' y2='47' stroke='#e8b830' stroke-width='1.2' opacity='0.75'/>" +
+          "<line x1='22' y1='53' x2='22' y2='54.5' stroke='#e8b830' stroke-width='1.2' opacity='0.75'/>" +
+          "<line x1='17.5' y1='50' x2='19' y2='50' stroke='#e8b830' stroke-width='1.2' opacity='0.75'/>" +
+          "<line x1='25' y1='50' x2='26.5' y2='50' stroke='#e8b830' stroke-width='1.2' opacity='0.75'/>"
+      }), vb: '0 0 58 66' },
+
+      // CHoCS (Coffee House on Cherry Street) — espresso-brown tie, tiny coffee cup pin
+      'chocs': { i: _concierge({
+        tieColor: '#8a4820',
+        jacket: '#180e08',
+        faceExtras:
+          "<rect x='19.5' y='48' width='5' height='4' rx='1' fill='#3a2010' opacity='0.9'/>" +
+          "<path d='M 21 52 Q 22 54 23.5 52' fill='none' stroke='#8a4820' stroke-width='0.9' stroke-linecap='round'/>" +
+          "<ellipse cx='22' cy='48' rx='3' ry='1' fill='#5a2e10' opacity='0.6'/>"
+      }), vb: '0 0 58 66' },
+
+      // Bird & Bottle — dark navy tie, tiny feather pin
+      'birdandbottle': { i: _concierge({
+        tieColor: '#485878',
+        jacket: '#060c16',
+        faceExtras:
+          "<path d='M 21 47 Q 19 50 21 53 Q 22 51 23 50 Q 22 48 21 47 Z' fill='#c8b890' opacity='0.8'/>" +
+          "<line x1='21' y1='53' x2='22' y2='47' stroke='#a09060' stroke-width='0.7' opacity='0.7'/>"
+      }), vb: '0 0 58 66' },
+
+      // Stonehorse Cafe — warm stone/cream tie, elegant gold quatrefoil pin
+      'stonehorse': { i: _concierge({
+        tieColor: '#c9b88c',
+        jacket: '#0e0e18',
+        faceExtras:
+          "<circle cx='22' cy='50' r='3' fill='none' stroke='#c9b88c' stroke-width='1' opacity='0.9'/>" +
+          "<circle cx='22' cy='47' r='1.3' fill='#c9b88c' opacity='0.8'/>" +
+          "<circle cx='22' cy='53' r='1.3' fill='#c9b88c' opacity='0.8'/>" +
+          "<circle cx='19' cy='50' r='1.3' fill='#c9b88c' opacity='0.8'/>" +
+          "<circle cx='25' cy='50' r='1.3' fill='#c9b88c' opacity='0.8'/>"
       }), vb: '0 0 58 66' }
     };
 
