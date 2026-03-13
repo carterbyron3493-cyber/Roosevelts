@@ -219,11 +219,17 @@ app.get('/api/health', async (req, res) => {
 
 // ─── FALLBACK ─────────────────────────────────────────────
 // demo.lobbii.net, no ?client  → redirect to landing page on lobbii.net/demo (Netlify)
-// demo.lobbii.net, ?client=X   → live chatbot demo (index.html)
+// demo.lobbii.net, ?client=X   → client-specific HTML if exists, else generic index.html
 // (lobbii.net is a separate Netlify site — not handled here)
 app.get('*', (req, res) => {
   if (!req.query.client) {
     return res.redirect(302, 'https://lobbii.net/demo');
+  }
+  // Sanitize slug and check for a dedicated client HTML (e.g. public/pathwellness.html)
+  const slug = String(req.query.client).replace(/[^a-z0-9_-]/gi, '');
+  const clientHtml = path.join(__dirname, 'public', slug + '.html');
+  if (slug && fs.existsSync(clientHtml)) {
+    return res.sendFile(clientHtml);
   }
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
